@@ -1,0 +1,124 @@
+/* Back Button Styles - Minimal Modern Design */
+
+.back-button-container {
+  text-decoration: none;
+  display: inline-block;
+  position: fixed;
+  top: 75px;
+  left: 20px;
+  z-index: 100;
+}
+
+@media (min-width: 576px) {
+  .back-button-container {
+    top: 78px;
+    left: 25px;
+  }
+}
+
+@media (min-width: 768px) {
+  .back-button-container {
+    top: 82px;
+    left: 35px;
+  }
+}
+
+@media (min-width: 992px) {
+  .back-button-container {
+    top: 85px;
+    left: 40px;
+  }
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(10, 49, 159, 0.85);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  font-size: 18px;
+  padding: 0;
+  min-height: unset;
+  min-width: unset;
+}
+
+@media (min-width: 576px) {
+  .back-button {
+    width: 42px;
+    height: 42px;
+    font-size: 20px;
+  }
+}
+
+@media (min-width: 768px) {
+  .back-button {
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+  }
+}
+
+.back-button:hover {
+  background: rgba(10, 49, 159, 1);
+  box-shadow: 0 4px 12px rgba(10, 49, 159, 0.3);
+  transform: translateY(-2px);
+}
+
+.back-button:active {
+  transform: translateY(0);
+}
+
+.back-icon {
+  display: flex;
+  /* align-items: center; */
+  padding-top: 2px;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.2s ease;
+  font-weight: 600;
+}
+
+.back-button:hover .back-icon {
+  transform: translateX(-2px);
+}
+
+.back-text {
+  display: none;
+}
+
+/* Focus state for accessibility */
+.back-button:focus {
+  outline: 2px solid rgba(10, 49, 159, 0.5);
+  outline-offset: 2px;
+}
+
+/* Touch device optimization */
+@media (hover: none) and (pointer: coarse) {
+  .back-button {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 575px) {
+  .back-button-container {
+    top: 72px;
+    left: 15px;
+  }
+
+  .back-button {
+    width: 38px;
+    height: 38px;
+    font-size: 16px;
+  }
+}
