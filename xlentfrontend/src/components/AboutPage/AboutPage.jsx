@@ -313,7 +313,7 @@ const AboutPage = () => {
       </div>
 
       {/* Awards & Recognition */}
-      <div className="bg-gradient-to-r from-primary to-blue-600 text-white py-5">
+      <div className="text-white py-5" style={{backgroundColor:'rgb(2 40 124'}}>
         <div className="container">
           <div className="row align-items-center">
             <div className="col-12 col-lg-4 text-center mb-4 mb-lg-0">

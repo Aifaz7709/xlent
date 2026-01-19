@@ -1,5 +1,7 @@
 import React, { useEffect, useState, lazy, Suspense, useCallback } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { Provider } from "react-redux";
+import store from "./components/Redux/Store";
 
 import Navbar from "./components/HeadernFooter/Navbar";
 import BackButton from "./components/BackButton/BackButton";
@@ -127,9 +129,11 @@ function App() {
   }, [theme]);
 
   return (
-    <Router>
-      <AppRoutes theme={theme} toggleTheme={toggleTheme} />
-    </Router>
+    <Provider store={store}>
+      <Router>
+        <AppRoutes theme={theme} toggleTheme={toggleTheme} />
+      </Router>
+    </Provider>
   );
 }
 

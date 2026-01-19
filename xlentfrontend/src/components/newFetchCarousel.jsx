@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setCars as setCarsRedux, setLoading as setLoadingRedux } from "./Redux/Slices/carSlice";
 import "./NewPropertyCard.css";
 
 const NewPropertyCard = () => {
+  const dispatch = useDispatch();
+  // Get cars from Redux store
+  const reduxCars = useSelector((state) => state.cars.cars);
+  const reduxLoading = useSelector((state) => state.cars.loading);
+  
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(true);
   const [favorites, setFavorites] = useState(() =>
@@ -102,7 +109,7 @@ const NewPropertyCard = () => {
   // Fetch cars from backend API (public endpoint - shows all cars)
   const fetchCarsFromAPI = async () => {
     try {
-      const apiUrl = process.env.REACT_APP_API_BASE_URL ? `${process.env.REACT_APP_API_BASE_URL}/api/cars` : 'http://localhost:5000/api/cars';
+      const apiUrl = process.env.REACT_APP_API_BASE_URL ? `${process.env.REACT_APP_API_BASE_URL}/api/cars` : 'http://localhost:5002/api/cars';
 
       
       const res = await fetch(apiUrl);
@@ -127,6 +134,7 @@ const NewPropertyCard = () => {
   // Main fetch function
   async function fetchCars() {
     setLoading(true);
+    dispatch(setLoadingRedux(true));
     try {
       // First, try to fetch from backend API
       const apiCars = await fetchCarsFromAPI();
@@ -135,15 +143,23 @@ const NewPropertyCard = () => {
         // Transform and use API data
         const transformedCars = transformCarData(apiCars);
         setCars(transformedCars);
+        // Update Redux store with fetched cars
+        dispatch(setCarsRedux(apiCars));
       } else {
         // Fallback to mock data if API returns empty or fails
-        setCars(generateFallbackData());
+        const fallbackData = generateFallbackData();
+        setCars(fallbackData);
+        // Store fallback data in Redux too
+        dispatch(setCarsRedux([]));
       }
     } catch (err) {
       console.error("Error fetching cars:", err);
-      setCars(generateFallbackData());
+      const fallbackData = generateFallbackData();
+      setCars(fallbackData);
+      dispatch(setCarsRedux([]));
     } finally {
       setLoading(false);
+      dispatch(setLoadingRedux(false));
     }
   }
 
@@ -157,8 +173,16 @@ const NewPropertyCard = () => {
   }
 
   useEffect(() => {
-    fetchCars();
-  }, []);
+    // If Redux has cars, use them; otherwise fetch
+    if (reduxCars && reduxCars.length > 0) {
+      const transformedCars = transformCarData(reduxCars);
+      setCars(transformedCars);
+      setLoading(false);
+    } else if (!reduxLoading && reduxCars.length === 0) {
+      // Only fetch if Redux is not loading and has no cars
+      fetchCars();
+    }
+  }, [reduxCars, reduxLoading]);
 
   if (loading) {
     return (

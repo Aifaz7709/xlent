@@ -146,50 +146,204 @@ const Navbar = ({ theme, toggleTheme, isAuthenticated, onLogout }) => {
                       Locations
                     </a>
                     {showBorrowDropdown && (
-                      <div 
-                        className="dropdown-menu show dropdown-menu-custom"
-                        style={{
-                          position: 'absolute',
-                          backgroundColor: 'white',
-                          border: '1px solid #dee2e6',
-                          borderRadius: '8px',
-                          boxShadow: '0 8px 25px rgba(0,0,0,0.15)',
-                          minWidth: '200px',
-                          padding: '0.5rem 0',
-                          maxHeight:'300px',
-                          overflowY:'auto',
+              <div 
+              style={{
+                position: 'fixed',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                backgroundColor: 'white',
+                borderRadius: '16px',
+                boxShadow: '0 25px 50px rgba(2, 40, 124, 0.2)',
+                padding: '1.5rem',
+                width: 'calc(100vw - 2rem)',
+                maxWidth: '400px',
+                maxHeight: '80vh',
+                overflowY: 'auto',
+                border: '1px solid rgba(2, 40, 124, 0.1)',
+                zIndex: 1000
+              }}
+            >
+              {/* Header with close button */}
+              <div style={{ 
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '1.5rem'
+              }}>
+                <div>
+                  <h3 style={{ 
+                    margin: 0,
+                    fontSize: '1.25rem',
+                    fontWeight: 700,
+                    color: 'rgb(2, 40, 124)'
+                  }}>
+                    Select Location
+                  </h3>
+                  <p style={{
+                    margin: '0.25rem 0 0 0',
+                    fontSize: '0.875rem',
+                    color: '#666'
+                  }}>
+                    Currently serving 6 cities
+                  </p>
+                </div>
+                <button
+                  onClick={closeMenu}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: '1.5rem',
+                    color: '#999',
+                    cursor: 'pointer',
+                    padding: '0.5rem',
+                    lineHeight: 1
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+              
+              {/* Responsive grid */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+                gap: '0.75rem',
+                marginBottom: '1.5rem'
+              }}>
+                {[
+                  { name: "Bengaluru", code: "BLR" },
+                  { name: "Chennai", code: "CHE" },
+                  { name: "Hyderabad", code: "HYD" },
+                  { name: "Nagpur", code: "NAG" },
+                  { name: "Pune", code: "PUN" },
+                  { name: "Mumbai", code: "BOM" }
+                ].map((city, index) => (
+                  <div
+                    key={index}
+                    onClick={() => {
+                      closeMenu();
+                      console.log(`Selected: ${city.name}`);
+                    }}
+                    style={{
+                      backgroundColor: '#f8f9fa',
+                      borderRadius: '12px',
+                      padding: '1rem',
+                      cursor: 'pointer',
+                      border: '2px solid transparent',
+                      transition: 'all 0.2s ease',
+                      textAlign: 'center',
+                      position: 'relative',
+                      minHeight: '80px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = 'rgb(2, 40, 124)';
+                      e.currentTarget.style.borderColor = 'rgb(2, 40, 124)';
+                      e.currentTarget.style.transform = 'scale(1.02)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = '#f8f9fa';
+                      e.currentTarget.style.borderColor = 'transparent';
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }}
+                  >
+                    <div style={{
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      color: 'rgb(2, 40, 124)',
+                      marginBottom: '0.25rem',
+                      transition: 'color 0.2s ease'
+                    }}
+                    className="city-code"
+                    >
+                      {city.code}
+                    </div>
+                    <div style={{
+                      fontSize: '1rem',
+                      fontWeight: 600,
+                      color: 'rgb(2, 40, 124)',
+                      transition: 'color 0.2s ease'
+                    }}
+                    className="city-name"
+                    >
+                      {city.name}
+                    </div>
                     
-                        }}
-                      >
-                        {[
-                          { name: "Bengaluru" },
-                          { name: "Chennai" },
-                          { name: "Hyderabad" },
-                          { name: "Nagpur" },
-                          { name: "Pune" },
-                        
-                        ].map((item, index) => (
-                          <div key={index}>
-                            <a 
-                              className="dropdown-item dropdown-item-custom" 
-                              href={`#${item.name.toLowerCase().replace(' ', '-')}`}
-                              onClick={closeMenu}
-                              style={{ 
-                                padding: '0.75rem 1.5rem',
-                                display: 'block',
-                                textDecoration: 'none',
-                                color: '#333',
-                                transition: 'background-color 0.2s'
-                              }}
-                              onMouseEnter={(e) => e.target.style.backgroundColor = '#f8f9fa'}
-                              onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
-                            >
-                              <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>{item.name}</div>
-                              <div style={{ fontSize: '0.875rem', color: '#6c757d' }}>{item.description}</div>
-                            </a>
-                          </div>
-                        ))}
-                      </div>
+                    <style>{`
+                      div[onmouseenter] .city-code,
+                      div[onmouseenter] .city-name {
+                        color: white !important;
+                      }
+                    `}</style>
+                  </div>
+                ))}
+              </div>
+              
+              {/* Search Section */}
+              <div>
+                <div style={{ position: 'relative', marginBottom: '1rem' }}>
+                  <input
+                    type="text"
+                    placeholder="Search for a city..."
+                    style={{
+                      width: '100%',
+                      padding: '0.875rem 1rem 0.875rem 3rem',
+                      border: '1px solid #ddd',
+                      borderRadius: '10px',
+                      fontSize: '0.875rem',
+                      outline: 'none',
+                      boxSizing: 'border-box'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = 'rgb(2, 40, 124)';
+                      e.target.style.boxShadow = '0 0 0 3px rgba(2, 40, 124, 0.1)';
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = '#ddd';
+                      e.target.style.boxShadow = 'none';
+                    }}
+                  />
+                  <span style={{
+                    position: 'absolute',
+                    left: '1rem',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    color: '#999'
+                  }}>
+                    🔍
+                  </span>
+                </div>
+                
+                <button
+                  style={{
+                    width: '100%',
+                    padding: '0.875rem',
+                    backgroundColor: 'rgb(2, 40, 124)',
+                    border: 'none',
+                    borderRadius: '10px',
+                    color: 'white',
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgb(5, 50, 150)';
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgb(2, 40, 124)';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }}
+                >
+                  Request New City
+                </button>
+              </div>
+            </div>
                     )}
                   </li>
 
@@ -276,7 +430,7 @@ const Navbar = ({ theme, toggleTheme, isAuthenticated, onLogout }) => {
                         <div className="fw-semibold text-truncate">{userData?.email || 'user@example.com'}</div>
                       </div>
                       
-                      <Link to="/dashboard" className="dropdown-item dropdown-item-custom d-flex align-items-center" >
+                      {/* <Link to="/dashboard" className="dropdown-item dropdown-item-custom d-flex align-items-center" >
                         <i className="bi bi-speedometer2 me-2"></i>
                         Dashboard
                       </Link>
@@ -289,9 +443,9 @@ const Navbar = ({ theme, toggleTheme, isAuthenticated, onLogout }) => {
                       <Link to="/settings" className="dropdown-item dropdown-item-custom d-flex align-items-center" >
                         <Settings size={16} className="me-2" />
                         Settings
-                      </Link>
+                      </Link> */}
                       
-                      <div className="dropdown-divider my-1"></div>
+                    
                       
                       <button 
                         className="dropdown-item dropdown-item-custom d-flex align-items-center text-danger"

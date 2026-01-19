@@ -62,15 +62,15 @@ const HeadingsSection = () => {
       <header className="main-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "50px", flexWrap: "wrap" }}>
 
   {/* LEFT SIDE TEXT */}
- <div style={{ flex: "1", padding: "0 15px" }}>
+ <div style={{ flex: "1", padding: "0 10px", display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
 
  <h2 
   className="main-headline" 
   style={{ 
     color: "#fff",
     fontSize: "clamp(28px, 8vw, 48px)",
-    lineHeight: "1.2",
-    marginBottom: "20px",
+    lineHeight: "1",
+    marginBottom: "10px",
     fontWeight: "700",
     textAlign: "left"
   }}
@@ -83,10 +83,10 @@ const HeadingsSection = () => {
     color: "#fff", 
     fontSize: "clamp(40px, 12vw, 100px)",
     fontFamily: "fantasy", 
-    margin: "10px 0",
+    margin: "5px 0",
     display: "flex",
     alignItems: "center",
-    gap: "5px",
+    gap: "1px",
     justifyContent: "flex-start"
   }}
 >
@@ -103,7 +103,7 @@ const HeadingsSection = () => {
 <p style={{ 
   color: "#fff", 
   fontSize: "clamp(16px, 4vw, 20px)", 
-  lineHeight: "1.6", 
+  lineHeight: "1.3", 
   maxWidth: "100%",
   marginBottom: "25px",
   textAlign: "left"
@@ -126,13 +126,15 @@ const HeadingsSection = () => {
       transition: "0.3s",
       marginTop: "20px",
       display: "inline-block",
-      width: "100%",
-      maxWidth: "350px"
+      width: "auto",
+      maxWidth: "350px",
+      textAlign: "left",
+      alignSelf: "flex-start",
     }}
     onMouseOver={(e) => (e.target.style.boxShadow = "0 4px 12px rgba(255,255,255,0.4)")}
     onMouseOut={(e) => (e.target.style.boxShadow = "none")}
   >
-    Book Your Car Now
+    Book Your Ride Today  
   </button>
 </div>
 

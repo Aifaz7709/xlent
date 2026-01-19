@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Upload, Plus, Trash2, AlertCircle, CheckCircle } from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import { addCar, removeCar, setCars, setLoading } from '../Redux/Slices/carSlice';
 import './AddCar.css';
 
 const AddCar = () => {
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     carName: '',
     vinNumber: '',
@@ -23,7 +26,7 @@ const AddCar = () => {
     try {
       setLoadingCars(true);
       const token = localStorage.getItem('xlent_token');
-      const apiUrl = process.env.REACT_APP_API_BASE_URL ? `${process.env.REACT_APP_API_BASE_URL}/api/cars` : 'http://localhost:5000/api/cars';
+      const apiUrl = process.env.REACT_APP_API_BASE_URL ? `${process.env.REACT_APP_API_BASE_URL}/api/cars` : 'http://localhost:5002/api/cars';
       
       const res = await fetch(apiUrl, {
         headers: { 'Authorization': `Bearer ${token}` }
@@ -39,7 +42,10 @@ const AddCar = () => {
       }
 
       if (res.ok) {
-        setCars(data.cars || []);
+        const fetchedCars = data.cars || [];
+        setCars(fetchedCars);
+        // Update Redux store with fetched cars
+        dispatch(setCars(fetchedCars));
       } else {
         console.error('fetchCars failed', res.status, data);
       }
@@ -107,8 +113,16 @@ const AddCar = () => {
 
     try {
       const token = localStorage.getItem('xlent_token');
-      const apiUrl = process.env.REACT_APP_API_BASE_URL ? `${process.env.REACT_APP_API_BASE_URL}/api/cars` : 'http://localhost:5000/api/cars';
+      if (!token) {
+        throw new Error('You must be logged in to add a car');
+      }
+
+      const apiUrl = process.env.REACT_APP_API_BASE_URL ? `${process.env.REACT_APP_API_BASE_URL}/api/cars` : 'http://localhost:5002/api/cars';
       
+      console.log('Adding car to:', apiUrl);
+      console.log('Car data:', { carName: formData.carName, vinNumber: formData.vinNumber, photosCount: formData.photos?.length || 0 });
+      console.log('Token available:', !!token);
+
       const res = await fetch(apiUrl, {
         method: 'POST',
         headers: {
@@ -138,6 +152,8 @@ const AddCar = () => {
       // If server returned the created car, prepend it to the list for immediate feedback
       if (data.car) {
         setCars(prev => [data.car, ...prev]);
+        // Update Redux store with new car
+        dispatch(addCar(data.car));
       } else {  
         // Otherwise refresh list
         fetchCars();
@@ -146,8 +162,22 @@ const AddCar = () => {
       setFormData({ carName: '', vinNumber: '', photos: [] });
       setPhotoPreview([]);
     } catch (err) {
-      console.error(err);
-      setMessage({ type: 'error', text: err.message || 'Error adding car' });
+      console.error('Error adding car:', err);
+      console.error('Error name:', err.name);
+      console.error('Error message:', err.message);
+      console.error('Error stack:', err.stack);
+      
+      // Provide more detailed error messages
+      let errorMessage = 'Error adding car';
+      if (err.message) {
+        errorMessage = err.message;
+      } else if (err.name === 'TypeError' && (err.message.includes('fetch') || err.message.includes('Failed to fetch'))) {
+        errorMessage = 'Failed to connect to server. Please check if the backend server is running on http://localhost:5002';
+      } else if (err.name === 'TypeError') {
+        errorMessage = `Network error: ${err.message}`;
+      }
+      
+      setMessage({ type: 'error', text: errorMessage });
     } finally {
       setIsLoading(false);
     }
@@ -158,7 +188,7 @@ const AddCar = () => {
 
     try {
       const token = localStorage.getItem('xlent_token');
-      const apiUrl = process.env.REACT_APP_API_BASE_URL ? `${process.env.REACT_APP_API_BASE_URL}/api/cars/${carId}` : `http://localhost:5000/api/cars/${carId}`;
+      const apiUrl = process.env.REACT_APP_API_BASE_URL ? `${process.env.REACT_APP_API_BASE_URL}/api/cars/${carId}` : `http://localhost:5002/api/cars/${carId}`;
       
       const res = await fetch(apiUrl, {
         method: 'DELETE',
@@ -167,6 +197,8 @@ const AddCar = () => {
 
       if (res.ok) {
         setCars(prev => prev.filter(car => car.id !== carId));
+        // Update Redux store - remove car
+        dispatch(removeCar(carId));
         setMessage({ type: 'success', text: 'Car deleted successfully' });
       }
     } catch (err) {

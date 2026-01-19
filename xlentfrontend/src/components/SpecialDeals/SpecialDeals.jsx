@@ -206,7 +206,7 @@ const SpecialDeals = () => {
     try {
       setIsSubscribing(true);
       setSubscribeMessage("");
-      const res = await fetch("http://localhost:5001/api/subscribe", {
+      const res = await fetch("http://localhost:5002/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: subscriberEmail }),
@@ -577,7 +577,7 @@ const SpecialDeals = () => {
           <div className="col-12">
             <h3 className="h4 text-dark mb-4">Deal FAQs</h3>
             <div className="accordion" id="dealFaq">
-              <div className="accordion-item border-0 mb-2">
+              <div className="accordion-item border-1 mb-2">
                 <h2 className="accordion-header">
                   <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
                     Can I combine multiple offers?
@@ -589,7 +589,7 @@ const SpecialDeals = () => {
                   </div>
                 </div>
               </div>
-              <div className="accordion-item border-0 mb-2">
+              <div className="accordion-item border-1 mb-2">
                 <h2 className="accordion-header">
                   <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
                     Are there any hidden charges?
@@ -601,7 +601,7 @@ const SpecialDeals = () => {
                   </div>
                 </div>
               </div>
-              <div className="accordion-item border-0">
+              <div className="accordion-item border-1">
                 <h2 className="accordion-header">
                   <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
                     How long are these deals valid?
@@ -619,7 +619,7 @@ const SpecialDeals = () => {
       </div>
 
       {/* Contact CTA */}
-      <div className="bg-primary text-white py-5">
+      <div className="text-white py-5" style={{ margin:'30px',  borderRadius: "15px",  background: "linear-gradient(135deg, #02287c 0%, #0d6efd 100%)",}}>
         <div className="container">
           <div className="row align-items-center">
             <div className="col-12 col-lg-8">
