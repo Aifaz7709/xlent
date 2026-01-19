@@ -26,7 +26,7 @@ const AddCar = () => {
     try {
       setLoadingCars(true);
       const token = localStorage.getItem('xlent_token');
-      const apiUrl = process.env.REACT_APP_API_BASE_URL ? `${process.env.REACT_APP_API_BASE_URL}/api/cars` : 'http://localhost:5002/api/cars';
+      const apiUrl = process.env.REACT_APP_API_BASE_URL ? `${process.env.REACT_APP_API_BASE_URL}/api/cars` : 'http://localhost:5000/api/cars';
       
       const res = await fetch(apiUrl, {
         headers: { 'Authorization': `Bearer ${token}` }
@@ -117,7 +117,7 @@ const AddCar = () => {
         throw new Error('You must be logged in to add a car');
       }
 
-      const apiUrl = process.env.REACT_APP_API_BASE_URL ? `${process.env.REACT_APP_API_BASE_URL}/api/cars` : 'http://localhost:5002/api/cars';
+      const apiUrl = process.env.REACT_APP_API_BASE_URL ? `${process.env.REACT_APP_API_BASE_URL}/api/cars` : 'http://localhost:5000/api/cars';
       
       console.log('Adding car to:', apiUrl);
       console.log('Car data:', { carName: formData.carName, vinNumber: formData.vinNumber, photosCount: formData.photos?.length || 0 });
@@ -172,7 +172,7 @@ const AddCar = () => {
       if (err.message) {
         errorMessage = err.message;
       } else if (err.name === 'TypeError' && (err.message.includes('fetch') || err.message.includes('Failed to fetch'))) {
-        errorMessage = 'Failed to connect to server. Please check if the backend server is running on http://localhost:5002';
+        errorMessage = 'Failed to connect to server. Please check if the backend server is running on http://localhost:5000';
       } else if (err.name === 'TypeError') {
         errorMessage = `Network error: ${err.message}`;
       }
@@ -188,7 +188,7 @@ const AddCar = () => {
 
     try {
       const token = localStorage.getItem('xlent_token');
-      const apiUrl = process.env.REACT_APP_API_BASE_URL ? `${process.env.REACT_APP_API_BASE_URL}/api/cars/${carId}` : `http://localhost:5002/api/cars/${carId}`;
+      const apiUrl = process.env.REACT_APP_API_BASE_URL ? `${process.env.REACT_APP_API_BASE_URL}/api/cars/${carId}` : `http://localhost:5000/api/cars/${carId}`;
       
       const res = await fetch(apiUrl, {
         method: 'DELETE',

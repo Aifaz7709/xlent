@@ -1,69 +1,95 @@
+// src/routes/auth.js
 const express = require('express');
 const router = express.Router();
-const pool = require('../db');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const supabase = require('../../supabaseClient'); // adjust path if needed
 
-// POST /api/auth/register
+// Registration endpoint
 router.post('/register', async (req, res) => {
+  console.log(req.body, 'Payload received');
+
   try {
-    const { customerName, email, phoneNumber, vehicleRegNumber, password } = req.body;
-    if (!customerName || !email || !password) {
-      return res.status(400).json({ message: 'Missing required fields' });
+    const {
+      customer_name,
+      email,
+      password,
+      phone_number,
+      vehicle_reg_number
+    } = req.body;
+
+    // 1️⃣ Create user in Supabase Auth
+    const { data: authData, error: authError } =
+      await supabase.auth.admin.createUser({
+        email,
+        password,
+        email_confirm: true,
+      });
+
+    if (authError) {
+      return res.status(400).json({ error: authError.message });
     }
 
-    const [existing] = await pool.query('SELECT id FROM users WHERE email = ?', [email]);
-    if (existing.length) {
-      return res.status(409).json({ message: 'Email already registered' });
+    const userId = authData.user.id;
+
+    // 2️⃣ Hash password for your own table (optional but fine)
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // 3️⃣ Insert profile with SAME id
+    const { data, error } = await supabase
+      .from('profiles')
+      .insert([{
+        id: userId, // 🔴 THIS fixes the FK error
+        customer_name,
+        email,
+        phone_number,
+        vehicle_reg_number,
+        password_hash: hashedPassword
+      }]);
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
     }
 
-    const hashed = await bcrypt.hash(password, 10);
-    const [result] = await pool.query(
-      `INSERT INTO users (customerName, email, phoneNumber, vehicleRegNumber, password) VALUES (?, ?, ?, ?, ?)`,
-      [customerName, email, phoneNumber || null, vehicleRegNumber || null, hashed]
-    );
+    return res.status(201).json({
+      message: 'User registered successfully',
+      user_id: userId
+    });
 
-    return res.status(201).json({ id: result.insertId, message: 'User registered' });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ message: 'Server error' });
+    return res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-// POST /api/auth/login
+// LOGIN
 router.post('/login', async (req, res) => {
   try {
-    const { email, username, password } = req.body;
-    const loginEmail = email || username; // Accept either email or username field
-    console.log('Login attempt:', { loginEmail, passwordLength: password?.length });
-    
-    if (!loginEmail || !password) {
-      console.log('Missing credentials');
-      return res.status(400).json({ message: 'Missing credentials' });
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({ message: 'Email and password required' });
     }
 
-    const [rows] = await pool.query('SELECT id, password, customerName, email FROM users WHERE email = ?', [loginEmail]);
-    console.log('DB query result rows:', rows.length);
-    
-    if (!rows.length) {
-      console.log('User not found:', loginEmail);
-      return res.status(401).json({ message: 'Invalid credentials' });
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: username,
+      password
+    });
+
+    if (error) {
+      return res.status(401).json({ message: error.message });
     }
 
-    const user = rows[0];
-    console.log('User found, comparing passwords...');
-    const match = await bcrypt.compare(password, user.password);
-    console.log('Password match:', match);
-    
-    if (!match) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
+    return res.status(200).json({
+      token: data.session.access_token,
+      user: {
+        id: data.user.id,
+        email: data.user.email
+      }
+    });
 
-    const token = jwt.sign({ id: user.id, name: user.customerName, email: user.email }, process.env.JWT_SECRET || 'change_this', { expiresIn: '7d' });
-    return res.json({ token, user: { id: user.id, name: user.customerName, email: user.email } });
   } catch (err) {
-    console.error('Login error:', err);
-    return res.status(500).json({ message: 'Server error' });
+    console.error(err);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 });
 

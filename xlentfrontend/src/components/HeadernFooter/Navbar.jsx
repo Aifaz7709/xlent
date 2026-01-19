@@ -283,66 +283,7 @@ const Navbar = ({ theme, toggleTheme, isAuthenticated, onLogout }) => {
                 ))}
               </div>
               
-              {/* Search Section */}
-              <div>
-                <div style={{ position: 'relative', marginBottom: '1rem' }}>
-                  <input
-                    type="text"
-                    placeholder="Search for a city..."
-                    style={{
-                      width: '100%',
-                      padding: '0.875rem 1rem 0.875rem 3rem',
-                      border: '1px solid #ddd',
-                      borderRadius: '10px',
-                      fontSize: '0.875rem',
-                      outline: 'none',
-                      boxSizing: 'border-box'
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = 'rgb(2, 40, 124)';
-                      e.target.style.boxShadow = '0 0 0 3px rgba(2, 40, 124, 0.1)';
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = '#ddd';
-                      e.target.style.boxShadow = 'none';
-                    }}
-                  />
-                  <span style={{
-                    position: 'absolute',
-                    left: '1rem',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    color: '#999'
-                  }}>
-                    🔍
-                  </span>
-                </div>
-                
-                <button
-                  style={{
-                    width: '100%',
-                    padding: '0.875rem',
-                    backgroundColor: 'rgb(2, 40, 124)',
-                    border: 'none',
-                    borderRadius: '10px',
-                    color: 'white',
-                    fontSize: '0.875rem',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    transition: 'all 0.2s'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'rgb(5, 50, 150)';
-                    e.currentTarget.style.transform = 'translateY(-2px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'rgb(2, 40, 124)';
-                    e.currentTarget.style.transform = 'translateY(0)';
-                  }}
-                >
-                  Request New City
-                </button>
-              </div>
+           
             </div>
                     )}
                   </li>

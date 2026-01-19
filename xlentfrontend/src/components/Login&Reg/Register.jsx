@@ -110,24 +110,33 @@ const RegisterPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const validationErrors = validateForm();
-    
+  
     if (Object.keys(validationErrors).length === 0) {
       setIsSubmitting(true);
+  
       (async () => {
         try {
-          const res = await fetch(process.env.REACT_APP_API_BASE_URL ? `${process.env.REACT_APP_API_BASE_URL}/api/auth/register` : 'http://localhost:5002/api/auth/register', {
+          const apiBase = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+          const res = await fetch(`${apiBase}/api/auth/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              customerName: formData.customerName,
+              customer_name: formData.customerName,      // snake_case for Supabase
               email: formData.email,
-              phoneNumber: formData.phoneNumber.replace(/\s/g, ''),
-              vehicleRegNumber: formData.vehicleRegNumber,
-              password: formData.password
+              phone_number: formData.phoneNumber.replace(/\s/g, ''),
+              vehicle_reg_number: formData.vehicleRegNumber,
+              password: formData.password               // backend will hash it
             })
           });
+  
           const data = await res.json();
-          if (!res.ok) throw new Error(data.message || 'Registration failed');
+          console.log('Registration response:', data);
+  
+          if (!res.ok) {
+            // If backend returns Supabase error, show it
+            throw new Error(data.error || 'Registration failed');
+          }
+  
           alert('Registration successful! You can now log in.');
           setFormData({
             customerName: '',
@@ -138,8 +147,9 @@ const RegisterPage = () => {
             confirmPassword: '',
             termsAccepted: false
           });
+  
         } catch (err) {
-          console.error(err);
+          console.error('Registration error:', err);
           alert(err.message || 'Registration error');
         } finally {
           setIsSubmitting(false);
@@ -149,6 +159,7 @@ const RegisterPage = () => {
       setErrors(validationErrors);
     }
   };
+  
 
   const formatPhoneNumber = (value) => {
     const numbers = value.replace(/\D/g, '');

@@ -19,7 +19,7 @@ export const CarProvider = ({ children }) => {
       setLoading(true);
       const apiUrl = process.env.REACT_APP_API_BASE_URL
         ? `${process.env.REACT_APP_API_BASE_URL}/api/cars`
-        : "http://localhost:5002/api/cars";
+        : "http://localhost:5000/api/cars";
 
       const res = await fetch(apiUrl);
       if (!res.ok) throw new Error("Failed to fetch cars");
