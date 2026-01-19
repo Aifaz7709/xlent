@@ -8,8 +8,16 @@ const subscribeRouter = require("./routes/subscribe");
 dotenv.config();
 const app = express();
 
-app.use(cors({ origin: process.env.CORS_ORIGIN || 'http://localhost:3000' }));
-
+// Enable CORS
+app.use(cors({
+    origin: [
+      'https://www.xlentcar.com',
+      'https://xlentcar.com',
+      'http://localhost:3000',
+      'http://127.0.0.1:3000'
+    ],
+    credentials: true
+  }))
 // Increase JSON body size limit to allow base64 image uploads from the frontend.
 // Keep reasonable cap to avoid DoS via huge payloads.
 app.use(express.json({ limit: process.env.EXPRESS_JSON_LIMIT || '25mb' }));
