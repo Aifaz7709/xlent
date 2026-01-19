@@ -107,29 +107,34 @@ const NewPropertyCard = () => {
   };
 
   // Fetch cars from backend API (public endpoint - shows all cars)
-  const fetchCarsFromAPI = async () => {
-    try {
-      const apiUrl = process.env.REACT_APP_API_BASE_URL ? `${process.env.REACT_APP_API_BASE_URL}/api/cars` : 'http://localhost:5000/api/cars';
+// Fetch cars from backend API (public endpoint - shows all cars)
+const fetchCarsFromAPI = async () => {
+  try {
+    // CHANGE THIS LINE: Add "/public" to the endpoint
+    const apiUrl = process.env.REACT_APP_API_BASE_URL 
+      ? `${process.env.REACT_APP_API_BASE_URL}/api/cars/public` 
+      : 'http://localhost:5000/api/cars/public'; // <-- Added /public here
+    
+    const res = await fetch(apiUrl);
 
-      
-      const res = await fetch(apiUrl);
-
-      if (!res.ok) {
-        return [];
-      }
-
-      const contentType = res.headers.get('content-type') || '';
-      if (!contentType.includes('application/json')) {
-        return [];
-      }
-
-      const data = await res.json();
-      return data.cars || [];
-    } catch (err) {
-      console.error('Error fetching cars from API:', err);
+    if (!res.ok) {
+      console.warn('Failed to fetch public cars, status:', res.status);
       return [];
     }
-  };
+
+    const contentType = res.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      console.warn('Response not JSON');
+      return [];
+    }
+
+    const data = await res.json();
+    return data.cars || [];
+  } catch (err) {
+    console.error('Error fetching cars from API:', err);
+    return [];
+  }
+};
 
   // Main fetch function
   async function fetchCars() {
