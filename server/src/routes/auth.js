@@ -2,9 +2,9 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const supabase = require('../../supabaseClient'); // adjust path if needed
+const supabase = require('../../supabaseClient'); // Your existing client
 
-// Registration endpoint - UPDATED FOR YOUR ENV VARS
+// BOTH endpoints using the SAME client (service role)
 router.post('/register', async (req, res) => {
   try {
     const {
@@ -15,62 +15,51 @@ router.post('/register', async (req, res) => {
       vehicle_reg_number
     } = req.body;
 
-    // Validate required fields
     if (!email || !password || !customer_name) {
       return res.status(400).json({ 
         error: 'Email, password, and customer name are required' 
       });
     }
 
-    // Use regular Supabase signUp (not admin)
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
+    // Use admin.createUser
+    const { data: authData, error: authError } = 
+      await supabase.auth.admin.createUser({
+        email: email.trim().toLowerCase(),
+        password,
+        email_confirm: true, // ✅ Auto-confirm
+        user_metadata: {
           customer_name,
           phone_number,
           vehicle_reg_number
         }
-      }
-    });
+      });
 
     if (authError) {
-      console.error('Registration auth error:', authError);
+      console.error('Registration error:', authError);
       return res.status(400).json({ error: authError.message });
     }
 
     const userId = authData.user.id;
 
-    // Hash password for profiles table
+    // Create profile
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Insert profile
-    const { data, error } = await supabase
+    
+    await supabase
       .from('profiles')
       .insert([{
         id: userId,
         customer_name,
-        email,
+        email: email.trim().toLowerCase(),
         phone_number,
         vehicle_reg_number,
         password_hash: hashedPassword,
         created_at: new Date().toISOString()
       }]);
 
-    if (error) {
-      console.error('Profile creation error:', error);
-      // Don't fail registration if profile insert fails
-    }
-
-    const needsEmailConfirmation = !authData.session;
-
     return res.status(201).json({
-      message: needsEmailConfirmation 
-        ? 'User registered successfully! Please check your email to confirm.'
-        : 'User registered successfully!',
+      message: 'User registered successfully!',
       user_id: userId,
-      needs_email_confirmation: needsEmailConfirmation
+      email: authData.user.email
     });
 
   } catch (err) {
@@ -79,62 +68,39 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// LOGIN endpoint - UPDATED FOR YOUR ENV VARS
+// LOGIN - Using signInWithPassword with service role key
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body; // Use 'email' field (not 'username')
+    const { email, password } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({ message: 'Email and password required' });
     }
 
-    // Normalize email
-    const normalizedEmail = email.trim().toLowerCase();
-
-    // Authenticate with Supabase
-    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-      email: normalizedEmail,
-      password
-    });
+    // This works with service role key too
+    const { data: authData, error: authError } = 
+      await supabase.auth.signInWithPassword({
+        email: email.trim().toLowerCase(),
+        password
+      });
 
     if (authError) {
-      console.error('Login auth error:', authError);
+      console.error('Login error:', authError);
       
-      // User-friendly error messages
       if (authError.message.includes('Invalid login credentials')) {
         return res.status(401).json({ message: 'Invalid email or password' });
-      }
-      if (authError.message.includes('Email not confirmed')) {
-        return res.status(401).json({ 
-          message: 'Please confirm your email address first' 
-        });
       }
       
       return res.status(401).json({ message: authError.message });
     }
 
-    // Check if profile exists
+    // Get profile
     const userId = authData.user.id;
-    const { data: profile, error: profileError } = await supabase
+    const { data: profile } = await supabase
       .from('profiles')
       .select('*')
       .eq('id', userId)
       .single();
-
-    // Create profile if missing
-    if (profileError || !profile) {
-      const hashedPassword = await bcrypt.hash(password, 10);
-      
-      await supabase
-        .from('profiles')
-        .insert([{
-          id: userId,
-          customer_name: authData.user.user_metadata?.customer_name || email.split('@')[0],
-          email: authData.user.email,
-          password_hash: hashedPassword,
-          created_at: new Date().toISOString()
-        }]);
-    }
 
     return res.status(200).json({
       message: 'Login successful',
@@ -153,60 +119,6 @@ router.post('/login', async (req, res) => {
   } catch (err) {
     console.error('Login error:', err);
     return res.status(500).json({ message: 'Internal server error' });
-  }
-});
-
-// Additional endpoints
-
-// Check auth status
-router.get('/me', async (req, res) => {
-  try {
-    const token = req.headers.authorization?.replace('Bearer ', '');
-    
-    if (!token) {
-      return res.status(401).json({ authenticated: false });
-    }
-
-    const { data: { user }, error } = await supabase.auth.getUser(token);
-
-    if (error || !user) {
-      return res.status(401).json({ authenticated: false });
-    }
-
-    // Get profile data
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single();
-
-    return res.json({
-      authenticated: true,
-      user: {
-        id: user.id,
-        email: user.email,
-        ...profile
-      }
-    });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-// Logout
-router.post('/logout', async (req, res) => {
-  try {
-    const token = req.headers.authorization?.replace('Bearer ', '');
-    
-    if (token) {
-      await supabase.auth.signOut(token);
-    }
-    
-    return res.json({ message: 'Logged out successfully' });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: 'Internal server error' });
   }
 });
 
