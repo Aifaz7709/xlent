@@ -61,13 +61,12 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal Server Error', message: err.message });
 });
 
-// ================= Environment Checks =================
 const requiredEnvs = ['SUPABASE_URL', 'SUPABASE_KEY'];
 requiredEnvs.forEach(v => {
   if (!process.env[v]) console.warn(`⚠️ ${v} not set`);
 });
 
-// ================= Start Server =================
+
 const PORT = process.env.PORT || 5000;
 console.log('⚡ PORT Railway sees:', process.env.PORT);
 
