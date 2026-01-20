@@ -161,26 +161,43 @@ const Login = ({ setIsAuthenticated }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validateForm();
-
+  
     if (Object.keys(validationErrors).length === 0) {
       setIsLoading(true);
       try {
         const apiBase = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
-
-        const res = await fetch(`${apiBase}/api/auth/login` ,
-       {
+        const loginUrl = `${apiBase}/api/auth/login`;
+        
+        console.log('Attempting login to:', loginUrl);
+        console.log('With credentials:', { email: formData.username, password: '***' });
+  
+        const res = await fetch(loginUrl, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
           body: JSON.stringify({ 
-            username: formData.username,
+            email: formData.username,  // CHANGED from 'username' to 'email'
             password: formData.password 
           })
         });
         
-        const data = await res.json();
+        console.log('Response status:', res.status, res.statusText);
+        
+        const text = await res.text();
+        console.log('Raw response:', text);
+        
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (parseError) {
+          console.error('Failed to parse JSON:', parseError);
+          throw new Error('Server returned invalid response');
+        }
         
         if (!res.ok) {
-          throw new Error(data.message || 'Login failed. Please check your credentials.');
+          throw new Error(data.message || data.error || `Login failed (${res.status})`);
         }
         
         if (data.token) {
@@ -190,7 +207,8 @@ const Login = ({ setIsAuthenticated }) => {
             username: formData.username,
             name: data.user?.name || formData.username.split('@')[0],
             email: data.user?.email || formData.username,
-            role: data.user?.role || 'user'
+            role: data.user?.role || 'user',
+            ...data.user // Include any additional user data
           }));
           
           if (setIsAuthenticated) {
@@ -202,12 +220,24 @@ const Login = ({ setIsAuthenticated }) => {
           setTimeout(() => {
             navigate('/');
           }, 2000);
+        } else {
+          throw new Error('No authentication token received');
         }
         
       } catch (err) {
-        console.error(err);
-        showNotification(err.message || 'Login failed. Please try again.', 'error');
-        setErrors({ form: err.message || 'Login failed. Please try again.' });
+        console.error('Login error details:', err);
+        
+        // Check if it's a network error
+        if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
+          showNotification(
+            'Cannot connect to server. Please check your internet connection and make sure the server is running.',
+            'error'
+          );
+          setErrors({ form: 'Network error. Please check if server is running.' });
+        } else {
+          showNotification(err.message || 'Login failed. Please try again.', 'error');
+          setErrors({ form: err.message || 'Login failed. Please try again.' });
+        }
       } finally {
         setIsLoading(false);
       }
