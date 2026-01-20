@@ -6,7 +6,6 @@ const supabase = require('../../supabaseClient'); // adjust path if needed
 
 // Registration endpoint
 router.post('/register', async (req, res) => {
-  console.log(req.body, 'Payload received');
 
   try {
     const {

@@ -106,7 +106,6 @@ const NewPropertyCard = () => {
     }));
   };
 
-  // Fetch cars from backend API (public endpoint - shows all cars)
 // Fetch cars from backend API (public endpoint - shows all cars)
 const fetchCarsFromAPI = async () => {
   try {
