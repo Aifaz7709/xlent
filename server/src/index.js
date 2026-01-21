@@ -17,7 +17,10 @@ const allowedOrigins = [
   'https://xlentcar.com',
   'https://www.xlentcar.com',
   'https://xlentcar.vercel.app',
-  'http://localhost:3000'
+  'http://localhost:3000',
+  'xlentcar.vercel.app',
+  'xlentcar.com',
+  'www.xlentcar.com',
 ];
 
 const corsOptions = {
