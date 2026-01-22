@@ -159,8 +159,8 @@ const NewPropertyCard = () => {
           <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={car.id}>
             <div
               className="property-card shadow-sm position-relative"
-              // onClick={() => navigate(`/car/${car.id}`)}
-              style={{ cursor: "pointer" }}
+              onClick={() => navigate(`/book/${car.id}`, { state: { car } })} // Passing car data here    
+                            style={{ cursor: "pointer" }}
             >
               {/* Favorite Button */}
               <div

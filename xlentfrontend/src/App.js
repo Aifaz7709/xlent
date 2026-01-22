@@ -14,7 +14,7 @@ import SpecialDeals from "./components/SpecialDeals/SpecialDeals";
 import AboutPage from "./components/AboutPage/AboutPage";
 import TermsConditionsPage from "./components/TermsandConditions/TermsConditionsPage";
 import AddCar from "./components/AddCar/AddCar";
-
+import BookingPage from "./components/Booking/BookingPage";
 const NewPropertyCard = lazy(() => import("./components/newFetchCarousel"));
 const TrendingProperties = lazy(() => import("./components/TrendingProperties"));
 const Gallery = lazy(() => import("./components/Gallery"));
@@ -108,6 +108,7 @@ function AppRoutes({ theme, toggleTheme }) {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/deals" element={<SpecialDeals />} />
           <Route path="/terms" element={<TermsConditionsPage />} />
+<Route path="/book/:carId" element={<BookingPage />} />
 
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
