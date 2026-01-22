@@ -9,22 +9,9 @@ const subscribeRouter = require('./routes/subscribe');
 const app = express();
 
 /* =========================
-   CORS CONFIG (FIXED)
+   CORS CONFIG
    ========================= */
 
-app.use(cors({
-  origin: [
-    'https://xlentcar.com',
-    'https://www.xlentcar.com',
-    'https://xlentcar.vercel.app',
-    'http://localhost:3000',
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
-
-// Explicit preflight handler. Always respond.
 const corsOptions = {
   origin: [
     'https://xlentcar.com',
@@ -38,17 +25,30 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // preflight uses same config
-
+app.options('*', cors(corsOptions));
 
 /* =========================
-   MIDDLEWARE
+   FORCE CLEAN PREFLIGHT
+   ========================= */
+
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+  next();
+});
+
+/* =========================
+   BODY PARSERS
    ========================= */
 
 app.use(express.json({ limit: '25mb' }));
 app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 
-// Request logging
+/* =========================
+   REQUEST LOGGING
+   ========================= */
+
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} ${req.method} ${req.url}`);
   next();
@@ -62,12 +62,21 @@ app.use('/api/auth', authRoutes);
 app.use('/api/cars', carsRoutes);
 app.use('/api', subscribeRouter);
 
-// Health check
+/* =========================
+   HEALTH CHECK
+   ========================= */
+
 app.get('/api/ping', (req, res) => {
-  res.status(200).json({ ok: true, message: 'Server is running' });
+  res.status(200).json({
+    ok: true,
+    message: 'Server is running',
+  });
 });
 
-// Root
+/* =========================
+   ROOT
+   ========================= */
+
 app.get('/', (req, res) => {
   res.json({
     name: 'XlentCar Backend API',
@@ -79,14 +88,12 @@ app.get('/', (req, res) => {
    ERROR HANDLING
    ========================= */
 
-// 404
 app.use((req, res) => {
   res.status(404).json({ error: 'Not Found' });
 });
 
-// Global error handler
 app.use((err, req, res, next) => {
-  console.error('❌ Error:', err);
+  console.error('Error:', err);
   res.status(500).json({
     error: 'Internal Server Error',
     message: err.message,
@@ -100,7 +107,7 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 8080;
 
 const server = app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 XlentCar Backend running on port ${PORT}`);
+  console.log(`Backend running on port ${PORT}`);
 });
 
 /* =========================

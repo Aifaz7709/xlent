@@ -1,9 +1,64 @@
-// src/routes/cars.js
 const express = require('express');
 const router = express.Router();
-const supabase = require('../../supabaseClient'); // Adjust path based on your structure
+const supabase = require('../../supabaseClient');
 
-// GET all cars
+/* =========================
+   PREFLIGHT FIX
+   ========================= */
+
+router.options('*', (req, res) => {
+  return res.sendStatus(204);
+});
+
+/* =========================
+   SEARCH / FILTER (MUST BE FIRST)
+   ========================= */
+
+router.get('/search/filter', async (req, res) => {
+  try {
+    const { 
+      make, 
+      model, 
+      minYear, 
+      maxYear, 
+      minPrice, 
+      maxPrice,
+      fuelType,
+      transmission,
+      available
+    } = req.query;
+
+    let query = supabase.from('cars').select('*');
+
+    if (make) query = query.ilike('make', `%${make}%`);
+    if (model) query = query.ilike('model', `%${model}%`);
+    if (minYear) query = query.gte('year', parseInt(minYear));
+    if (maxYear) query = query.lte('year', parseInt(maxYear));
+    if (minPrice) query = query.gte('price_per_day', parseFloat(minPrice));
+    if (maxPrice) query = query.lte('price_per_day', parseFloat(maxPrice));
+    if (fuelType) query = query.eq('fuel_type', fuelType);
+    if (transmission) query = query.eq('transmission', transmission);
+    if (available !== undefined) {
+      query = query.eq('available', available === 'true');
+    }
+
+    const { data, error } = await query.order('price_per_day', { ascending: true });
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    return res.json(data);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+/* =========================
+   GET ALL CARS
+   ========================= */
+
 router.get('/', async (req, res) => {
   try {
     const { data, error } = await supabase
@@ -12,18 +67,20 @@ router.get('/', async (req, res) => {
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('Supabase error:', error);
       return res.status(400).json({ error: error.message });
     }
 
     return res.json(data);
-  } catch (error) {
-    console.error('Server error:', error);
+  } catch (err) {
+    console.error(err);
     return res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-// GET single car by ID
+/* =========================
+   GET CAR BY ID
+   ========================= */
+
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -42,13 +99,16 @@ router.get('/:id', async (req, res) => {
     }
 
     return res.json(data);
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     return res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-// POST create new car
+/* =========================
+   CREATE CAR
+   ========================= */
+
 router.post('/', async (req, res) => {
   try {
     const { 
@@ -65,7 +125,6 @@ router.post('/', async (req, res) => {
       available
     } = req.body;
 
-    // Validate required fields
     if (!make || !model || !year || !price_per_day) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
@@ -84,13 +143,12 @@ router.post('/', async (req, res) => {
         seats: seats || 5,
         image_url: image_url || null,
         available: available !== undefined ? available : true,
-        created_at: new Date()
+        created_at: new Date().toISOString()
       }])
       .select()
       .single();
 
     if (error) {
-      console.error('Supabase insert error:', error);
       return res.status(400).json({ error: error.message });
     }
 
@@ -98,21 +156,23 @@ router.post('/', async (req, res) => {
       message: 'Car created successfully',
       car: data
     });
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     return res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-// PUT update car
+/* =========================
+   UPDATE CAR
+   ========================= */
+
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const updateData = req.body;
 
     const { data, error } = await supabase
       .from('cars')
-      .update(updateData)
+      .update(req.body)
       .eq('id', id)
       .select()
       .single();
@@ -128,13 +188,16 @@ router.put('/:id', async (req, res) => {
       message: 'Car updated successfully',
       car: data
     });
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     return res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-// DELETE car
+/* =========================
+   DELETE CAR
+   ========================= */
+
 router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -152,49 +215,8 @@ router.delete('/:id', async (req, res) => {
     }
 
     return res.json({ message: 'Car deleted successfully' });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-// Search/filter cars
-router.get('/search/filter', async (req, res) => {
-  try {
-    const { 
-      make, 
-      model, 
-      minYear, 
-      maxYear, 
-      minPrice, 
-      maxPrice,
-      fuelType,
-      transmission,
-      available
-    } = req.query;
-
-    let query = supabase.from('cars').select('*');
-
-    // Apply filters
-    if (make) query = query.ilike('make', `%${make}%`);
-    if (model) query = query.ilike('model', `%${model}%`);
-    if (minYear) query = query.gte('year', parseInt(minYear));
-    if (maxYear) query = query.lte('year', parseInt(maxYear));
-    if (minPrice) query = query.gte('price_per_day', parseFloat(minPrice));
-    if (maxPrice) query = query.lte('price_per_day', parseFloat(maxPrice));
-    if (fuelType) query = query.eq('fuel_type', fuelType);
-    if (transmission) query = query.eq('transmission', transmission);
-    if (available !== undefined) query = query.eq('available', available === 'true');
-
-    const { data, error } = await query.order('price_per_day', { ascending: true });
-
-    if (error) {
-      return res.status(400).json({ error: error.message });
-    }
-
-    return res.json(data);
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     return res.status(500).json({ error: 'Internal server error' });
   }
 });
