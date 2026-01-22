@@ -27,16 +27,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
-/* =========================
-   FORCE CLEAN PREFLIGHT
-   ========================= */
-
-app.use((req, res, next) => {
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(204);
-  }
-  next();
-});
 
 /* =========================
    BODY PARSERS
@@ -104,12 +94,17 @@ app.use((err, req, res, next) => {
    SERVER
    ========================= */
 
-const PORT = process.env.PORT || 8080;
+   const PORT = process.env.PORT;
 
-const server = app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Backend running on port ${PORT}`);
-});
-
+   if (!PORT) {
+     console.error('❌ PORT is not defined');
+     process.exit(1);
+   }
+   
+   const server = app.listen(PORT, '0.0.0.0', () => {
+     console.log(`🚀 Backend listening on ${PORT}`);
+   });
+   
 /* =========================
    SHUTDOWN SAFETY
    ========================= */
