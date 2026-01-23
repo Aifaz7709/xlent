@@ -4,7 +4,7 @@ const Footer = () => {
   return (
     <footer className="bg-dark text-light">
       <div className="container small border-top border-secondary">
-        <div className="row py-4">
+        <div className="row py-2">
           {/* Company Info */}
           <div className="col-12 col-lg-4 col-xl-3 border-end border-secondary p-4">
             <div className="d-flex align-items-center mb-3">
@@ -22,7 +22,7 @@ const Footer = () => {
           <FooterLinks />
         </div>
 
-        <div className="container text-center py-3 small" style={{ opacity: '0.7' }}>
+        <div className="container text-center py-2 small" style={{ opacity: '0.7' }}>
           © 2025 Xlentcar — Your Journey, Your Way.
         </div>
       </div>
@@ -37,7 +37,6 @@ const FooterLinks = () => (
       <h3 className="h6 mb-3">Our Services</h3>
       <ul className="nav flex-column">
         <li className="nav-item"><a className="nav-link text-light ps-0" href="#fleet" style={{ opacity: '0.8' }}>Car Fleet</a></li>
-        <li className="nav-item"><a className="nav-link text-light ps-0" href="#business" style={{ opacity: '0.8' }}>Business Rental</a></li>
         <li className="nav-item"><a className="nav-link text-light ps-0" href="#airport" style={{ opacity: '0.8' }}>Airport Pickup</a></li>
         <li className="nav-item"><a className="nav-link text-light ps-0" href="#long-term" style={{ opacity: '0.8' }}>Long Term Rental</a></li>
       </ul>
@@ -50,7 +49,6 @@ const FooterLinks = () => (
         <li className="nav-item"><a className="nav-link text-light ps-0" href="#help" style={{ opacity: '0.8' }}>Help Center</a></li>
         <li className="nav-item"><a className="nav-link text-light ps-0" href="#faq" style={{ opacity: '0.8' }}>FAQs</a></li>
         <li className="nav-item"><a className="nav-link text-light ps-0" href="#roadside" style={{ opacity: '0.8' }}>Roadside Assistance</a></li>
-        <li className="nav-item"><a className="nav-link text-light ps-0" href="#locations" style={{ opacity: '0.8' }}>Find Locations</a></li>
       </ul>
     </div>
 

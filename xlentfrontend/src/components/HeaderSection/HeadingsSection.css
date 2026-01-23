@@ -298,3 +298,56 @@
   font-size: 14px;
   color: #bfbfbf;
 }
+
+
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none;
+  }
+  
+  .responsive-heading {
+    font-size: 22px; /* Smaller on mobile */
+    margin-bottom: 15px;
+  }
+  
+  .responsive-text {
+    font-size: 16px; /* Smaller on mobile */
+    line-height: 1.5;
+  }
+  
+  /* Optional: reduce all paragraph margins */
+  p {
+    margin-bottom: 15px;
+  }
+}
+
+
+
+
+/* Add these styles to control images */
+.image-container {
+  width: 100%;
+  max-width: 500px; /* Adjust as needed */
+  margin: 0 auto;
+    border-radius: 15px;
+}
+
+.responsive-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Prevent shrinking on mobile */
+@media (max-width: 768px) {
+  .responsive-image {
+    min-width: 300px; /* Minimum width on mobile */
+    max-width: 100%;
+  }
+  
+  .image-container {
+    overflow: hidden; /* Prevent images from breaking layout */
+  }
+}

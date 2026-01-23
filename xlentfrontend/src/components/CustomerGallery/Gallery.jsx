@@ -2,7 +2,7 @@
 
   const Gallery = () => {
     return (
-      <section className="position-relative w-100 bg-light" id="gallery">
+      <section className="position-relative bg-light" id="gallery">
         <div className="container-fluid">
           <div className="row" >
             <div className="col-12">
@@ -11,8 +11,8 @@
        color: 'rgb(2, 40, 124)',
           marginRight: '1.5rem',
           fontWeight: '600'
-        }}>Your Gallery</h2>
-              <div className="row vw-90 px-0 py-vh-10 d-flex align-items-center ">
+        }}>Smiles & Miles</h2>
+              <div className="row vw-90 px-2 d-flex align-items-center g-4 g-md- ">
                 <div className="col-md-2" data-aos="fade-up"><img src="/gallery/1.jpg" className="rounded shadow img-fluid" alt="gallery" /></div>
                 <div className="col-md-2" data-aos="fade-up" data-aos-delay="200"><img src="/gallery/2.webp" className="img-fluid rounded shadow" alt="gallery" /></div>
                 <div className="col-md-3" data-aos="fade-up" data-aos-delay="400"><img src="/gallery/3.jpg" className="img-fluid rounded shadow" alt="gallery"/></div>

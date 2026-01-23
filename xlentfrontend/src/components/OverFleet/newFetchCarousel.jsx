@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setCars as setCarsRedux, setLoading as setLoadingRedux } from "./Redux/Slices/carSlice";
+import { setCars as setCarsRedux, setLoading as setLoadingRedux } from "../Redux/Slices/carSlice";
 import "./NewPropertyCard.css";
 
 const NewPropertyCard = () => {
@@ -148,9 +148,14 @@ const NewPropertyCard = () => {
   }
 
   return (
-    <div className="container py-4">
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h4 className="fw-bold">Our Fleet</h4>
+    <div className="container1 py-4">
+      <div className="d-flex justify-content-between align-items-center">
+      <h2 className="display-6 mb-3" data-aos="fade-down"  style={{ 
+          cursor: 'pointer',
+       color: 'rgb(2, 40, 124)',
+          marginRight: '1.5rem',
+          fontWeight: '600'
+        }}> Our Fleet</h2>
         <span className="text-muted small">❤️ Favorites: {favorites.length}</span>
       </div>
 

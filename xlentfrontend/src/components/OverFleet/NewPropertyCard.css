@@ -1,21 +1,21 @@
-/* Container spacing handled by bootstrap */
 
 /* Main Card */
 .property-card {
   border-radius: 12px;
   overflow: hidden;
-  background: #fff;
+  background: #ffffff; 
   display: flex;
+  border: 1px solid rgb(247, 247, 247);
   flex-direction: column;
   height: 100%;
   transition: 0.25s ease;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 2px 4px 8px rgba(0,0,0,0.1);
 }
 
 .property-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  box-shadow: 0 6px 18px rgba(7, 4, 151, 0.12);
 }
 
 /* Property Image */
@@ -153,4 +153,10 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 30px;
   }
+}
+
+.container1{
+  max-width: 100%;
+  margin: 10px;
+  padding: 10px;
 }
