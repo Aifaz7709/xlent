@@ -1,174 +1,393 @@
 /* ContactModal.css */
 
-/* Purple color for badges */
-.bg-purple {
-    background-color: #6f42c1 !important;
+/* Mobile First Approach */
+
+/* Modal Backdrop */
+.contact-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(5px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+}
+
+/* Modal Container */
+.contact-modal-container {
+  width: 100%;
+  max-width: 500px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+/* Close Button */
+.contact-modal-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.contact-modal-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Header */
+.contact-modal-header {
+  padding: 25px 20px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.contact-modal-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: white;
+  text-align: center;
+  line-height: 1.3;
+  margin-bottom: 20px;
+}
+
+.contact-modal-gradient {
+  display: block;
+  background: linear-gradient(90deg, #007bff, #00b894);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-top: 5px;
+}
+
+/* Call CTA */
+.contact-modal-call-cta {
+  background: rgba(0, 123, 255, 0.1);
+  border: 1px solid rgba(0, 123, 255, 0.3);
+  border-radius: 15px;
+  padding: 20px;
+  margin-top: 15px;
+}
+
+.contact-modal-pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+  }
+}
+
+.contact-modal-phone-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #007bff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.contact-modal-subtitle {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 5px;
+}
+
+.contact-modal-number {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  word-break: break-word;
+}
+
+.contact-modal-call-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 12px 20px;
+  background: #007bff;
+  color: white;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 15px;
+}
+
+.contact-modal-call-btn:hover {
+  background: #0056b3;
+  transform: translateY(-2px);
+  color: white;
+  text-decoration: none;
+}
+
+/* Content */
+.contact-modal-content {
+  padding: 20px;
+}
+
+/* Rating Section */
+.contact-modal-rating {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.contact-modal-rating-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 8px;
+}
+
+.contact-modal-rating-subtitle {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0;
+}
+
+.contact-modal-star-btn {
+  background: transparent;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.contact-modal-star-filled {
+  color: #ffc107;
+  fill: #ffc107;
+}
+
+.contact-modal-star-empty {
+  color: #6c757d;
+}
+
+.contact-modal-rating-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+  line-height: 1;
+}
+
+.contact-modal-rating-outof {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Footer */
+.contact-modal-footer {
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.contact-modal-copyright {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  margin-bottom: 0;
+}
+
+.contact-modal-secondary-btn {
+  padding: 10px 20px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+  min-width: 120px;
+}
+
+.contact-modal-secondary-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.contact-modal-whatsapp-btn {
+  padding: 10px 20px;
+  background: #25D366;
+  color: white;
+  border-radius: 8px;
+  font-weight: 500;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-width: 140px;
+}
+
+.contact-modal-whatsapp-btn:hover {
+  background: #1da851;
+  color: white;
+  text-decoration: none;
+  transform: translateY(-2px);
+}
+
+/* Tablet Styles (768px and up) */
+@media (min-width: 768px) {
+  .contact-modal-container {
+    max-width: 600px;
   }
   
-  .text-purple {
-    color: #6f42c1 !important;
+  .contact-modal-header {
+    padding: 30px;
   }
   
-  /* Modal Backdrop */
-  .modal-backdrop {
-    backdrop-filter: blur(5px);
+  .contact-modal-title {
+    font-size: 2.2rem;
   }
   
-  /* Custom Animations */
-  @keyframes pulse-ring {
-    0% {
-      transform: scale(0.8);
-      opacity: 0.8;
-    }
-    100% {
-      transform: scale(1.2);
-      opacity: 0;
-    }
+  .contact-modal-number {
+    font-size: 1.8rem;
   }
   
-  .pulse-ring {
-    position: relative;
+  .contact-modal-content {
+    padding: 30px;
   }
   
-  .pulse-ring::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 50%;
-    background: inherit;
-    animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  .contact-modal-call-btn {
+    margin-top: 0;
   }
   
-  /* Star Rating Hover Effect */
-  .btn-star:hover .star {
-    transform: scale(1.3);
-    transition: transform 0.2s ease;
+  .contact-modal-rating-title {
+    font-size: 1.3rem;
   }
   
-  /* Card Hover Effects */
-  .card-hover-effect:hover {
-    transform: translateY(-5px);
-    transition: transform 0.3s ease;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+  .contact-modal-copyright {
+    text-align: left;
+  }
+}
+
+/* Desktop Styles (992px and up) */
+@media (min-width: 992px) {
+  .contact-modal-container {
+    max-width: 700px;
   }
   
-  /* Gradient Text */
-  .gradient-text {
-    background: linear-gradient(90deg, #007bff, #00b894);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .contact-modal-title {
+    font-size: 2.5rem;
   }
   
-  /* Glass Effect */
-  .glass-effect {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+  .contact-modal-number {
+    font-size: 2rem;
+  }
+}
+
+/* Small Mobile Styles (max-width: 576px) */
+@media (max-width: 576px) {
+  .contact-modal-backdrop {
+    padding: 10px;
+    align-items: flex-start;
+    padding-top: 40px;
   }
   
-  /* Responsive Adjustments */
-  @media (max-width: 768px) {
-    .modal-content {
-      margin: 1rem;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    
-    .btn-lg {
-      padding: 0.5rem 1rem;
-      font-size: 0.9rem;
-    }
-    
-    h2 {
-      font-size: 1.75rem !important;
-    }
+  .contact-modal-container {
+    max-height: 90vh;
+    overflow-y: auto;
   }
   
-  /* Custom Scrollbar for Modal */
-  .modal-content::-webkit-scrollbar {
-    width: 6px;
+  .contact-modal-title {
+    font-size: 1.6rem;
   }
   
-  .modal-content::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
+  .contact-modal-number {
+    font-size: 1.3rem;
   }
   
-  .modal-content::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
+  .contact-modal-phone-icon {
+    width: 50px;
+    height: 50px;
   }
   
-  .modal-content::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
+  .contact-modal-footer .d-flex {
+    flex-direction: column;
+    gap: 10px;
   }
   
-  /* Button Animations */
-  .btn-animated {
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .btn-animated::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
+  .contact-modal-secondary-btn,
+  .contact-modal-whatsapp-btn {
     width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.7s ease;
+  }
+}
+
+/* Extra Small Mobile Styles (max-width: 375px) */
+@media (max-width: 375px) {
+  .contact-modal-title {
+    font-size: 1.4rem;
   }
   
-  .btn-animated:hover::after {
-    left: 100%;
+  .contact-modal-number {
+    font-size: 1.2rem;
   }
   
-  /* Badge Animations */
-  .badge {
-    transition: all 0.3s ease;
+  .contact-modal-header,
+  .contact-modal-content {
+    padding: 15px;
   }
   
-  .badge:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  .contact-modal-close {
+    top: 10px;
+    right: 10px;
+    width: 35px;
+    height: 35px;
+  }
+}
+
+/* Landscape Mode on Mobile */
+@media (max-height: 600px) and (orientation: landscape) {
+  .contact-modal-backdrop {
+    align-items: flex-start;
+    padding-top: 20px;
+    padding-bottom: 20px;
   }
   
-  /* Fade In Animation */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  .contact-modal-container {
+    max-height: 90vh;
+    overflow-y: auto;
   }
   
-  .fade-in {
-    animation: fadeIn 0.5s ease forwards;
+  .contact-modal-header {
+    padding: 20px;
   }
   
-  /* Shimmer Effect */
-  .shimmer {
-    background: linear-gradient(90deg, 
-      rgba(255,255,255,0) 0%, 
-      rgba(255,255,255,0.1) 50%, 
-      rgba(255,255,255,0) 100%);
-    background-size: 200% 100%;
-    animation: shimmer 2s infinite;
+  .contact-modal-title {
+    font-size: 1.6rem;
+    margin-bottom: 15px;
   }
-  
-  @keyframes shimmer {
-    0% {
-      background-position: -200% 0;
-    }
-    100% {
-      background-position: 200% 0;
-    }
-  }
+}
