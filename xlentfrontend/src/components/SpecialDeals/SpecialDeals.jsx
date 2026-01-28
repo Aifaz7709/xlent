@@ -207,7 +207,7 @@ const   SpecialDeals = () => {
     try {
       setIsSubscribing(true);
       setSubscribeMessage("");
-      const res = await fetch("http://localhost:5000/api/subscribe", {
+      const res = await fetch("https://xlent-production.up.railway.app/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: subscriberEmail }),

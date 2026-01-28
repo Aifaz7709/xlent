@@ -116,7 +116,7 @@ const RegisterPage = () => {
   
       (async () => {
         try {
-          const apiBase = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+          const apiBase = process.env.REACT_APP_API_BASE_URL || 'https://xlent-production.up.railway.app';
           const res = await fetch(`${apiBase}/api/auth/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

@@ -24,7 +24,7 @@ const AddCar = () => {
       const token = localStorage.getItem('xlent_token');
       const apiUrl = process.env.REACT_APP_API_BASE_URL 
         ? `${process.env.REACT_APP_API_BASE_URL}/api/cars`
-        : 'http://localhost:8080/api/cars';
+        : 'https://xlent-production.up.railway.app/api/cars';
       
       const res = await fetch(apiUrl, {
         headers: { 
@@ -61,7 +61,7 @@ const refreshToken = async () => {
     const refreshToken = localStorage.getItem('xlent_refresh_token');
     const apiUrl = process.env.REACT_APP_API_BASE_URL 
       ? `${process.env.REACT_APP_API_BASE_URL}/api/auth/refresh`
-      : 'http://localhost:8080/api/auth/refresh';
+      : 'https://xlent-production.up.railway.app/api/auth/refresh';
 
     const response = await fetch(apiUrl, {
       method: 'POST',
@@ -148,7 +148,7 @@ const refreshToken = async () => {
   
       const apiUrl = process.env.REACT_APP_API_BASE_URL 
         ? `${process.env.REACT_APP_API_BASE_URL}/api/cars`
-        : 'http://localhost:8080/api/cars';
+        : 'https://xlent-production.up.railway.app/api/cars';
   
       const sendRequest = async (currentToken) => {
         const formDataToSend = new FormData();
@@ -221,7 +221,7 @@ const refreshToken = async () => {
       const token = localStorage.getItem('xlent_token');
       const apiUrl = process.env.REACT_APP_API_BASE_URL 
         ? `${process.env.REACT_APP_API_BASE_URL}/api/cars/${carId}`
-        : `http://localhost:8080/api/cars/${carId}`;
+        : `https://xlent-production.up.railway.app/api/cars/${carId}`;
 
       const response = await fetch(apiUrl, {
         method: 'DELETE',
