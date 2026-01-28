@@ -27,27 +27,9 @@ const upload = multer({
 
 const uploadMiddleware = upload.any();
 
-// ========== CREATE CAR (WITH AUTH REQUIRED) ==========
+// ========== CREATE CAR (NO AUTH REQUIRED) ==========
 router.post('/', uploadMiddleware, async (req, res) => {
   try {
-    // Get auth token from Authorization header
-    const token = req.headers.authorization?.replace('Bearer ', '');
-    
-    if (!token) {
-      return res.status(401).json({ error: 'Authorization token required' });
-    }
-
-    // Create Supabase client with token
-    const userSupabase = supabase.auth.setAuth(token);
-
-    // Get authenticated user
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-
-    if (authError || !user) {
-      console.error('Auth error:', authError);
-      return res.status(401).json({ error: 'Invalid or expired token' });
-    }
-
     // Get form data
     const car_model = req.body.car_model?.trim() || '';
     const car_number = req.body.car_number?.trim() || '';
@@ -62,8 +44,9 @@ router.post('/', uploadMiddleware, async (req, res) => {
       return res.status(400).json({ error: 'Car number is required' });
     }
     if (!car_location) {
-      return res.status(400).json({ error: 'Car location is required' });
+      return res.status(400).json({ error: 'Car location is required' }); // ADD THIS
     }
+
 
     // Check for duplicate car number
     const { data: existingCar } = await supabase
@@ -85,8 +68,7 @@ router.post('/', uploadMiddleware, async (req, res) => {
       const { error: uploadError } = await supabase.storage
         .from('car-photos')
         .upload(fileName, file.buffer, {
-          contentType: file.mimetype,
-          upsert: true
+          contentType: file.mimetype
         });
 
       if (!uploadError) {
@@ -94,21 +76,19 @@ router.post('/', uploadMiddleware, async (req, res) => {
           .from('car-photos')
           .getPublicUrl(fileName);
         photoUrls.push(publicUrl);
-      } else {
-        console.error('Photo upload error:', uploadError);
       }
     }
 
-    // Insert car WITH user_id
-    const { data, error: insertError } = await userSupabase
+    // Insert car (WITHOUT user_id for now)
+    const { data, error: insertError } = await supabase
       .from('cars')
       .insert([{
-        car_model,
+        car_model,  // Just car details, no user_id
         car_number,
-        car_location,
+        car_location: req.body.car_location?.trim() || null,
         photos: photoUrls,
-        user_id: user.id, // Add user_id
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
+        user_id: user.id 
       }])
       .select()
       .single();
