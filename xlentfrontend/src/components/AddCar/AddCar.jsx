@@ -436,9 +436,11 @@ const refreshToken = async () => {
                       <div key={car.id} className="border rounded p-3 position-relative">
                         <div className="d-flex justify-content-between align-items-start mb-2">
                           <h5 className="fw-bold mb-0">{car.car_model}</h5>
+                         
                           <span className="badge bg-primary">
                             {car.car_number}
                           </span>
+                          <h6 className="fw-bold mb-0">{car.car_location}</h6>
                         </div>
                         
                         <p className="text-muted small mb-3">
@@ -448,7 +450,7 @@ const refreshToken = async () => {
                         {/* Display Photos */}
                         {car.photos && car.photos.length > 0 && (
                           <div className="mb-3">
-                            <p className="small text-muted mb-2">Photos:</p>
+                            <p className="small text-muted mb-2"></p>
                             <div className="d-flex gap-2 flex-wrap">
                               {car.photos.slice(0, 3).map((photo, idx) => (
                                 <img
@@ -463,7 +465,7 @@ const refreshToken = async () => {
                                   }}
                                 />
                               ))}
-                              {car.photos.length > 3 && (
+                              {car.photos.length > 2 && (
                                 <div 
                                   className="d-flex align-items-center justify-content-center"
                                   style={{
@@ -483,7 +485,7 @@ const refreshToken = async () => {
                         )}
                         
                         <button
-                          className="btn btn-sm btn-danger"
+                          className="btn-danger"
                           onClick={() => deleteCar(car.id)}
                         >
                           <Trash2 size={14}  />

@@ -306,20 +306,9 @@ const NewPropertyCard = () => {
                   <h6 className="fw-bold mb-1">{car.car_model || `${car.name} ${car.model}`}</h6>
                   <p className="small text-muted mb-1">{car.car_number || "N/A"}</p>
                   <p className="fw-semibold mb-1">{formatINR(car.dailyRate)}/day</p>
+                  <p className="fw-semibold mb-1">{car.location}</p>
                   
-                  <div className="car-specs mb-2">
-                    <span className="text-muted small me-2">👥 {car.seats} seats</span>
-                    <span className="text-muted small me-2">🎒 {car.luggage} luggage</span>
-                    <span className="text-muted small">⛽ {car.mileage}</span>
-                  </div>
-
-                  <div className="mb-2">
-                    <span className="badge-chip bg-success text-white me-1">
-                      Available
-                    </span>
-                    <span className="badge-chip bg-info text-dark me-1">{car.fuelType}</span>
-                    <span className="badge-chip bg-warning text-dark me-1">{car.transmission}</span>
-                  </div>
+                  
 
                   <div className="features-list">
                     {car.features.slice(0, 3).map((feature, index) => (
