@@ -1,60 +1,58 @@
 import React, { useState, useEffect } from 'react';
 import { Upload, Plus, Trash2, AlertCircle, CheckCircle } from 'lucide-react';
 import { useDispatch } from 'react-redux';
-import { addCar, removeCar, setCars, setLoading } from '../Redux/Slices/carSlice';
+import { addCar, removeCar, setCars } from '../Redux/Slices/carSlice';
 import './AddCar.css';
 
 const AddCar = () => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
-    carName: '',
-    vinNumber: '',
-    photos: []
+    car_model: '',
+    car_number: ''
   });
-  const [photoPreview, setPhotoPreview] = useState([]);
+  const [photoFiles, setPhotoFiles] = useState([]);
+  const [photoPreviews, setPhotoPreviews] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
-  const [cars, setCars] = useState([]);
+  const [cars, setLocalCars] = useState([]);
   const [loadingCars, setLoadingCars] = useState(false);
-
-  // Fetch user's cars on mount
-  useEffect(() => {
-    fetchCars();
-  }, []);
 
   const fetchCars = async () => {
     try {
       setLoadingCars(true);
       const token = localStorage.getItem('xlent_token');
-      const apiUrl = process.env.REACT_APP_API_BASE_URL ? `${process.env.REACT_APP_API_BASE_URL}/api/cars` : 'http://localhost:5000/api/cars';
+      const apiUrl = process.env.REACT_APP_API_BASE_URL 
+        ? `${process.env.REACT_APP_API_BASE_URL}/api/cars`
+        : 'http://localhost:8080/api/cars';
       
       const res = await fetch(apiUrl, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
       });
-      const contentType = res.headers.get('content-type') || '';
-      let data = null;
-      if (contentType.includes('application/json')) {
-        data = await res.json();
-      } else {
-        const text = await res.text();
-        console.error('fetchCars: expected JSON, got:', res.status, text);
-        throw new Error(`Server returned non-JSON response (status ${res.status})`);
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Failed to fetch cars: ${res.status} - ${errorText}`);
       }
-
-      if (res.ok) {
-        const fetchedCars = data.cars || [];
-        setCars(fetchedCars);
-        // Update Redux store with fetched cars
-        dispatch(setCars(fetchedCars));
-      } else {
-        console.error('fetchCars failed', res.status, data);
-      }
+      
+      const data = await res.json();
+      const fetchedCars = data.cars || data || [];
+      setLocalCars(fetchedCars);
+      dispatch(setCars(fetchedCars));
+      
     } catch (err) {
-      console.error(err);
+      console.error('fetchCars error:', err);
+      setMessage({ type: 'error', text: 'Failed to load cars. Please try again.' });
     } finally {
       setLoadingCars(false);
     }
   };
+
+  useEffect(() => {
+    fetchCars();
+  }, [dispatch]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -73,38 +71,33 @@ const AddCar = () => {
       return true;
     });
 
-    if (validFiles.length + formData.photos.length > 5) {
+    if (validFiles.length + photoFiles.length > 5) {
       setMessage({ type: 'error', text: 'Maximum 5 photos allowed' });
       return;
     }
 
-    // Convert to base64 for storage
-    validFiles.forEach(file => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData(prev => ({
-          ...prev,
-          photos: [...prev.photos, reader.result]
-        }));
-        setPhotoPreview(prev => [...prev, reader.result]);
-      };
-      reader.readAsDataURL(file);
-    });
+    // Store files
+    setPhotoFiles(prev => [...prev, ...validFiles]);
+
+    // Create previews
+    const newPreviews = validFiles.map(file => URL.createObjectURL(file));
+    setPhotoPreviews(prev => [...prev, ...newPreviews]);
   };
 
   const removePhoto = (index) => {
-    setFormData(prev => ({
-      ...prev,
-      photos: prev.photos.filter((_, i) => i !== index)
-    }));
-    setPhotoPreview(prev => prev.filter((_, i) => i !== index));
+    URL.revokeObjectURL(photoPreviews[index]);
+    setPhotoFiles(prev => prev.filter((_, i) => i !== index));
+    setPhotoPreviews(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!formData.carName.trim() || !formData.vinNumber.trim()) {
-      setMessage({ type: 'error', text: 'Please fill in all required fields' });
+    const trimmedModel = formData.car_model.trim();
+    const trimmedNumber = formData.car_number.trim();
+
+    if (!trimmedModel || !trimmedNumber) {
+      setMessage({ type: 'error', text: 'Please fill in car model and car number' });
       return;
     }
 
@@ -114,70 +107,66 @@ const AddCar = () => {
     try {
       const token = localStorage.getItem('xlent_token');
       if (!token) {
-        throw new Error('You must be logged in to add a car');
+        throw new Error('Please log in to add a car');
       }
 
-      const apiUrl = process.env.REACT_APP_API_BASE_URL ? `${process.env.REACT_APP_API_BASE_URL}/api/cars` : 'http://localhost:5000/api/cars';
+      // Create FormData to handle file uploads
+      const formDataToSend = new FormData();
+      formDataToSend.append('car_model', trimmedModel);
+      formDataToSend.append('car_number', trimmedNumber);
       
-      console.log('Adding car to:', apiUrl);
-      console.log('Car data:', { carName: formData.carName, vinNumber: formData.vinNumber, photosCount: formData.photos?.length || 0 });
-      console.log('Token available:', !!token);
-
-      const res = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(formData)
+      // Append each photo file
+      photoFiles.forEach((file, index) => {
+        formDataToSend.append(`photos`, file);
       });
 
-      const contentType = res.headers.get('content-type') || '';
-      let data = null;
-      if (contentType.includes('application/json')) {
-        data = await res.json();
-      } else {
-        const text = await res.text();
-        console.error('handleSubmit: expected JSON, got:', res.status, text);
-        throw new Error(`Server returned non-JSON response (status ${res.status})`);
+      console.log('Sending FormData with:');
+      console.log('- car_model:', trimmedModel);
+      console.log('- car_number:', trimmedNumber);
+      console.log('- photos:', photoFiles.length);
+
+      const apiUrl = process.env.REACT_APP_API_BASE_URL 
+        ? `${process.env.REACT_APP_API_BASE_URL}/api/cars`
+        : 'http://localhost:8080/api/cars';
+
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+          // Don't set Content-Type header - browser will set it with boundary
+        },
+        body: formDataToSend
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || data.message || `Failed to add car: ${response.status}`);
       }
 
-      if (!res.ok) {
-        throw new Error(data.message || 'Failed to add car');
-      }
-
-      // Use server message when available and update UI immediately
+      // Success
       setMessage({ type: 'success', text: data.message || 'Car added successfully!' });
-
-      // If server returned the created car, prepend it to the list for immediate feedback
+      
+      // Update local state with new car
       if (data.car) {
-        setCars(prev => [data.car, ...prev]);
-        // Update Redux store with new car
+        setLocalCars(prev => [data.car, ...prev]);
         dispatch(addCar(data.car));
-      } else {  
-        // Otherwise refresh list
+      } else {
+        // Refresh the list
         fetchCars();
       }
 
-      setFormData({ carName: '', vinNumber: '', photos: [] });
-      setPhotoPreview([]);
+      // Reset form
+      setFormData({ car_model: '', car_number: '' });
+      setPhotoFiles([]);
+      setPhotoPreviews([]);
+      
     } catch (err) {
       console.error('Error adding car:', err);
-      console.error('Error name:', err.name);
-      console.error('Error message:', err.message);
-      console.error('Error stack:', err.stack);
-      
-      // Provide more detailed error messages
-      let errorMessage = 'Error adding car';
-      if (err.message) {
-        errorMessage = err.message;
-      } else if (err.name === 'TypeError' && (err.message.includes('fetch') || err.message.includes('Failed to fetch'))) {
-        errorMessage = 'Failed to connect to server. Please check if the backend server is running on http://localhost:5000';
-      } else if (err.name === 'TypeError') {
-        errorMessage = `Network error: ${err.message}`;
-      }
-      
-      setMessage({ type: 'error', text: errorMessage });
+      setMessage({ 
+        type: 'error', 
+        text: err.message || 'Error adding car. Please try again.' 
+      });
     } finally {
       setIsLoading(false);
     }
@@ -188,25 +177,34 @@ const AddCar = () => {
 
     try {
       const token = localStorage.getItem('xlent_token');
-      const apiUrl = process.env.REACT_APP_API_BASE_URL ? `${process.env.REACT_APP_API_BASE_URL}/api/cars/${carId}` : `http://localhost:5000/api/cars/${carId}`;
-      
-      const res = await fetch(apiUrl, {
+      const apiUrl = process.env.REACT_APP_API_BASE_URL 
+        ? `${process.env.REACT_APP_API_BASE_URL}/api/cars/${carId}`
+        : `http://localhost:8080/api/cars/${carId}`;
+
+      const response = await fetch(apiUrl, {
         method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
       });
 
-      if (res.ok) {
-        setCars(prev => prev.filter(car => car.id !== carId));
-        // Update Redux store - remove car
-        dispatch(removeCar(carId));
-        setMessage({ type: 'success', text: 'Car deleted successfully' });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to delete car');
       }
+
+      // Update local state
+      setLocalCars(prev => prev.filter(car => car.id !== carId));
+      dispatch(removeCar(carId));
+      setMessage({ type: 'success', text: data.message || 'Car deleted successfully' });
+      
     } catch (err) {
-      console.error(err);
-      setMessage({ type: 'error', text: 'Error deleting car' });
+      console.error('Error deleting car:', err);
+      setMessage({ type: 'error', text: err.message || 'Error deleting car' });
     }
   };
-
   return (
     <div className="min-vh-100 py-5 add-car-container fade-in" style={{ backgroundColor: '#f8f9fa' }}>
       <div className="container">
@@ -232,66 +230,66 @@ const AddCar = () => {
                 )}
 
                 <form onSubmit={handleSubmit}>
-                  {/* Car Name */}
+                  {/* Car Model */}
                   <div className="mb-3">
-                    <label htmlFor="carName" className="form-label fw-semibold">
-                      Car Name *
+                    <label htmlFor="car_model" className="form-label fw-semibold">
+                      Car Model *
                     </label>
                     <input
                       type="text"
-                      id="carName"
-                      name="carName"
+                      id="car_model"
+                      name="car_model"
                       className="form-control"
                       placeholder="e.g., Honda City 2022"
-                      value={formData.carName}
+                      value={formData.car_model}
                       onChange={handleInputChange}
                       required
                     />
                   </div>
 
-                  {/* VIN Number */}
+                  {/* Car Number */}
                   <div className="mb-3">
-                    <label htmlFor="vinNumber" className="form-label fw-semibold">
-                      VIN Number *
+                    <label htmlFor="car_number" className="form-label fw-semibold">
+                      Car Number *
                     </label>
                     <input
                       type="text"
-                      id="vinNumber"
-                      name="vinNumber"
+                      id="car_number"
+                      name="car_number"
                       className="form-control"
-                      placeholder="e.g., 1HGCM82633A123456"
-                      value={formData.vinNumber}
+                      placeholder="e.g., MH12AB1234"
+                      value={formData.car_number}
                       onChange={handleInputChange}
-                      maxLength="17"
                       required
                     />
-                    <small className="text-muted">17-character Vehicle Identification Number</small>
+                    <small className="text-muted">Vehicle registration number</small>
                   </div>
 
                   {/* Photo Upload */}
                   <div className="mb-4">
-                    <label htmlFor="photos" className="form-label fw-semibold">
+                    <label className="form-label fw-semibold">
                       Car Photos (Max 5)
                     </label>
-                    <div className="photo-drop-zone border-2 border-dashed rounded p-4 text-center slide-up" style={{
-                      borderColor: '#dee2e6',
-                      cursor: 'pointer',
-                      transition: 'all 0.3s'
-                    }}
-                    onDragOver={(e) => {
-                      e.preventDefault();
-                      e.currentTarget.style.borderColor = 'rgb(2, 40, 124)';
-                      e.currentTarget.style.backgroundColor = 'rgba(2, 40, 124, 0.05)';
-                    }}
-                    onDragLeave={(e) => {
-                      e.currentTarget.style.borderColor = '#dee2e6';
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                    }}
-                    onDrop={(e) => {
-                      e.preventDefault();
-                      e.currentTarget.style.borderColor = '#dee2e6';
-                      handlePhotoUpload({ target: { files: e.dataTransfer.files } });
-                    }}
+                    <div className="photo-drop-zone border-2 border-dashed rounded p-4 text-center slide-up"
+                      style={{
+                        borderColor: '#dee2e6',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s'
+                      }}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        e.currentTarget.style.borderColor = 'rgb(2, 40, 124)';
+                        e.currentTarget.style.backgroundColor = 'rgba(2, 40, 124, 0.05)';
+                      }}
+                      onDragLeave={(e) => {
+                        e.currentTarget.style.borderColor = '#dee2e6';
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                      }}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        e.currentTarget.style.borderColor = '#dee2e6';
+                        handlePhotoUpload({ target: { files: e.dataTransfer.files } });
+                      }}
                     >
                       <Upload size={32} className="text-primary mb-2 mx-auto" style={{ display: 'block' }} />
                       <p className="mb-1 upload-hint">Drag & drop photos here</p>
@@ -304,17 +302,17 @@ const AddCar = () => {
                         onChange={handlePhotoUpload}
                         style={{ display: 'none' }}
                       />
-                      <label htmlFor="photos" className="btn btn-sm btn-outline-primary mt-2 add-car-actions" style={{ cursor: 'pointer' }}>
+                      <label htmlFor="photos" className="btn btn-sm btn-outline-primary mt-2" style={{ cursor: 'pointer' }}>
                         Select Photos
                       </label>
                     </div>
 
                     {/* Photo Previews */}
-                    {photoPreview.length > 0 && (
+                    {photoPreviews.length > 0 && (
                       <div className="mt-3">
-                        <p className="text-muted small mb-2">{photoPreview.length}/5 photos selected</p>
+                        <p className="text-muted small mb-2">{photoPreviews.length}/5 photos selected</p>
                         <div className="d-flex gap-2 flex-wrap">
-                          {photoPreview.map((photo, index) => (
+                          {photoPreviews.map((photo, index) => (
                             <div key={index} className="position-relative" style={{ width: '80px', height: '80px' }}>
                               <img 
                                 src={photo} 
@@ -349,7 +347,7 @@ const AddCar = () => {
                       </>
                     ) : (
                       <>
-                        <Plus size={18} className="me-2" style={{ display: 'inline' }} />
+                        <Plus size={18} className="me-2" />
                         Add Car
                       </>
                     )}
@@ -379,41 +377,51 @@ const AddCar = () => {
                   <div className="d-flex flex-column gap-3">
                     {cars.map(car => (
                       <div key={car.id} className="border rounded p-3 position-relative">
-                        <h5 className="fw-bold mb-2">{car.carName}</h5>
-                        <p className="text-muted small mb-2">
-                          <strong>VIN:</strong> {car.vinNumber}
+                        <div className="d-flex justify-content-between align-items-start mb-2">
+                          <h5 className="fw-bold mb-0">{car.car_model}</h5>
+                          <span className="badge bg-primary">
+                            {car.car_number}
+                          </span>
+                        </div>
+                        
+                        <p className="text-muted small mb-3">
+                          Added on: {new Date(car.created_at).toLocaleDateString()}
                         </p>
                         
+                        {/* Display Photos */}
                         {car.photos && car.photos.length > 0 && (
-                          <div className="d-flex gap-2 mb-3 flex-wrap">
-                            {car.photos.slice(0, 3).map((photo, idx) => (
-                              <img
-                                key={idx}
-                                src={photo}
-                                alt={`Car ${idx}`}
-                                style={{
-                                  width: '60px',
-                                  height: '60px',
-                                  objectFit: 'cover',
-                                  borderRadius: '4px'
-                                }}
-                              />
-                            ))}
-                            {car.photos.length > 3 && (
-                              <div style={{
-                                width: '60px',
-                                height: '60px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                backgroundColor: '#f0f0f0',
-                                borderRadius: '4px',
-                                fontSize: '12px',
-                                fontWeight: 'bold'
-                              }}>
-                                +{car.photos.length - 3} more
-                              </div>
-                            )}
+                          <div className="mb-3">
+                            <p className="small text-muted mb-2">Photos:</p>
+                            <div className="d-flex gap-2 flex-wrap">
+                              {car.photos.slice(0, 3).map((photo, idx) => (
+                                <img
+                                  key={idx}
+                                  src={photo}
+                                  alt={`Car ${idx + 1}`}
+                                  style={{
+                                    width: '60px',
+                                    height: '60px',
+                                    objectFit: 'cover',
+                                    borderRadius: '6px'
+                                  }}
+                                />
+                              ))}
+                              {car.photos.length > 3 && (
+                                <div 
+                                  className="d-flex align-items-center justify-content-center"
+                                  style={{
+                                    width: '60px',
+                                    height: '60px',
+                                    backgroundColor: '#f0f0f0',
+                                    borderRadius: '6px',
+                                    fontSize: '12px',
+                                    fontWeight: 'bold'
+                                  }}
+                                >
+                                  +{car.photos.length - 3}
+                                </div>
+                              )}
+                            </div>
                           </div>
                         )}
                         
@@ -421,8 +429,8 @@ const AddCar = () => {
                           className="btn btn-sm btn-danger"
                           onClick={() => deleteCar(car.id)}
                         >
-                          <Trash2 size={14} className="me-1" style={{ display: 'inline' }} />
-                          Delete
+                          <Trash2 size={14} className="me-1" />
+                          Delete Car
                         </button>
                       </div>
                     ))}

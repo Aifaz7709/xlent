@@ -217,14 +217,13 @@
 /* Testimonials Grid */
 .testimonials-grid {
   display: grid;
-  grid-template-columns: 1fr;
   gap: 1.5rem;
   margin-top: 3rem;
 }
 
 @media (min-width: 576px) {
   .testimonials-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 10fr);
     gap: 2rem;
   }
 }
@@ -238,7 +237,7 @@
 
 .testimonial-card {
   background: white;
-  padding: 1.5rem;
+  padding: 1rem;
   border-radius: 16px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
@@ -246,7 +245,7 @@
 
 @media (min-width: 768px) {
   .testimonial-card {
-    padding: 2rem;
+    padding: 1rem;
   }
 }
 
@@ -533,9 +532,7 @@
     padding: 2rem;
   }
   
-  .testimonials-grid {
-    grid-template-columns: 1fr;
-  }
+
   
   .testimonials-cta {
     padding: 2rem 1rem;

@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  X, Phone, Star, Car, Bike, Clock, Shield, Zap, MessageCircle, ChevronRight 
-} from 'lucide-react';
+import { X, Phone } from 'lucide-react';
 import './ContactModal.css';
 
 const ContactModal = ({ isOpen, onClose }) => {
-  const [rating, setRating] = useState(4.5);
   const [pulse, setPulse] = useState(true);
 
   useEffect(() => {
@@ -103,42 +100,11 @@ const ContactModal = ({ isOpen, onClose }) => {
 
           {/* Content */}
           <div className="contact-modal-content">
-            {/* Rating Section */}
-            <div className="contact-modal-rating">
-              <div className="row align-items-center">
-                <div className="col-12 col-md-6 mb-3 mb-md-0">
-                  <h5 className="contact-modal-rating-title">Your Experience Matters</h5>
-                  <p className="contact-modal-rating-subtitle">Rate our service to help us improve</p>
-                </div>
-                <div className="col-12 col-md-6">
-                  <div className="d-flex align-items-center justify-content-md-end flex-wrap gap-3">
-                    <div className="d-flex">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <motion.button
-                          key={star}
-                          whileHover={{ scale: 1.2 }}
-                          whileTap={{ scale: 0.9 }}
-                          onClick={() => setRating(star)}
-                          className="contact-modal-star-btn"
-                        >
-                          <Star
-                            size={24}
-                            className={star <= rating ? 'contact-modal-star-filled' : 'contact-modal-star-empty'}
-                          />
-                        </motion.button>
-                      ))}
-                    </div>
-                    <div className="text-center">
-                      <div className="contact-modal-rating-value">{rating.toFixed(1)}</div>
-                      <div className="contact-modal-rating-outof">/ 5.0</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+
+           
 
             {/* Footer */}
-            <div className="contact-modal-footer">
+           
               <div className="row align-items-center">
                 <div className="col-12 col-md-6 mb-3 mb-md-0">
                   <p className="contact-modal-copyright">
@@ -168,7 +134,7 @@ const ContactModal = ({ isOpen, onClose }) => {
                   </div>
                 </div>
               </div>
-            </div>
+           
           </div>
         </motion.div>
       </motion.div>

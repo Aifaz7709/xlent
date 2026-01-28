@@ -12,6 +12,7 @@ app.use(cors({
     'https://xlentcar.com',
     'https://www.xlentcar.com',
     'https://xlentcar.vercel.app',
+    'https://xlent-production.up.railway.app',
     'http://localhost:3000',
   ],
   credentials: true,
@@ -24,6 +25,7 @@ app.options('*', cors());
 /* =========================
    BODY PARSERS
    ========================= */
+// Only parse JSON and urlencoded for non-multipart requests
 app.use(express.json({ limit: '25mb' }));
 app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 
@@ -31,7 +33,16 @@ app.use(express.urlencoded({ extended: true, limit: '25mb' }));
    LOGGING
    ========================= */
 app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} ${req.method} ${req.url}`);
+  console.log(`\n[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  console.log('  Content-Type:', req.get('content-type'));
+  console.log('  Headers:', Object.keys(req.headers).join(', '));
+  next();
+});
+
+// Specific logging for POST /api/cars
+app.post('/api/cars', (req, res, next) => {
+  console.log('\n⚠️  INTERCEPTED POST /api/cars BEFORE ROUTES');
+  console.log('  This handler should NOT be hit - request should go to routes');
   next();
 });
 
@@ -48,30 +59,58 @@ app.get('/api/ping', (req, res) => {
   });
 });
 
+// Debug endpoint for form data
+app.post('/api/test-upload', (req, res) => {
+  console.log('=== TEST UPLOAD ===');
+  console.log('Content-Type:', req.get('content-type'));
+  console.log('Body:', req.body);
+  console.log('Files:', req.files);
+  res.json({ body: req.body, files: req.files?.length || 0 });
+});
+
 app.get('/', (req, res) => {
   res.json({
     name: 'XlentCar Backend API',
     status: 'running',
-    version: '1.0.0'
+    version: '1.0.0',
+    cors: {
+      allowedOrigins: [
+        'https://xlentcar.com',
+        'https://www.xlentcar.com',
+        'https://xlentcar.vercel.app',
+        'https://xlent-production.up.railway.app',
+        'http://localhost:3000',
+      ]
+    }
   });
 });
 
 /* =========================
    LOAD ROUTES
    ========================= */
+console.log('\n========== LOADING ROUTES ==========');
 console.log('Attempting to load routes...');
 try {
   const authRoutes = require('./routes/auth');
   const carsRoutes = require('./routes/cars');
   const subscribeRouter = require('./routes/subscribe');
   
+  console.log('✓ Routes imported successfully');
+  
   app.use('/api/auth', authRoutes);
+  console.log('✓ /api/auth route mounted');
+  
   app.use('/api/cars', carsRoutes);
+  console.log('✓ /api/cars route mounted');
+  
   app.use('/api', subscribeRouter);
+  console.log('✓ /api subscribe route mounted');
   
   console.log('Routes loaded successfully');
+  console.log('========== ROUTES LOADED ==========\n');
 } catch (error) {
   console.error('❌ Error loading routes:', error.message);
+  console.error(error.stack);
   // Fallback route
   app.post('/api/auth/login', (req, res) => {
     res.json({ error: 'Routes failed to load', message: error.message });
