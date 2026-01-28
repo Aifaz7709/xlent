@@ -78,6 +78,7 @@ const NewPropertyCard = () => {
       model: car.car_model ? car.car_model.split(' ').slice(1).join(' ') : "Model", // Extract model
       car_number: car.car_number || "N/A",
       car_model: car.car_model || "Unknown Model",
+      car_location: car.car_location || "Location not specified",
       photos: car.photos || [],
       type: carTypes[index % carTypes.length],
       dailyRate: 1500 + (Math.random() * 1500), // Random price for now
@@ -237,9 +238,9 @@ const NewPropertyCard = () => {
           marginRight: '1.5rem',
           fontWeight: '600'
         }}> 
-          Our Fleet ({localCars.length} cars available)
+          Our Fleet 
         </h2>
-        <div className="d-flex align-items-center">
+        {/* <div className="d-flex align-items-center">
           <span className="text-muted small me-3">❤️ Favorites: {favorites.length}</span>
           <button 
             className="btn btn-sm btn-outline-primary"
@@ -259,7 +260,7 @@ const NewPropertyCard = () => {
           >
             🔄 Refresh
           </button>
-        </div>
+        </div> */}
       </div>
 
       {localCars.length === 0 ? (

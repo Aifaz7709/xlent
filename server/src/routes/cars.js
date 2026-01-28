@@ -33,6 +33,7 @@ router.post('/', uploadMiddleware, async (req, res) => {
     // Get form data
     const car_model = req.body.car_model?.trim() || '';
     const car_number = req.body.car_number?.trim() || '';
+    const car_location = req.body.car_location?.trim() || '';
     const photosArray = (req.files || []).filter(file => file.fieldname === 'photos');
 
     // Validation
@@ -42,6 +43,10 @@ router.post('/', uploadMiddleware, async (req, res) => {
     if (!car_number) {
       return res.status(400).json({ error: 'Car number is required' });
     }
+    if (!car_location) {
+      return res.status(400).json({ error: 'Car location is required' }); // ADD THIS
+    }
+
 
     // Check for duplicate car number
     const { data: existingCar } = await supabase
@@ -80,6 +85,7 @@ router.post('/', uploadMiddleware, async (req, res) => {
       .insert([{
         car_model,  // Just car details, no user_id
         car_number,
+        car_location: req.body.car_location?.trim() || null,
         photos: photoUrls,
         created_at: new Date().toISOString()
       }])
@@ -115,7 +121,6 @@ router.post('/', uploadMiddleware, async (req, res) => {
 });
 
 // ========== GET ALL CARS ==========
-// ========== GET ALL CARS (NO AUTH REQUIRED) ==========
 router.get('/', async (req, res) => {
   try {
     console.log('GET /api/cars - Fetching all cars');

@@ -8,7 +8,8 @@ const AddCar = () => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     car_model: '',
-    car_number: ''
+    car_number: '',
+      car_location: ''
   });
   const [photoFiles, setPhotoFiles] = useState([]);
   const [photoPreviews, setPhotoPreviews] = useState([]);
@@ -130,9 +131,9 @@ const refreshToken = async () => {
     
     const trimmedModel = formData.car_model.trim();
     const trimmedNumber = formData.car_number.trim();
-  
-    if (!trimmedModel || !trimmedNumber) {
-      setMessage({ type: 'error', text: 'Please fill in car model and car number' });
+    const trimmedLocation = formData.car_location.trim();
+    if (!trimmedModel || !trimmedNumber ||  !trimmedLocation) {
+      setMessage({ type: 'error', text: 'Please fill in car model , car number, and location' });
       return;
     }
   
@@ -153,7 +154,7 @@ const refreshToken = async () => {
         const formDataToSend = new FormData();
         formDataToSend.append('car_model', trimmedModel);
         formDataToSend.append('car_number', trimmedNumber);
-        
+        formDataToSend.append('car_location', trimmedLocation);
         photoFiles.forEach((file) => {
           formDataToSend.append('photos', file);
         });
@@ -198,7 +199,7 @@ const refreshToken = async () => {
       }
   
       // Reset form
-      setFormData({ car_model: '', car_number: '' });
+      setFormData({ car_model: '', car_number: '' , car_location: ''});
       setPhotoFiles([]);
       setPhotoPreviews([]);
       
@@ -305,7 +306,22 @@ const refreshToken = async () => {
                     />
                     <small className="text-muted">Vehicle registration number</small>
                   </div>
-
+                  <div className="mb-3">
+                 <label htmlFor="car_location" className="form-label fw-semibold">
+      Car Location *
+                      </label>
+    <input
+      type="text"
+      id="car_location"
+      name="car_location"
+      className="form-control"
+      placeholder="e.g., Mumbai, Maharashtra"
+      value={formData.car_location}
+      onChange={handleInputChange}
+      required
+    />
+    <small className="text-muted">Where is the car located?</small>
+  </div>
                   {/* Photo Upload */}
                   <div className="mb-4">
                     <label className="form-label fw-semibold">
@@ -389,7 +405,7 @@ const refreshToken = async () => {
                     ) : (
                       <>
                         <Plus size={18} className="me-2" />
-                        Add Car
+                        Add
                       </>
                     )}
                   </button>
@@ -402,7 +418,7 @@ const refreshToken = async () => {
           <div className="col-12 col-lg-6">
             <div className="card border-0 shadow-sm h-100">
               <div className="card-body p-4">
-                <h3 className="card-title fw-bold mb-4">My Cars ({cars.length})</h3>
+                <h3 className="card-title fw-bold mb-4">All Cars ({cars.length})</h3>
 
                 {loadingCars ? (
                   <div className="text-center py-5">
@@ -470,8 +486,8 @@ const refreshToken = async () => {
                           className="btn btn-sm btn-danger"
                           onClick={() => deleteCar(car.id)}
                         >
-                          <Trash2 size={14} className="me-1" />
-                          Delete Car
+                          <Trash2 size={14}  />
+                      
                         </button>
                       </div>
                     ))}
