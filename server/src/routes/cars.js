@@ -253,23 +253,37 @@ router.put('/:id', uploadMiddleware, async (req, res) => {
       }
     }
 
-    // 3. Combine old photos with new photos 
-    // (Note: If your frontend sends ALL photos including old ones, adjust this logic)
-    const updatedPhotos = [...(currentCar.photos || []), ...newPhotoUrls];
+   // Inside router.put('/:id'...)
 
-    // 4. Update Database
-    const { data, error: updateError } = await supabase
-      .from('cars')
-      .update({
-        car_model,
-        car_number,
-        car_location,
-        photos: updatedPhotos,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', id)
-      .select()
-      .single();
+// 3. Combine old photos with new photos safely
+let updatedPhotos = [];
+
+// Ensure currentCar.photos is actually an array before spreading
+if (currentCar && Array.isArray(currentCar.photos)) {
+    updatedPhotos = [...currentCar.photos];
+}
+
+// Only add new photos if they exist
+if (newPhotoUrls.length > 0) {
+    updatedPhotos = [...updatedPhotos, ...newPhotoUrls];
+}
+
+// Limit to 5 photos total (optional, but matches your Multer limit)
+updatedPhotos = updatedPhotos.slice(0, 5);
+
+// 4. Update Database
+const { data, error: updateError } = await supabase
+  .from('cars')
+  .update({
+    car_model,
+    car_number,
+    car_location,
+    photos: updatedPhotos, // Use the sanitized array
+    updated_at: new Date().toISOString(),
+  })
+  .eq('id', id)
+  .select()
+  .single();
 
     if (updateError) {
       return res.status(400).json({ error: updateError.message });
