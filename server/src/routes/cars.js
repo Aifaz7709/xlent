@@ -234,16 +234,25 @@ router.put('/:id', uploadMiddleware, async (req, res) => {
     const newPhotos = req.files || [];
 
     // 1. Fetch current car data to get existing photos
-    const { data: currentCar, error: fetchError } = await supabase
-      .from('cars')
-      .select('photos')
-      .eq('id', id)
-      .single();
+    const { data: duplicateCar } = await supabase
+    .from('cars')
+    .select('id')
+    .eq('car_number', car_number)
+    .neq('id', id) // <--- CRITICAL: Ignore current record
+    .maybeSingle();
 
-    if (fetchError || !currentCar) {
-      return res.status(404).json({ error: 'Car not found' });
-    }
+  if (duplicateCar) {
+    return res.status(400).json({ error: 'Car number already exists for another vehicle' });
+  }
+  const { data: currentCar, error: fetchError } = await supabase
+  .from('cars')
+  .select('photos')
+  .eq('id', id)
+  .single();
 
+if (fetchError || !currentCar) {
+  return res.status(404).json({ error: 'Car not found' });
+}
     // 2. Upload new photos (if any)
     const newPhotoUrls = [];
     for (const file of newPhotos) {
@@ -268,17 +277,7 @@ router.put('/:id', uploadMiddleware, async (req, res) => {
    // Inside router.put('/:id'...)
 
 // 3. Combine old photos with new photos safely
-let updatedPhotos = [];
-
-// Ensure currentCar.photos is actually an array before spreading
-if (currentCar && Array.isArray(currentCar.photos)) {
-    updatedPhotos = [...currentCar.photos];
-}
-
-// Only add new photos if they exist
-if (newPhotoUrls.length > 0) {
-    updatedPhotos = [...updatedPhotos, ...newPhotoUrls];
-}
+let updatedPhotos = Array.isArray(currentCar.photos) ? [...currentCar.photos] : [];
 
 // Limit to 5 photos total (optional, but matches your Multer limit)
 updatedPhotos = updatedPhotos.slice(0, 5);
