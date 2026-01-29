@@ -13,14 +13,26 @@ const upload = multer({
     files: 5
   },
   fileFilter: (req, file, cb) => {
-    const allowedTypes = /jpeg|jpg|png|gif|webp/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = allowedTypes.test(file.mimetype);
-    
-    if (mimetype && extname) {
+    // 1. Define allowed types
+    const allowedExtensions = ['.jpeg', '.jpg', '.png', '.gif', '.webp'];
+    const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+
+    // 2. Extract values
+    const extension = path.extname(file.originalname).toLowerCase();
+    const mimetype = file.mimetype.toLowerCase();
+
+    // 3. Debugging log - this will show in your terminal
+    console.log(`Checking file: Name: ${file.originalname}, Ext: ${extension}, Mime: ${mimetype}`);
+
+    // 4. Validate
+    if (allowedExtensions.includes(extension) || allowedMimeTypes.includes(mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error('Only image files are allowed'));
+      // If the browser sends a blob without an extension, we check if mimetype starts with image/
+      if (mimetype.startsWith('image/')) {
+        return cb(null, true);
+      }
+      cb(new Error(`Only image files are allowed. Received: ${extension} / ${mimetype}`));
     }
   }
 });

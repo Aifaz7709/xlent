@@ -133,8 +133,9 @@ const refreshToken = async () => {
     const trimmedModel = formData.car_model.trim();
     const trimmedNumber = formData.car_number.trim();
     const trimmedLocation = formData.car_location.trim();
-    if (!trimmedModel || !trimmedNumber ||  !trimmedLocation) {
-      setMessage({ type: 'error', text: 'Please fill in car model , car number, and location' });
+  
+    if (!trimmedModel || !trimmedNumber || !trimmedLocation) {
+      setMessage({ type: 'error', text: 'Please fill in all required fields' });
       return;
     }
   
@@ -143,80 +144,49 @@ const refreshToken = async () => {
   
     try {
       let token = localStorage.getItem('xlent_token');
-      if (!token) {
-        throw new Error('Please log in to add a car');
-      }
-  
       const baseUrl = process.env.REACT_APP_API_BASE_URL || 'https://xlent-production.up.railway.app';
-      const apiUrl = isEditing 
-        ? `${baseUrl}/api/cars/${editCarId}` 
-        : `${baseUrl}/api/cars`;
+      const apiUrl = isEditing ? `${baseUrl}/api/cars/${editCarId}` : `${baseUrl}/api/cars`;
       
-      const method = isEditing ? 'PUT' : 'POST';
+      const formDataToSend = new FormData();
+      formDataToSend.append('car_model', trimmedModel);
+      formDataToSend.append('car_number', trimmedNumber);
+      formDataToSend.append('car_location', trimmedLocation);
   
-      const sendRequest = async (currentToken) => {
-        const formDataToSend = new FormData();
-        formDataToSend.append('car_model', trimmedModel);
-        formDataToSend.append('car_number', trimmedNumber);
-        formDataToSend.append('car_location', trimmedLocation);
-        photoFiles.forEach((file) => {
+      // ONLY append files if they are new File objects
+      photoFiles.forEach((file) => {
+        if (file instanceof File) {
           formDataToSend.append('photos', file);
-        });
-  
-        const response = await fetch(apiUrl, {
-          method: method,
-          headers: {
-            'Authorization': `Bearer ${currentToken}`
-          },
-          body: formDataToSend
-        });
-  
-        // If token expired, try to refresh it
-        if (response.status === 401) {
-          const errorData = await response.json().catch(() => ({}));
-          if (errorData.error?.includes('token') || errorData.error?.includes('expired')) {
-            console.log('Token expired, attempting refresh...');
-            const newToken = await refreshToken();
-            // Retry with new token
-            return sendRequest(newToken);
-          }
         }
+      });
   
-        return response;
-      };
+      const response = await fetch(apiUrl, {
+        method: isEditing ? 'PUT' : 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+          // NOTE: Do NOT set 'Content-Type': 'multipart/form-data' manually. 
+          // Let the browser set it with the boundary string.
+        },
+        body: formDataToSend
+      });
   
-      const response = await sendRequest(token);
       const data = await response.json();
   
       if (!response.ok) {
-        throw new Error(data.error || data.message || `Failed to add car: ${response.status}`);
+        throw new Error(data.error || 'Operation failed');
       }
   
-      // Success
-      setMessage({ type: 'success', text: data.message || 'Car added successfully!' });
+      setMessage({ type: 'success', text: isEditing ? 'Car updated!' : 'Car added!' });
       
-      if (data.car) {
-        setLocalCars(prev => [data.car, ...prev]);
-        dispatch(addCar(data.car));
-      } else {
-        fetchCars();
-      }
-  
-      // Reset form
-      setFormData({ car_model: '', car_number: '' , car_location: ''});
-      setPhotoFiles([]);
-      setPhotoPreviews([]);
+      // Reset state
+      cancelEdit();
+      fetchCars(); // Refresh the list
       
     } catch (err) {
-      console.error('Error adding car:', err);
-      setMessage({ 
-        type: 'error', 
-        text: err.message || 'Error adding car. Please try again.' 
-      });
+      setMessage({ type: 'error', text: err.message });
     } finally {
       setIsLoading(false);
     }
-  };  
+  };
 
 
   const handleEditClick = (car) => {
