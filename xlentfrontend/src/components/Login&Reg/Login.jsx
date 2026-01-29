@@ -473,7 +473,7 @@ const Login = ({ setIsAuthenticated }) => {
 
               {/* Sign Up Link */}
               <div className="text-center mt-4 pt-3 border-top">
-                <p className="text-muted mb-2" style={{ fontSize: '0.9rem' }}>
+                {/* <p className="text-muted mb-2" style={{ fontSize: '0.9rem' }}>
                   Don't have an account?{' '}
                   <Link 
                     to="/register" 
@@ -483,7 +483,7 @@ const Login = ({ setIsAuthenticated }) => {
                     <UserPlus size={14} className="me-1" />
                     Sign up here
                   </Link>
-                </p>
+                </p> */}
                 <div className="d-flex align-items-center justify-content-center mt-2">
                   <Shield size={12} className="text-success me-2" />
                   <span className="small text-muted" style={{ fontSize: '0.8rem' }}>

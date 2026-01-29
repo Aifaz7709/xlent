@@ -25,8 +25,8 @@ const upload = multer({
   }
 });
 
-const uploadMiddleware = upload.any();
-
+// Replace upload.any() with this:
+const uploadMiddleware = upload.array('photos', 5);
 // ========== CREATE CAR (NO AUTH REQUIRED) ==========
 router.post('/', uploadMiddleware, async (req, res) => {
   try {
@@ -34,8 +34,7 @@ router.post('/', uploadMiddleware, async (req, res) => {
     const car_model = req.body.car_model?.trim() || '';
     const car_number = req.body.car_number?.trim() || '';
     const car_location = req.body.car_location?.trim() || '';
-    const photosArray = (req.files || []).filter(file => file.fieldname === 'photos');
-
+    const photosArray = req.files || [];
     // Validation
     if (!car_model) {
       return res.status(400).json({ error: 'Car model is required' });
@@ -68,7 +67,8 @@ router.post('/', uploadMiddleware, async (req, res) => {
       const { error: uploadError } = await supabase.storage
         .from('car-photos')
         .upload(fileName, file.buffer, {
-          contentType: file.mimetype
+          contentType: file.mimetype,
+          upsert: true
         });
 
       if (!uploadError) {
