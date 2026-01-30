@@ -406,7 +406,7 @@ const refreshToken = async () => {
           </div>
 
           {/* My Cars List */}
-          <div className="col-12 col-lg-6">
+          <div className="col-12 col-lg-6" style={{height:'740px', overflowY:'scroll'}}>
             <div className="card border-0 shadow-sm h-100">
               <div className="card-body p-4">
                 <h3 className="card-title fw-bold mb-4">All Cars ({cars.length})</h3>

@@ -16,6 +16,8 @@ import TermsConditionsPage from "./components/TermsandConditions/TermsConditions
 import AddCar from "./components/AddCar/AddCar";
 import BookingPage from "./components/Booking/BookingPage";
 import Qrcode from "./components/Booking/Qrcode";
+import PrivacyPolicyPage from "./components/TermsandConditions/PrivacyPolicyPage";
+import RefundPolicyPage from "./components/TermsandConditions/RefundPolicyPage";
 const NewPropertyCard = lazy(() => import("./components/OverFleet/newFetchCarousel"));
 const Gallery = lazy(() => import("./components/CustomerGallery/Gallery"));
 const Testimonials = lazy(() => import("./components/Testimonials/Testimonials"));
@@ -108,6 +110,9 @@ function AppRoutes({ theme, toggleTheme }) {
           <Route path="/terms" element={<TermsConditionsPage />} />
             <Route path="/book/:carId" element={<BookingPage />} />
             <Route path="/Payment" element={<Qrcode/>}/>
+            <Route path="/TermsConditionsPage" element={<TermsConditionsPage/>}/>
+            <Route path="/PrivacyPolicy" element={<PrivacyPolicyPage/>}/>
+            <Route path="/RefundPolicy" element={<RefundPolicyPage/>}/>
 
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>

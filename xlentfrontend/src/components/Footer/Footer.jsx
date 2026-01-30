@@ -57,7 +57,10 @@ const FooterLinks = () => (
       <h3 className="h6 mb-3">Company</h3>
       <ul className="nav flex-column">
         <li className="nav-item"><a className="nav-link text-light ps-0" href="#about" style={{ opacity: '0.8' }}>About Us</a></li>
-        <li className="nav-item"><a className="nav-link text-light ps-0" href="#terms" style={{ opacity: '0.8' }}>Terms & Conditions</a></li>
+        <li className="nav-item"><a className="nav-link text-light ps-0" href="/TermsConditionsPage" style={{ opacity: '0.8' }}>Terms & Conditions</a></li>
+        <li className="nav-item"><a className="nav-link text-light ps-0" href="/PrivacyPolicy" style={{ opacity: '0.8' }}>Privacy Policy</a></li>
+        <li className="nav-item"><a className="nav-link text-light ps-0" href="/RefundPolicy" style={{ opacity: '0.8' }}>Refund Policy</a></li>
+
       </ul>
     </div>
   </>

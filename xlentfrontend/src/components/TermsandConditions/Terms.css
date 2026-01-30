@@ -1,55 +1,62 @@
-/* Custom styles for Terms page */
-.cursor-pointer {
-  cursor: pointer;
+/* TermsConditionsPage.css */
+.terms-conditions-page {
+  min-height: 100vh;
+  background-color: #f8f9fa;
 }
 
-/* File upload area styling */
-.file-upload-area {
-  border: 2px dashed #dee2e6;
-  border-radius: 0.375rem;
+.sticky-sidebar {
+  position: sticky;
+  top: 20px;
+}
+
+.term-section {
+  scroll-margin-top: 20px;
+}
+
+.nav-link {
+  border-left: 3px solid transparent;
+  padding: 8px 12px;
   transition: all 0.3s ease;
 }
 
-.file-upload-area:hover {
-  border-color: #0d6efd;
-  background-color: rgba(13, 110, 253, 0.05);
+.nav-link:hover {
+  background-color: #f0f7ff;
+  border-left-color: #0d6efd;
 }
 
-/* Custom checkbox styling */
-.form-check-input:checked {
-  background-color: #0d6efd;
-  border-color: #0d6efd;
+.nav-link.active {
+  background-color: #e7f1ff;
+  border-left-color: #0d6efd;
+  font-weight: 600;
 }
 
-/* Button disabled state */
-.btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.details {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 15px;
+}
+
+/* Print styles */
+@media print {
+  .sticky-sidebar,
+  .btn {
+    display: none !important;
+  }
+  
+  .term-section {
+    page-break-inside: avoid;
+  }
+  
+  .card {
+    border: none !important;
+    box-shadow: none !important;
+  }
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .display-6 {
-    font-size: 1.75rem;
+  .sticky-sidebar {
+    position: static;
+    margin-bottom: 20px;
   }
-  
-  .card-header h3 {
-    font-size: 1.25rem;
-  }
-}
-
-/* Animation for file upload */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.file-uploaded {
-  animation: fadeIn 0.3s ease-out;
 }
