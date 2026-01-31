@@ -2,11 +2,16 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setCars as setCarsRedux, setLoading as setLoadingRedux } from "../Redux/Slices/carSlice";
-import "./NewPropertyCard.css";
+import { clearSelectedLocation } from "../Redux/Slices/LocationSlice"; // Import the action
+
+import "./NewPropertyCard.css"; 
+import { MapPin, X } from "lucide-react";
 
 const NewPropertyCard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const selectedLocation = useSelector((state) => state.location.selectedLocation); // Add this line
 
   const reduxCars = useSelector((state) => state.cars.cars);
   const reduxLoading = useSelector((state) => state.cars.loading);
@@ -63,7 +68,11 @@ const NewPropertyCard = () => {
       return [];
     }
   };
-
+  // RESET LOCATION FUNCTION
+  const handleResetLocation = () => {
+    dispatch(clearSelectedLocation());
+    setCurrentSlide(0);
+  };
   const transformCarData = (apiCars) => {
     return apiCars.map((car) => ({
       id: car.id,
@@ -82,6 +91,26 @@ const NewPropertyCard = () => {
     }));
   };
 
+
+    // FUNCTION TO FILTER CARS BY LOCATION
+    const filterCarsByLocation = (cars, location) => {
+      if (!location) return cars; // If no location selected, show all cars
+      
+      console.log('Filtering cars for location:', location);
+      
+      return cars.filter(car => {
+        const carLocation = (car.location || '').toLowerCase();
+        const selectedCity = (location.name || '').toLowerCase();
+        const selectedState = (location.state || '').toLowerCase();
+        const selectedCode = (location.code || '').toLowerCase();
+        
+        // Check if car location contains city name, state, or code
+        return carLocation.includes(selectedCity) || 
+               carLocation.includes(selectedState) ||
+               carLocation.includes(selectedCode);
+      });
+    };
+  
   // Handle responsive items per slide
   const updateItemsPerSlide = useCallback(() => {
     const width = window.innerWidth;
@@ -99,6 +128,7 @@ const NewPropertyCard = () => {
   }, []);
 
   // Fetch data on mount
+  // FETCH AND FILTER CARS BASED ON LOCATION
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -107,7 +137,14 @@ const NewPropertyCard = () => {
         
         if (apiCars.length > 0) {
           const transformed = transformCarData(apiCars);
-          setLocalCars(transformed);
+          
+          // FILTER CARS BY SELECTED LOCATION
+          const filteredCars = selectedLocation 
+            ? filterCarsByLocation(transformed, selectedLocation)
+            : transformed;
+            
+          console.log('Total cars:', transformed.length, 'Filtered cars:', filteredCars.length);
+          setLocalCars(filteredCars);
           dispatch(setCarsRedux(apiCars));
         } else {
           setLocalCars([]);
@@ -125,9 +162,14 @@ const NewPropertyCard = () => {
 
     if (!hasFetched || reduxCars.length === 0) {
       fetchData();
-    } else if (reduxCars.length > 0 && localCars.length === 0) {
+    } else if (reduxCars.length > 0) {
+      // When location changes, re-filter existing cars
       const transformed = transformCarData(reduxCars);
-      setLocalCars(transformed);
+      const filteredCars = selectedLocation 
+        ? filterCarsByLocation(transformed, selectedLocation)
+        : transformed;
+      console.log('Re-filtering cars based on location change');
+      setLocalCars(filteredCars);
     }
 
     // Setup responsive handling
@@ -137,7 +179,13 @@ const NewPropertyCard = () => {
     return () => {
       window.removeEventListener('resize', updateItemsPerSlide);
     };
-  }, [dispatch, hasFetched, reduxCars.length, localCars.length, updateItemsPerSlide]);
+  }, [dispatch, hasFetched, reduxCars.length, selectedLocation, updateItemsPerSlide]); 
+
+
+    // Reset carousel when location changes
+    useEffect(() => {
+      setCurrentSlide(0);
+    }, [selectedLocation]);
 
   const totalSlides = Math.max(1, Math.ceil(localCars.length / itemsPerSlide));
 
@@ -245,8 +293,12 @@ const NewPropertyCard = () => {
             className="car-image"
             loading="lazy"
           />
-          <div className="car-badge">{car.year}</div>
-        </div>
+ {selectedLocation && (
+            <div className="location-match-badge">
+              <MapPin size={12} />
+              <span>In {selectedLocation.name}</span>
+            </div>
+          )}        </div>
       );
     } else {
       return (
@@ -270,10 +322,59 @@ const NewPropertyCard = () => {
   return (
     <div className="carousel-container1">
       <div className="carousel-header">
-        <div>
-          <h2 className="carousel-title">Our Premium Fleet</h2>
-          <p className="carousel-subtitle">Explore our curated collection of vehicles</p>
+      <div>
+          {/* UPDATE TITLE BASED ON LOCATION */}
+          <h2 className="carousel-title">
+            {selectedLocation 
+              ? `Cars in ${selectedLocation.name}`
+              : 'Our Premium Fleet'
+            }
+          </h2>
+          <p className="carousel-subtitle">
+            {selectedLocation
+              ? `${localCars.length} car${localCars.length !== 1 ? 's' : ''} available in ${selectedLocation.name}`
+              : 'Explore our curated collection of vehicles'
+            }
+          </p>
         </div>
+        {selectedLocation && (
+            <button 
+              className="reset-location-btn"
+              onClick={handleResetLocation}
+              title={`Clear ${selectedLocation.name} filter`}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '8px 16px',
+                background: '#f8fafc',
+                border: '1px solid #e2e8f0',
+                borderRadius: '20px',
+                color: '#64748b',
+                fontSize: '14px',
+                fontWeight: '500',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                marginTop: '5px',
+                height: 'fit-content'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = '#f1f5f9';
+                e.target.style.color = '#02287c';
+                e.target.style.borderColor = '#cbd5e1';
+                e.target.style.transform = 'translateY(-1px)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = '#f8fafc';
+                e.target.style.color = '#64748b';
+                e.target.style.borderColor = '#e2e8f0';
+                e.target.style.transform = 'translateY(0)';
+              }}
+            >
+              <X size={16} />
+              Clear Filter
+            </button>
+          )}
         <div className="carousel-controls-group">
 
           <div className="carousel-controls">
@@ -296,11 +397,21 @@ const NewPropertyCard = () => {
       </div>
 
       {localCars.length === 0 ? (
-        <div className="empty-state">
-          <div className="empty-icon">🚗</div>
-          <h3>No cars available</h3>
-          <p>Check back later for new additions to our fleet</p>
-        </div>
+           <div className="empty-state">
+           <div className="empty-icon">🚗</div>
+           <h3>
+             {selectedLocation
+               ? `No cars found in ${selectedLocation.name}`
+               : 'No cars available'
+             }
+           </h3>
+           <p>
+             {selectedLocation
+               ? 'Try selecting a different location'
+               : 'Check back later for new additions to our fleet'
+             }
+           </p>
+         </div>
       ) : (
         <>
           <div 

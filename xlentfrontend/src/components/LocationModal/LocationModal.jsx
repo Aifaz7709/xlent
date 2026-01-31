@@ -1,13 +1,17 @@
+// LocationModal.js
 import React, { useState, useEffect } from 'react';
 import { Search, MapPin, X, Navigation, ChevronRight, Star } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux'; // Add this
+import { setSelectedLocation, addRecentLocation } from '../Redux/Slices/LocationSlice'; // Add this
 import { cities } from './cities';
-const LocationModal = ({ isOpen, onClose, onSelectLocation }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [recentLocations, setRecentLocations] = useState([]);
-  const [useGeolocation, setUseGeolocation] = useState(false);
 
-  // Sample cities data
- 
+const LocationModal = ({ isOpen, onClose }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [useGeolocation, setUseGeolocation] = useState(false);
+  
+  const dispatch = useDispatch();
+  const recentLocations = useSelector(state => state.location.recentLocations); // Get from Redux
+
   // Filter cities based on search
   const filteredCities = searchQuery
     ? cities.filter(city =>
@@ -20,76 +24,21 @@ const LocationModal = ({ isOpen, onClose, onSelectLocation }) => {
   // Popular cities (for quick selection)
   const popularCities = cities.filter(city => city.popular);
 
-  // Load recent locations from localStorage
-  useEffect(() => {
-    const savedLocations = localStorage.getItem('xlent_recent_locations');
-    if (savedLocations) {
-      try {
-        setRecentLocations(JSON.parse(savedLocations));
-      } catch (error) {
-        console.error('Error loading recent locations:', error);
-      }
-    }
-  }, []);
-
   // Handle city selection
   const handleCitySelect = (city) => {
-    // Save to recent locations
-    const updatedRecent = [
-      city,
-      ...recentLocations.filter(loc => loc.id !== city.id).slice(0, 4)
-    ];
-    setRecentLocations(updatedRecent);
-    localStorage.setItem('xlent_recent_locations', JSON.stringify(updatedRecent));
-
-    // Call the onSelectLocation callback
-    if (onSelectLocation) {
-      onSelectLocation(city);
-    }
+    console.log('Dispatching city to Redux:', city);
+    // Save to Redux
+    dispatch(setSelectedLocation(city));
+    dispatch(addRecentLocation(city));
 
     // Close modal
     onClose();
   };
 
-  // Get current location
+  // Get current location (if needed)
   // const handleGetCurrentLocation = () => {
-  //   setUseGeolocation(true);
-    
-  //   if (navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition(
-  //       (position) => {
-  //         const { latitude, longitude } = position.coords;
-          
-  //         // Here you would typically reverse geocode to get city name
-  //         // For now, we'll show a message and find the nearest city
-  //         const nearestCity = findNearestCity(latitude, longitude);
-          
-  //         if (nearestCity) {
-  //           handleCitySelect(nearestCity);
-  //         } else {
-  //           alert("We don't service your current location yet. Please select from available cities.");
-  //         }
-          
-  //         setUseGeolocation(false);
-  //       },
-  //       (error) => {
-  //         console.error('Error getting location:', error);
-  //         alert('Unable to get your location. Please enable location services.');
-  //         setUseGeolocation(false);
-  //       },
-  //       { timeout: 10000 }
-  //     );
-  //   } else {
-  //     alert('Geolocation is not supported by your browser.');
-  //     setUseGeolocation(false);
-  //   }
+  //   // Your geolocation logic here
   // };
-
-  // Mock function to find nearest city (in real app, use geocoding API)
-  const findNearestCity = (lat, lng) => {
-    // This is a simplified version - in production, use a proper geocoding service
-    return cities[Math.floor(Math.random() * cities.length)];
-  };
 
   // Don't render if not open
   if (!isOpen) return null;
@@ -105,7 +54,7 @@ const LocationModal = ({ isOpen, onClose, onSelectLocation }) => {
             </div>
             <div>
               <h3>Select Location</h3>
-              <p>Choose your city </p>
+              <p>Choose your city</p>
             </div>
           </div>
           <button className="close-button" onClick={onClose}>
@@ -113,42 +62,37 @@ const LocationModal = ({ isOpen, onClose, onSelectLocation }) => {
           </button>
         </div>
 
-        {/* Search Bar */}
-        {/* <div className="search-container">
-          <Search size={20} className="search-icon" />
-          <input
-            type="text"
-            placeholder="Search city or airport code..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="search-input"
-            autoFocus
-          />
-          {searchQuery && (
-            <button className="clear-search" onClick={() => setSearchQuery('')}>
-              <X size={16} />
-            </button>
-          )}
-        </div> */}
-
         {/* Scrollable Content Area */}
         <div className="modal-scrollable-content">
-          {/* Current Location Button */}
-          {/* <div className="current-location-section">
-            <button 
-              className="current-location-btn"
-              onClick={handleGetCurrentLocation}
-              disabled={useGeolocation}
-            >
-              <Navigation size={18} />
-              <span>{useGeolocation ? 'Detecting location...' : 'Use my current location'}</span>
-            </button>
-          </div> */}
+          {/* Recent Locations Section */}
+          {!searchQuery && recentLocations.length > 0 && (
+            <div className="section">
+              <div className="section-title">
+                <span>Recent Locations</span>
+                <span className="count-badge">{recentLocations.length}</span>
+              </div>
+              <div className="recent-locations">
+                {recentLocations.map((location) => (
+                  <button
+                    key={location.id}
+                    className="recent-location-item"
+                    onClick={() => handleCitySelect(location)}
+                  >
+                    <div className="city-info">
+                      <div className="city-name">{location.name}</div>
+                      <div className="city-state">{location.state}</div>
+                    </div>
+                    <ChevronRight size={18} className="city-arrow" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
-         
           {/* Popular Cities */}
           {!searchQuery && (
             <div className="section">
+              <h3 className="section-title">Popular Cities</h3>
               <div className="popular-cities-grid">
                 {popularCities.map((city) => (
                   <div
@@ -158,20 +102,58 @@ const LocationModal = ({ isOpen, onClose, onSelectLocation }) => {
                   >
                     <div className="popular-city-header">
                       <div className="city-code">{city.code}</div>
-                    
                     </div>
                     <div className="city-name">{city.name}</div>
                     <div className="city-state">{city.state}</div>
                   </div>
                 ))}
               </div>
-              <h3 className="section-title" style={{marginTop:'5px', paddingTop:'5px'}}>🎉 Get Ready! More Cities Coming Soon</h3>
-
+              <h3 className="section-title" style={{marginTop:'5px', paddingTop:'5px'}}>
+                🎉 Get Ready! More Cities Coming Soon
+              </h3>
             </div>
           )}
 
-          {/* All Cities */}
-      
+          {/* Search Results */}
+          {searchQuery && (
+            <div className="section">
+              <h3 className="section-title">
+                Search Results
+                <span className="count-badge">{filteredCities.length}</span>
+              </h3>
+              <div className="cities-list">
+                {filteredCities.length > 0 ? (
+                  filteredCities.map((city) => (
+                    <div
+                      key={city.id}
+                      className="city-item"
+                      onClick={() => handleCitySelect(city)}
+                    >
+                      <div className="city-icon">
+                        <MapPin size={20} />
+                      </div>
+                      <div className="city-details">
+                        <div className="city-main">
+                          <div className="city-name">{city.name}</div>
+                        </div>
+                        <div className="city-secondary">
+                          <span className="city-code">{city.code}</span>
+                          <span>{city.state}</span>
+                        </div>
+                      </div>
+                      <ChevronRight size={18} className="city-arrow" />
+                    </div>
+                  ))
+                ) : (
+                  <div className="no-results">
+                    <Search size={48} className="no-results-icon" />
+                    <h4>No cities found</h4>
+                    <p>Try searching with a different name or airport code</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

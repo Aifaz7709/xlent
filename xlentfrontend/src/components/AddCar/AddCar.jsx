@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { addCar, removeCar, setCars } from '../Redux/Slices/carSlice';
 import './AddCar.css';
 import LocationModal from '../LocationModal/LocationModal';
+import { cities } from '../LocationModal/cities';
 const AddCar = () => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
@@ -22,6 +23,19 @@ const AddCar = () => {
   const [editCarId, setEditCarId] = useState(null);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
 const [selectedCity, setSelectedCity] = useState(null); // for filtering
+ // Function to get city name by ID
+ const getCityNameById = (locationId) => {
+  if (!locationId) return 'Not specified';
+  
+  const city = cities.find(c => c.id === parseInt(locationId));
+  return city ? `${city.name}, ${city.state}` : `Unknown (ID: ${locationId})`;
+};
+
+// Function to get full city object by ID
+const getCityById = (locationId) => {
+  if (!locationId) return null;
+  return cities.find(c => c.id === parseInt(locationId));
+};
 
   const fetchCars = async () => {
     try {
@@ -45,8 +59,14 @@ const [selectedCity, setSelectedCity] = useState(null); // for filtering
       
       const data = await res.json();
       const fetchedCars = data.cars || data || [];
-      setLocalCars(fetchedCars);
-      dispatch(setCars(fetchedCars));
+   const enhancedCars = fetchedCars.map(car => ({
+    ...car,
+    display_location: car.location_id ? getCityNameById(car.location_id) : 'Not specified',
+    location: getCityById(car.location_id)
+  }));
+  
+  setLocalCars(enhancedCars);
+  dispatch(setCars(enhancedCars));
       
     } catch (err) {
       console.error('fetchCars error:', err);
@@ -171,9 +191,8 @@ const [selectedCity, setSelectedCity] = useState(null); // for filtering
       car_model: car.car_model,
       car_number: car.car_number,
       location_id: car.location_id,   // ✅ restore id
-      car_location: car.car_location || ''
+      car_location: car.display_location || getCityNameById(car.location_id) || ''
     });
-    setSelectedCity(car.location_id);
       setPhotoFiles([]); 
     setPhotoPreviews(car.photos || []);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -410,7 +429,9 @@ const [selectedCity, setSelectedCity] = useState(null); // for filtering
                           <span className="badge bg-primary">
                             {car.car_number}
                           </span>
-                          <h6 className="fw-bold mb-0">{car.car_location}</h6>
+                          <h6 className="fw-bold mb-0">
+                            {car.display_location || getCityNameById(car.location_id)}
+                          </h6>
                         </div>
                         
                         <p className="text-muted small mb-3">
