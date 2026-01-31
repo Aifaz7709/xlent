@@ -1,6 +1,7 @@
 // RefundPolicyPage.jsx
 import React, { useState } from 'react';
 import './PolicyPages.css'; // Shared styling
+import Footer from '../Footer/Footer';
 
 const RefundPolicyPage = () => {
   const [activeSection, setActiveSection] = useState('');
@@ -160,7 +161,7 @@ const RefundPolicyPage = () => {
         "Pattern Detection: Monitoring for suspicious cancellation patterns.",
         "Account Review: Accounts with multiple refund requests may be investigated.",
         "Legal Action: Fraudulent claims may lead to account termination and legal proceedings.",
-        "Reporting: Suspected fraud should be reported to support@XlentCar.in"
+        "Reporting: Suspected fraud should be reported to info@xlentcar.in"
       ]
     },
     {
@@ -177,7 +178,7 @@ const RefundPolicyPage = () => {
     }
   ];
 
-  return (
+  return (<>
     <div className="policy-page container py-5">
       <div className="row">
         {/* Navigation Sidebar */}
@@ -372,6 +373,8 @@ const RefundPolicyPage = () => {
         </div>
       </div>
     </div>
+    <Footer/>
+    </>
   );
 };
 

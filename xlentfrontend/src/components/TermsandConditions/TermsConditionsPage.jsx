@@ -1,6 +1,7 @@
 // TermsConditionsPage.jsx
 import React, { useState, useEffect } from 'react';
 import './Terms.css'; // Optional styling
+import Footer from '../Footer/Footer';
 
 const TermsConditionsPage = () => {
   const [activeSection, setActiveSection] = useState('');
@@ -30,7 +31,7 @@ const TermsConditionsPage = () => {
         "What Constitutes Misuse: Includes submitting false/expired documents, using fake identities, booking vehicles for illegal acts, tampering with vehicles or GPS, listing unauthorized vehicles, abusive behavior, fraud, or bypassing platform systems",
         "Legal Violations: Breaching Indian laws may result in immediate account suspension, booking cancellation, reporting to authorities, and legal action",
         "XlentCar's Rights: May suspend/delete accounts, impose penalties, share evidence with authorities, initiate legal proceedings",
-        "Reporting Misuse: Via in-app support, customer service, or email: support@XlentCar.in",
+        "Reporting Misuse: Via in-app support, customer service, or email: info@xlentcar.in",
         "User Responsibilities: Submit valid info, use platform legally, follow traffic rules, treat others with courtesy",
         "Disclaimer of Liability: XlentCar is not liable for user misconduct"
       ]
@@ -331,7 +332,7 @@ const TermsConditionsPage = () => {
         "Channels: Email, SMS, in-app notifications, push notifications",
         "Preferences: Opt-in/out of promotional messages",
         "Essential Messages: Cannot opt out of booking confirmations, security alerts",
-        "Contact: support@XlentCar.in for concerns"
+        "Contact: info@xlentcar.in for concerns"
       ]
     },
     {
@@ -392,7 +393,7 @@ const TermsConditionsPage = () => {
       content: "Contact details for XlentCar.",
       details: [
         "Contact: XlentCar",
-        "Email: contact@XlentCar.in",
+        "Email: info@xlentcar.in",
         "Purpose: For inquiries about terms and conditions"
       ]
     },
@@ -486,7 +487,7 @@ const TermsConditionsPage = () => {
     // You can add logic to update user's acceptance status in your backend
   };
 
-  return (
+  return (<>
     <div className="terms-conditions-page container py-5">
       <div className="row">
         {/* Left sidebar - Table of Contents */}
@@ -623,8 +624,8 @@ const TermsConditionsPage = () => {
                   <hr />
                   <p className="mb-0">
                     For any questions regarding these terms, please contact us at{' '}
-                    <a href="mailto:contact@XlentCar.in" className="fw-bold">
-                      contact@XlentCar.in
+                    <a href="mailto:info@xlentcar.in" className="fw-bold">
+                      info@xlentcar.in
                     </a>
                   </p>
                 </div>
@@ -662,6 +663,8 @@ const TermsConditionsPage = () => {
         </div>
       </div>
     </div>
+    <Footer/>
+    </>
   );
 };
 

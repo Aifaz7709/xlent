@@ -1,6 +1,7 @@
 // PrivacyPolicyPage.jsx
 import React, { useState } from 'react';
 import './PolicyPages.css'; // Shared styling
+import Footer from '../Footer/Footer';
 
 const PrivacyPolicyPage = () => {
   const [activeSection, setActiveSection] = useState('');
@@ -168,7 +169,7 @@ const PrivacyPolicyPage = () => {
     }
   ];
 
-  return (
+  return (<>
     <div className="policy-page container py-5">
       <div className="row">
         {/* Navigation Sidebar */}
@@ -297,6 +298,8 @@ const PrivacyPolicyPage = () => {
         </div>
       </div>
     </div>
+    <Footer/>
+    </>
   );
 };
 

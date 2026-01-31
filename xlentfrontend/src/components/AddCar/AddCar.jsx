@@ -3,8 +3,9 @@ import { Upload, Plus, Trash2, AlertCircle, CheckCircle, Pencil, MapPin } from '
 import { useDispatch } from 'react-redux';
 import { addCar, removeCar, setCars } from '../Redux/Slices/carSlice';
 import './AddCar.css';
-import LocationModal from '../LocationModal/LocationModal';
+import LocationSelect from '../LocationModal/LocationSelect.js';
 import { cities } from '../LocationModal/cities';
+import Footer from '../Footer/Footer';
 const AddCar = () => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
@@ -240,6 +241,7 @@ const getCityById = (locationId) => {
     }
   };
   return (
+    <>
     <div className="min-vh-100 py-5 add-car-container fade-in" style={{ backgroundColor: '#f8f9fa' }}>
       <div className="container">
         <div className="row">
@@ -303,19 +305,22 @@ const getCityById = (locationId) => {
     Car Location *
   </label>
 
-  <div
-    className="form-control d-flex align-items-center justify-content-between"
-    style={{ cursor: 'pointer' }}
-    onClick={() => setIsLocationModalOpen(true)}
-  >
-    {formData.car_location || "Select City"}
-    <MapPin size={18} />
-  </div>
+  <LocationSelect
+    value={formData.location_id}
+    onSelect={(city) =>
+      setFormData(prev => ({
+        ...prev,
+        location_id: city.id,
+        car_location: `${city.name}, ${city.state}`
+      }))
+    }
+  />
 
   <small className="text-muted">
     Select the city where the car is located
   </small>
 </div>
+
 
                   {/* Photo Upload */}
                   <div className="mb-4">
@@ -498,13 +503,10 @@ const getCityById = (locationId) => {
           </div>
         </div>
       </div>
-      <LocationModal
-  isOpen={isLocationModalOpen}
-  onClose={() => setIsLocationModalOpen(false)}
-  onSelectLocation={handleLocationSelect}
-/>
-
+      
     </div>
+    <Footer/>
+</>
   );
 };
 
