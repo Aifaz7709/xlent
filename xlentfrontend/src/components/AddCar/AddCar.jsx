@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Upload, Plus, Trash2, AlertCircle, CheckCircle, Pencil } from 'lucide-react';
+import { Upload, Plus, Trash2, AlertCircle, CheckCircle, Pencil, MapPin } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { addCar, removeCar, setCars } from '../Redux/Slices/carSlice';
 import './AddCar.css';
-
+import LocationModal from '../LocationModal/LocationModal';
 const AddCar = () => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     car_model: '',
     car_number: '',
+    location_id: null,  
     car_location: ''
   });
   const [photoFiles, setPhotoFiles] = useState([]);
@@ -19,6 +20,9 @@ const AddCar = () => {
   const [loadingCars, setLoadingCars] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editCarId, setEditCarId] = useState(null);
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
+const [selectedCity, setSelectedCity] = useState(null); // for filtering
+
   const fetchCars = async () => {
     try {
       setLoadingCars(true);
@@ -56,41 +60,7 @@ const AddCar = () => {
     fetchCars();
   }, [dispatch]);
 
-  // Add this function to refresh the token
-const refreshToken = async () => {
-  try {
-    const refreshToken = localStorage.getItem('xlent_refresh_token');
-    const apiUrl = process.env.REACT_APP_API_BASE_URL 
-      ? `${process.env.REACT_APP_API_BASE_URL}/api/auth/refresh`
-      : 'https://xlent-production.up.railway.app/api/auth/refresh';
-
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ refresh_token: refreshToken })
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to refresh token');
-    }
-
-    const data = await response.json();
-    localStorage.setItem('xlent_token', data.access_token);
-    if (data.refresh_token) {
-      localStorage.setItem('xlent_refresh_token', data.refresh_token);
-    }
-    return data.access_token;
-  } catch (err) {
-    console.error('Token refresh failed:', err);
-    // Redirect to login or show login modal
-    localStorage.removeItem('xlent_token');
-    localStorage.removeItem('xlent_refresh_token');
-    window.location.href = '/login';
-    throw err;
-  }
-};
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -126,19 +96,25 @@ const refreshToken = async () => {
     setPhotoFiles(prev => prev.filter((_, i) => i !== index));
     setPhotoPreviews(prev => prev.filter((_, i) => i !== index));
   };
-
+  const handleLocationSelect = (city) => {
+    setFormData(prev => ({
+      ...prev,
+      location_id: city.id,  
+      car_location: `${city.name}, ${city.state}`
+    }));
+    setSelectedCity(city.name); // used for filtering
+  };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     const trimmedModel = formData.car_model.trim();
     const trimmedNumber = formData.car_number.trim();
-    const trimmedLocation = formData.car_location.trim();
   
-    if (!trimmedModel || !trimmedNumber || !trimmedLocation) {
+    if (!trimmedModel || !trimmedNumber || !formData.location_id) {
       setMessage({ type: 'error', text: 'Please fill in all required fields' });
       return;
     }
-  
     setIsLoading(true);
     setMessage({ type: '', text: '' });
   
@@ -150,7 +126,7 @@ const refreshToken = async () => {
       const formDataToSend = new FormData();
       formDataToSend.append('car_model', trimmedModel);
       formDataToSend.append('car_number', trimmedNumber);
-      formDataToSend.append('car_location', trimmedLocation);
+      formDataToSend.append('location_id', formData.location_id);
   
       // ONLY append files if they are new File objects
       photoFiles.forEach((file) => {
@@ -163,8 +139,7 @@ const refreshToken = async () => {
         method: isEditing ? 'PUT' : 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
-          // NOTE: Do NOT set 'Content-Type': 'multipart/form-data' manually. 
-          // Let the browser set it with the boundary string.
+        
         },
         body: formDataToSend
       });
@@ -195,10 +170,11 @@ const refreshToken = async () => {
     setFormData({
       car_model: car.car_model,
       car_number: car.car_number,
+      location_id: car.location_id,   // ✅ restore id
       car_location: car.car_location || ''
     });
-    // Clear previous file selections but keep current previews if you want
-    setPhotoFiles([]); 
+    setSelectedCity(car.location_id);
+      setPhotoFiles([]); 
     setPhotoPreviews(car.photos || []);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -304,21 +280,24 @@ const refreshToken = async () => {
                     <small className="text-muted">Vehicle registration number</small>
                   </div>
                   <div className="mb-3">
-                 <label htmlFor="car_location" className="form-label fw-semibold">
-      Car Location *
-                      </label>
-    <input
-      type="text"
-      id="car_location"
-      name="car_location"
-      className="form-control"
-      placeholder="e.g., Mumbai, Maharashtra"
-      value={formData.car_location}
-      onChange={handleInputChange}
-      required
-    />
-    <small className="text-muted">Where is the car located?</small>
+  <label className="form-label fw-semibold">
+    Car Location *
+  </label>
+
+  <div
+    className="form-control d-flex align-items-center justify-content-between"
+    style={{ cursor: 'pointer' }}
+    onClick={() => setIsLocationModalOpen(true)}
+  >
+    {formData.car_location || "Select City"}
+    <MapPin size={18} />
   </div>
+
+  <small className="text-muted">
+    Select the city where the car is located
+  </small>
+</div>
+
                   {/* Photo Upload */}
                   <div className="mb-4">
                     <label className="form-label fw-semibold">
@@ -498,6 +477,12 @@ const refreshToken = async () => {
           </div>
         </div>
       </div>
+      <LocationModal
+  isOpen={isLocationModalOpen}
+  onClose={() => setIsLocationModalOpen(false)}
+  onSelectLocation={handleLocationSelect}
+/>
+
     </div>
   );
 };

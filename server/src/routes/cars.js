@@ -45,7 +45,7 @@ router.post('/', uploadMiddleware, async (req, res) => {
     // Get form data
     const car_model = req.body.car_model?.trim() || '';
     const car_number = req.body.car_number?.trim() || '';
-    const car_location = req.body.car_location?.trim() || '';
+    const location_id = req.body.location_id?.trim() || '';
     const photosArray = req.files || [];
     // Validation
     if (!car_model) {
@@ -54,7 +54,7 @@ router.post('/', uploadMiddleware, async (req, res) => {
     if (!car_number) {
       return res.status(400).json({ error: 'Car number is required' });
     }
-    if (!car_location) {
+    if (!location_id) {
       return res.status(400).json({ error: 'Car location is required' }); // ADD THIS
     }
 
@@ -97,7 +97,7 @@ router.post('/', uploadMiddleware, async (req, res) => {
       .insert([{
         car_model,  // Just car details, no user_id
         car_number,
-        car_location: req.body.car_location?.trim() || null,
+        location_id,
         photos: photoUrls,
         created_at: new Date().toISOString(),
 
@@ -231,7 +231,7 @@ router.put('/:id', uploadMiddleware, async (req, res) => {
     const { id } = req.params;
     const car_model = req.body.car_model?.trim();
     const car_number = req.body.car_number?.trim();
-    const car_location = req.body.car_location?.trim();
+    const location_id = req.body.location_id?.trim(); // ✅ Change from car_location to location_id
     const newPhotos = req.files || [];
 
     // 1. Check for duplicate car number (excluding current car)
@@ -294,8 +294,8 @@ router.put('/:id', uploadMiddleware, async (req, res) => {
     // Only add fields if they're provided
     if (car_model) updateData.car_model = car_model;
     if (car_number) updateData.car_number = car_number;
-    if (car_location) updateData.car_location = car_location;
-    updateData.photos = updatedPhotos;
+    if (location_id) updateData.location_id = location_id;
+        updateData.photos = updatedPhotos;
     updateData.updated_at = new Date().toISOString();
 
     const { data, error: updateError } = await supabase
