@@ -3,8 +3,7 @@ import React, { useState } from "react";
 const ContactUsCard = ({onClose}) => {
   const [formData, setFormData] = useState({
     name: "",
-    phone: "",
-      phone_no: "",
+      phone_number: "",
       email:''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -17,19 +16,51 @@ const ContactUsCard = ({onClose}) => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+ const handleSubmit = async (e) => {
+    console.log('button clicked');
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setIsSubmitting(false);
-    setFormData({ name: "", phone: "" });
-    
-    // Show success notification
-    showNotification("Thank you! We'll contact you within 24 hours.");
-  };
+    e.preventDefault()
+    setIsSubmitting(true)
+  
+    try {
+      const baseUrl = process.env.REACT_APP_API_BASE_URL || 'https://xlent-production.up.railway.app';
+      
+      // Use FormData like the car form
+      const formDataToSend = new FormData();
+      formDataToSend.append('customer_name', formData.name);
+      formDataToSend.append('phone_number', formData.phone_number);
+      formDataToSend.append('email', formData.email);
+  
+      const response = await fetch(`${baseUrl}/api/customers`, {
+        method: 'POST',
+        // NO Content-Type header for FormData - browser sets it automatically
+        body: formDataToSend
+      })
+  
+      const data = await response.json()
+  
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to save customer')
+      }
+  
+      // Show success message
+      showNotification("Thank you! Your information has been saved.")
+  
+      // Reset form
+      setFormData({ name: "", phone_number: "", email: "" })
+  
+      // Close modal after delay
+      setTimeout(() => {
+        onClose()
+      }, 2000)
+  
+    } catch (error) {
+      console.error('Error saving data:', error)
+      showNotification("Something went wrong. Please try again.", "error")
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   const showNotification = (message) => {
     const notification = document.createElement('div');
