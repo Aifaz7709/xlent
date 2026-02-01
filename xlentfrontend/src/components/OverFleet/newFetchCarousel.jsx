@@ -37,17 +37,16 @@ const NewPropertyCard = () => {
   // Fetch cars from API
   const fetchAllCarsFromAPI = async () => {
     try {
+      const token = localStorage.getItem('xlent_token');
       const apiUrl = process.env.REACT_APP_API_BASE_URL 
         ? `${process.env.REACT_APP_API_BASE_URL}/api/cars`
         : 'https://xlent-production.up.railway.app/api/cars';
       
       const res = await fetch(apiUrl, {
-        headers: {
-          'Content-Type': 'application/json',
-           'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache'
-        },
-         cache: 'no-cache'
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
       });
       
       if (!res.ok) {
