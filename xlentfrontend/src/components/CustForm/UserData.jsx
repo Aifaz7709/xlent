@@ -26,7 +26,7 @@ const UserData = ({ onClose }) => {
       const baseUrl = process.env.REACT_APP_API_BASE_URL || 'https://xlent-production.up.railway.app';
       
       // CHANGE: Send as JSON instead of FormData
-      const response = await fetch(`${baseUrl}/api/customers`, {
+      const response = await fetch(`${baseUrl}/api/customer`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json' // Add this header

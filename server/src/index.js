@@ -59,7 +59,7 @@ const subscribeRouter = require('./routes/subscribe');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/cars', carsRoutes);
-app.use('/api/customers', customersRoutes);
+app.use('/api/customer_inquiries', customersRoutes);
 app.use('/api', subscribeRouter);
 
 
