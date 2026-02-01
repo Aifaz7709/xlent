@@ -153,12 +153,18 @@ const Navbar = ({ theme, toggleTheme, isAuthenticated, onLogout }) => {
                     </Link>
                   </li>
 
-                  {isAuthenticated && (
+                  {isAuthenticated && (<>
                     <li className="nav-item">
                       <Link to="/add-car" onClick={closeMenu} className="nav-link nav-link-custom"  style={{ color: 'white' }}>
                         Add Car
                       </Link>
                     </li>
+                    <li className="nav-item">
+                    <Link to="/customer-dashboard" onClick={closeMenu} className="nav-link nav-link-custom"  style={{ color: 'white' }}>
+                      Customer Dashboard
+                    </Link>
+                  </li>
+                  </>
                   )}
 
                   <li className="nav-item">

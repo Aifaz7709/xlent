@@ -18,6 +18,7 @@ import BookingPage from "./components/Booking/BookingPage";
 import Qrcode from "./components/Booking/Qrcode";
 import PrivacyPolicyPage from "./components/TermsandConditions/PrivacyPolicyPage";
 import RefundPolicyPage from "./components/TermsandConditions/RefundPolicyPage";
+import CustomerDashboard from "./components/CustForm/CustomerDashboard";
 const NewPropertyCard = lazy(() => import("./components/OverFleet/newFetchCarousel"));
 const Gallery = lazy(() => import("./components/CustomerGallery/Gallery"));
 const Testimonials = lazy(() => import("./components/Testimonials/Testimonials"));
@@ -94,6 +95,16 @@ function AppRoutes({ theme, toggleTheme }) {
                 isAuthenticated={isAuthenticated}
               >
                 <AddCar />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer-dashboard"
+            element={
+              <ProtectedRoute
+                isAuthenticated={isAuthenticated}
+              >
+                <CustomerDashboard />
               </ProtectedRoute>
             }
           />

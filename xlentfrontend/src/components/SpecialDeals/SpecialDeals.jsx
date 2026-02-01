@@ -253,7 +253,7 @@ const   SpecialDeals = () => {
         <div className="card border-0 shadow-sm h-100 hover-shadow-lg transition-all duration-300">
           {/* Deal Badge */}
           <div className="position-absolute top-0 end-0 m-3">
-            <div className="badge bg-danger bg-opacity-90 text-white px-3 py-2">
+            <div className="badge bg-danger bg-opacity-90 text-white px-3 py-1">
               <Percent size={14} className="me-1" />
               {deal.discount}% OFF
             </div>
@@ -360,21 +360,18 @@ const   SpecialDeals = () => {
     <div className="bg-white text-dark min-vh-100">
       {/* Hero Banner */}
 <div 
-  className="text-white py-5"
+  className="text-white py-4"
   style={{
-    background: 'linear-gradient(135deg,rgb(14, 6, 123) 0%,rgb(11, 35, 188) 100%)'
+    background: 'linear-gradient(135deg,rgb(14, 6, 123) 0%,rgb(9, 31, 177) 100%)'
   }}
 >        <div className="container" style={{marginTop:'70px'}}>
           <div className="row align-items-center">
             <div className="col-12 col-lg-8">
-              <h1 className="display-5 fw-bold mb-3">
+              <h1 className="display-4 fw-bold mb-3">
                 <Tag className="me-3" size={48} />
                 Special Deals & Offers
               </h1>
-              <p className="lead mb-4" style={{ opacity: '0.9' }}>
-                Exclusive discounts and packages tailored for your perfect journey. 
-                Limited time offers with maximum savings.
-              </p>
+            
               <div className="d-flex align-items-center">
                 <div className="me-4">
                   <div className="d-flex align-items-center">
