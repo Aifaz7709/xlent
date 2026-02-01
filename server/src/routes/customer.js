@@ -1,10 +1,12 @@
-const express = require('express');
-const router = express.Router();
-const supabase = require('../../supabaseClient'); // Use the same client as auth.js
-
 // Save customer data
 router.post('/customers', async (req, res) => {
   try {
+    // Check content type
+    console.log('Content-Type:', req.headers['content-type']);
+    console.log('Request body:', req.body);
+    
+    // For FormData, body parser might not work
+    // Extract from request body (express.json() should handle both)
     const { customer_name, phone_number, email } = req.body;
 
     // Validate
@@ -47,33 +49,3 @@ router.post('/customers', async (req, res) => {
     });
   }
 });
-
-// Get all customers (for dashboard)
-router.get('/customers', async (req, res) => {
-  try {
-    const { data, error } = await supabase
-      .from('public_profiles')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('Supabase error:', error);
-      return res.status(500).json({ error: 'Database error' });
-    }
-
-    res.json({
-      success: true,
-      customers: data || [],
-      count: data?.length || 0
-    });
-
-  } catch (error) {
-    console.error('Server error:', error);
-    res.status(500).json({
-      error: 'Internal server error',
-      details: error.message
-    });
-  }
-});
-
-module.exports = router;
