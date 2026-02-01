@@ -21,7 +21,7 @@ const UserData = ({ onClose }) => {
     setIsSubmitting(true)
   
     try {
-      const baseUrl = process.env.REACT_APP_API_BASE_URL || 'https://xlent-production.up.railway.app'
+      const baseUrl = process.env.REACT_APP_API_BASE_URL || 'https://xlent-production.up.railway.app';
       
       const response = await fetch(`${baseUrl}/api/customers`, {
         method: 'POST',

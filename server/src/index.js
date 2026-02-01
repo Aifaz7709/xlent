@@ -59,8 +59,9 @@ const subscribeRouter = require('./routes/subscribe');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/cars', carsRoutes);
+app.use('/api/customers', customersRoutes);
 app.use('/api', subscribeRouter);
-app.use('/api', customersRoutes);
+
 
 /* ================================
    HEALTH CHECK
