@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const supabase = require('../supabaseClient'); // Use the same client as auth.js
+const supabase = require('../../supabaseClient'); // Use the same client as auth.js
 
 // Save customer data
 router.post('/customers', async (req, res) => {
