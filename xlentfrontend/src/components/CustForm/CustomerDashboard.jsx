@@ -23,7 +23,7 @@ const CustomerDashboard = () => {
         throw new Error(data.error || 'Failed to fetch customers')
       }
 
-      setCustomers(data.customers || [])
+      setCustomers(data.customers  || [])
       setMessage({ type: '', text: '' })
       
     } catch (error) {

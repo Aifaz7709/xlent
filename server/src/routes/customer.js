@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const supabase = require('../../supabaseClient'); // Make sure this file exists
 
-// POST - Save customer data
+// routes/customer.js
 router.post('/', async (req, res) => {
   try {
     console.log('📥 POST /api/customers - Received:', req.body);
@@ -16,9 +16,9 @@ router.post('/', async (req, res) => {
       });
     }
 
-    // Save to Supabase
+    // ✅ Use customer_inquiries instead of profiles
     const { data, error } = await supabase
-      .from('profiles')
+      .from('customer_inquiries') // CHANGED!
       .insert([
         {
           customer_name,
@@ -34,11 +34,11 @@ router.post('/', async (req, res) => {
       return res.status(500).json({ error: error.message });
     }
 
-    console.log('✅ Customer saved:', data[0]);
+    console.log('✅ Customer inquiry saved:', data[0]);
     
     res.json({
       success: true,
-      message: 'Customer saved successfully',
+      message: 'Your information has been saved successfully!',
       customer: data[0]
     });
 
@@ -51,13 +51,14 @@ router.post('/', async (req, res) => {
   }
 });
 
-// GET - Get all customers
+// GET - Get all customer inquiries
 router.get('/', async (req, res) => {
   try {
-    console.log('📥 GET /api/customers - Fetching...');
+    console.log('📥 GET /api/customers - Fetching inquiries...');
     
+    // ✅ Use customer_inquiries instead of profiles
     const { data, error } = await supabase
-      .from('profiles')
+      .from('customer_inquiries') // CHANGED!
       .select('*')
       .order('created_at', { ascending: false });
 
@@ -66,7 +67,7 @@ router.get('/', async (req, res) => {
       return res.status(500).json({ error: error.message });
     }
 
-    console.log(`✅ Found ${data?.length || 0} customers`);
+    console.log(`✅ Found ${data?.length || 0} customer inquiries`);
     
     res.json({
       success: true,

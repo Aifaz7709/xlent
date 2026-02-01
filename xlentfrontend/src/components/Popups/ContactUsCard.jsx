@@ -16,7 +16,7 @@ const ContactUsCard = ({onClose}) => {
     }));
   };
 
- const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     console.log('button clicked');
     
     e.preventDefault()
@@ -25,16 +25,17 @@ const ContactUsCard = ({onClose}) => {
     try {
       const baseUrl = process.env.REACT_APP_API_BASE_URL || 'https://xlent-production.up.railway.app';
       
-      // Use FormData like the car form
-      const formDataToSend = new FormData();
-      formDataToSend.append('customer_name', formData.name);
-      formDataToSend.append('phone_number', formData.phone_number);
-      formDataToSend.append('email', formData.email);
-  
+      // CHANGE: Send as JSON instead of FormData
       const response = await fetch(`${baseUrl}/api/customers`, {
         method: 'POST',
-        // NO Content-Type header for FormData - browser sets it automatically
-        body: formDataToSend
+        headers: {
+          'Content-Type': 'application/json' // Add this header
+        },
+        body: JSON.stringify({
+          customer_name: formData.name,      // Must match backend field name
+          phone_number: formData.phone_number,
+          email: formData.email
+        })
       })
   
       const data = await response.json()
@@ -124,20 +125,20 @@ const ContactUsCard = ({onClose}) => {
                   <div className="input-underline"></div>
                 </div>
 
-   <div className="form-group floating-group">
-                  <input
-                    type="tel"
-                    id="phone_no"
-                    name="phone_no"
-                    value={formData.phone_no}
-                    onChange={handleInputChange}
-                    required
-                    className="floating-input"
-                    placeholder=" "
-                  />
-                  <label htmlFor="phone_no" className="floating-label">Your phone_no</label>
-                  <div className="input-underline"></div>
-                </div>
+                <div className="form-group floating-group">
+  <input
+    type="tel"
+    id="phone_number"           // ✅ Changed to phone_number
+    name="phone_number"         // ✅ Changed to phone_number
+    value={formData.phone_number} // ✅ Access correct state field
+    onChange={handleInputChange}
+    required
+    className="floating-input"
+    placeholder=" "
+  />
+  <label htmlFor="phone_number" className="floating-label">Phone Number</label> {/* ✅ Changed */}
+  <div className="input-underline"></div>
+</div>
 
     <div className="form-group floating-group">
                   <input

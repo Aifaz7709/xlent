@@ -4,7 +4,7 @@ const UserData = ({ onClose }) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
-    phone_number: "", // Fixed: Use phone_number consistently
+    phone_number: "", 
     email: ''
   })
 
@@ -25,16 +25,17 @@ const UserData = ({ onClose }) => {
     try {
       const baseUrl = process.env.REACT_APP_API_BASE_URL || 'https://xlent-production.up.railway.app';
       
-      // Use FormData like the car form
-      const formDataToSend = new FormData();
-      formDataToSend.append('customer_name', formData.name);
-      formDataToSend.append('phone_number', formData.phone_number);
-      formDataToSend.append('email', formData.email);
-  
+      // CHANGE: Send as JSON instead of FormData
       const response = await fetch(`${baseUrl}/api/customers`, {
         method: 'POST',
-        // NO Content-Type header for FormData - browser sets it automatically
-        body: formDataToSend
+        headers: {
+          'Content-Type': 'application/json' // Add this header
+        },
+        body: JSON.stringify({
+          customer_name: formData.name,      // Must match backend field name
+          phone_number: formData.phone_number,
+          email: formData.email
+        })
       })
   
       const data = await response.json()
@@ -122,7 +123,7 @@ const UserData = ({ onClose }) => {
 
               <div className="form-group floating-group">
                 <input
-                  type="tel"
+                  type="text"
                   id="phone_number"
                   name="phone_number"
                   value={formData.phone_number}
