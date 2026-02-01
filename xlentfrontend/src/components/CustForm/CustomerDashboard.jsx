@@ -6,31 +6,65 @@ const CustomerDashboard = () => {
   const [search, setSearch] = useState('')
   const [message, setMessage] = useState({ type: '', text: '' })
 
-  // Fetch customers from your backend API
   const fetchCustomers = async () => {
     try {
+      setLoading(true)
+      console.log('🔄 Starting fetch...')
+      
       const baseUrl = process.env.REACT_APP_API_BASE_URL || 'https://xlent-production.up.railway.app'
       
-      const response = await fetch(`${baseUrl}/api/customer_inquiries`, {
+    // ✅ Keep the timestamp to prevent caching
+     const timestamp = new Date().getTime()
+    const url = `${baseUrl}/api/customer_inquiries?_=${timestamp}`
+      
+      console.log('📡 Fetching from:', url)
+      
+      const response = await fetch(url, {
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        cache: 'no-store' // Prevent caching
       })
-
+  
+      console.log('✅ Response status:', response.status, response.statusText)
+      
+      // Log response headers
+      const headers = {}
+      response.headers.forEach((value, key) => {
+        headers[key] = value
+      })
+      console.log('📋 Response headers:', headers)
+  
       const data = await response.json()
-
+      console.log('📦 Response data:', data)
+      
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to fetch customers')
+        throw new Error(data.error || `HTTP ${response.status}: Failed to fetch customers`)
       }
-
+  
+      console.log('👥 Customers count from API:', data.count)
+      console.log('👥 Customers array:', data.customers)
+      
+      if (data.customers && data.customers.length > 0) {
+        console.log('🎯 First customer:', data.customers[0])
+      }
+  
       setCustomers(data.customers || [])
-      setMessage({ type: '', text: '' })
+      
+      if (data.customers && data.customers.length === 0) {
+        setMessage({ 
+          type: 'warning', 
+          text: 'Database is connected but no customer records found.' 
+        })
+      } else {
+        setMessage({ type: '', text: '' })
+      }
       
     } catch (error) {
-      console.error('Error fetching customers:', error)
+      console.error('❌ Error fetching customers:', error)
       setMessage({ 
         type: 'error', 
-        text: 'Failed to load customers. Please try again.' 
+        text: `Error: ${error.message}` 
       })
       setCustomers([])
     } finally {
