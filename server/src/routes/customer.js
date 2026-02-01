@@ -1,12 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createClient } = require('@supabase/supabase-js');
-require('dotenv').config();
-
-// Initialize Supabase
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = require('../supabaseClient'); // Use the same client as auth.js
 
 // Save customer data
 router.post('/customers', async (req, res) => {
