@@ -11,7 +11,7 @@ const CustomerDashboard = () => {
     try {
       const baseUrl = process.env.REACT_APP_API_BASE_URL || 'https://xlent-production.up.railway.app'
       
-      const response = await fetch(`${baseUrl}/api/customers`, {
+      const response = await fetch(`${baseUrl}/api/customer_inquiries`, {
         headers: {
           'Content-Type': 'application/json'
         }

@@ -20,20 +20,7 @@ const HeadingsSection = () => {
     }));
   };
 
-   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setIsSubmitting(false);
-    setFormData({ name: "", phone: "" });
-    setShowForm(false);
-    
-    // Show success notification
-    showNotification("Thank you! We'll contact you soon.");
-  };
+  
 
 
 

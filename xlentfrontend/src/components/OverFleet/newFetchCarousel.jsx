@@ -43,8 +43,11 @@ const NewPropertyCard = () => {
       
       const res = await fetch(apiUrl, {
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+           'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache'
+        },
+         cache: 'no-cache'
       });
       
       if (!res.ok) {
