@@ -18,7 +18,7 @@ router.post('/', async (req, res) => {
 
     // Save to Supabase
     const { data, error } = await supabase
-      .from('public_profiles')
+      .from('profiles')
       .insert([
         {
           customer_name,
@@ -57,7 +57,7 @@ router.get('/', async (req, res) => {
     console.log('📥 GET /api/customers - Fetching...');
     
     const { data, error } = await supabase
-      .from('public_profiles')
+      .from('profiles')
       .select('*')
       .order('created_at', { ascending: false });
 
