@@ -1,12 +1,12 @@
-// Save customer data
-router.post('/customers', async (req, res) => {
+const express = require('express');
+const router = express.Router();
+const supabase = require('../../supabaseClient'); // Make sure this file exists
+
+// POST - Save customer data
+router.post('/', async (req, res) => {
   try {
-    // Check content type
-    console.log('Content-Type:', req.headers['content-type']);
-    console.log('Request body:', req.body);
+    console.log('📥 POST /api/customers - Received:', req.body);
     
-    // For FormData, body parser might not work
-    // Extract from request body (express.json() should handle both)
     const { customer_name, phone_number, email } = req.body;
 
     // Validate
@@ -30,11 +30,12 @@ router.post('/customers', async (req, res) => {
       .select();
 
     if (error) {
-      console.error('Supabase error:', error);
-      return res.status(500).json({ error: 'Database error' });
+      console.error('❌ Supabase error:', error);
+      return res.status(500).json({ error: error.message });
     }
 
-    // Success response
+    console.log('✅ Customer saved:', data[0]);
+    
     res.json({
       success: true,
       message: 'Customer saved successfully',
@@ -42,10 +43,44 @@ router.post('/customers', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Server error:', error);
+    console.error('❌ Server error:', error);
     res.status(500).json({
       error: 'Internal server error',
       details: error.message
     });
   }
 });
+
+// GET - Get all customers
+router.get('/', async (req, res) => {
+  try {
+    console.log('📥 GET /api/customers - Fetching...');
+    
+    const { data, error } = await supabase
+      .from('public_profiles')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('❌ Supabase error:', error);
+      return res.status(500).json({ error: error.message });
+    }
+
+    console.log(`✅ Found ${data?.length || 0} customers`);
+    
+    res.json({
+      success: true,
+      customers: data || [],
+      count: data?.length || 0
+    });
+
+  } catch (error) {
+    console.error('❌ Server error:', error);
+    res.status(500).json({
+      error: 'Internal server error',
+      details: error.message
+    });
+  }
+});
+
+module.exports = router;
