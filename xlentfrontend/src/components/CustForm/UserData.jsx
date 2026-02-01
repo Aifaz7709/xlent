@@ -23,16 +23,16 @@ const UserData = ({ onClose }) => {
     try {
       const baseUrl = process.env.REACT_APP_API_BASE_URL || 'https://xlent-production.up.railway.app';
       
+      // Use FormData like the car form
+      const formDataToSend = new FormData();
+      formDataToSend.append('customer_name', formData.name);
+      formDataToSend.append('phone_number', formData.phone_number);
+      formDataToSend.append('email', formData.email);
+  
       const response = await fetch(`${baseUrl}/api/customers`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          customer_name: formData.name,
-          phone_number: formData.phone_number,
-          email: formData.email
-        })
+        // NO Content-Type header for FormData - browser sets it automatically
+        body: formDataToSend
       })
   
       const data = await response.json()
@@ -59,7 +59,6 @@ const UserData = ({ onClose }) => {
       setIsSubmitting(false)
     }
   }
-
   const showNotification = (message, type = "success") => {
     const notification = document.createElement('div')
     notification.className = `notification-toast show ${type}`
