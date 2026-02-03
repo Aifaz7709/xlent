@@ -89,8 +89,7 @@ const CustomerDashboard = () => {
       day: 'numeric',
       month: 'short',
       year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    
     })
   }
 
@@ -106,7 +105,7 @@ const CustomerDashboard = () => {
       {/* Header */}
       <div className="dashboard-header">
         <div className="header-left">
-          <h1>Customer Dashboard</h1>
+          <h1>Dashboard</h1>
         </div>
         <div className="header-actions">
           <button onClick={fetchCustomers} className="refresh-btn">
@@ -213,26 +212,15 @@ const CustomerDashboard = () => {
       {loading ? (
         <div className="loading-container">
           <div className="spinner"></div>
-          <p>Loading customers...</p>
+          <p>Loading...</p>
         </div>
       ) : (
         /* Customer Table */
         <div className="customer-table-container">
           <div className="table-header">
             <div className="table-info">
-              <span className="table-count">{filteredCustomers.length} customers</span>
               {search && <span className="table-filtered">(filtered)</span>}
             </div>
-            {/* <div className="table-export">
-              <button className="export-btn">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                  <polyline points="7 10 12 15 17 10"></polyline>
-                  <line x1="12" y1="15" x2="12" y2="3"></line>
-                </svg>
-                Export
-              </button>
-            </div> */}
           </div>
           
           {filteredCustomers.length === 0 ? (
@@ -251,9 +239,9 @@ const CustomerDashboard = () => {
               <table className="customer-table">
                 <thead>
                   <tr>
-                    <th>Customer</th>
+                    <th>Customer Name</th>
                     <th>Contact</th>
-                    <th>Date Added</th>
+                    <th>Date</th>
                     <th className="actions-header">Actions</th>
                   </tr>
                 </thead>
@@ -262,9 +250,9 @@ const CustomerDashboard = () => {
                     <tr key={customer.id || customer.created_at}>
                       <td>
                         <div className="customer-info">
-                          <div className="customer-avatar">
+                          {/* <div className="customer-avatar">
                             {customer.customer_name?.charAt(0)?.toUpperCase() || 'C'}
-                          </div>
+                          </div> */}
                           <div className="customer-details">
                             <div className="customer-name">
                               {customer.customer_name || 'No name'}
@@ -306,7 +294,7 @@ const CustomerDashboard = () => {
                         </div>
                       </td>
                       <td>
-                        <div className="action-buttons">
+                        <div className="action-buttons1">
                           {customer.phone_number && (
                             <button 
                               onClick={() => window.open(`tel:${customer.phone_number}`, '_blank')}
@@ -603,7 +591,7 @@ const CustomerDashboard = () => {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 20px 24px;
+          padding: 4px 10px;
           border-bottom: 1px solid #f3f4f6;
           background: #f9fafb;
         }
@@ -765,7 +753,7 @@ const CustomerDashboard = () => {
           text-align: center;
         }
 
-        .action-buttons {
+        .action-buttons1 {
           display: flex;
           gap: 8px;
           justify-content: center;
@@ -888,7 +876,7 @@ const CustomerDashboard = () => {
             padding: 12px 16px;
           }
           
-          .action-buttons {
+          .action-buttons1 {
             justify-content: flex-start;
           }
         }
@@ -926,7 +914,7 @@ const CustomerDashboard = () => {
         @media print {
           .refresh-btn,
           .export-btn,
-          .action-buttons {
+          .action-buttons1 {
             display: none;
           }
           

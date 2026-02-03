@@ -4,13 +4,13 @@ import "./Navbar.css";
 import { LogOut, User, Settings } from "lucide-react";
 import LocationModal from "../LocationModal/LocationModal";
 
-const Navbar = ({ theme, toggleTheme, isAuthenticated, onLogout }) => {
+const Navbar = ({ theme, toggleTheme, isAuthenticated, onLogout , userData: propUserData}) => {
   const [showInvestingDropdown, setShowInvestingDropdown] = useState(false);
   const [showBorrowDropdown, setShowBorrowDropdown] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [userData, setUserData] = useState(null);
   const [showLocationModal, setShowLocationModal] = useState(false);
+  const [userData, setUserData] = useState(propUserData || null);
 
   const investingRef = useRef(null);
   const borrowRef = useRef(null);
@@ -20,9 +20,18 @@ const Navbar = ({ theme, toggleTheme, isAuthenticated, onLogout }) => {
 
   // Show tabs always (trial restriction removed)
   const showTabs = true;
-
-  // Get user data from localStorage
+  // Update userData when propUserData changes
   useEffect(() => {
+    if (propUserData) {
+      setUserData(propUserData);
+    } else {
+      // Clear user data when logged out
+      setUserData(null);
+    }
+  }, [propUserData]);
+
+   // Keep the existing localStorage sync for cross-tab updates
+   useEffect(() => {
     const getUserData = () => {
       const user = localStorage.getItem('xlent_user');
       if (user) {
@@ -31,12 +40,13 @@ const Navbar = ({ theme, toggleTheme, isAuthenticated, onLogout }) => {
         } catch (error) {
           console.error('Error parsing user data:', error);
         }
+      } else {
+        setUserData(null);
       }
     };
     
     getUserData();
     
-    // Listen for storage changes
     const handleStorageChange = (e) => {
       if (e.key === 'xlent_user') {
         getUserData();
@@ -85,14 +95,11 @@ const Navbar = ({ theme, toggleTheme, isAuthenticated, onLogout }) => {
   };
 
   const handleLogout = () => {
-    if (onLogout) {
+     {
       onLogout();
-    } else {
-      // Fallback logout function
       localStorage.removeItem('xlent_token');
       localStorage.removeItem('xlent_user');
-      window.location.href = '/login';
-    }
+    } 
     closeMenu();
   };
 
@@ -109,7 +116,7 @@ const Navbar = ({ theme, toggleTheme, isAuthenticated, onLogout }) => {
         <div className="container-fluid px-3 px-md-5">
           {/* Brand on the left corner */}
           <Link className="navbar-brand d-flex align-items-center" to="/" style={{ color: 'white' }}>
-            <img src="/XlentCar-logo-without-bg.png" alt="xlentcar Icon" width="80" height="100" className="d-inline-block align-text-top" />
+            <img src="/XlentCar-logo-without-bg.png" alt="xlentcar Icon" width="110" height="120" className="d-inline-block align-text-top" />
             {/* <span className="ms-2 fw-bolder navbar-brand-text">Xlentcar</span> */}
           </Link>
 
@@ -127,7 +134,7 @@ const Navbar = ({ theme, toggleTheme, isAuthenticated, onLogout }) => {
           </button>
 
           <div className="collapse navbar-collapse justify-content-end" id="navbarSupportedContent" ref={navbarCollapseRef}>
-            <ul className="navbar-nav align-items-center navbar-nav-custom">
+            <ul className="navbar-nav navbar-nav-custom">
               {/* Show these tabs when authenticated */}
               {showTabs && (
                 <>
@@ -161,7 +168,7 @@ const Navbar = ({ theme, toggleTheme, isAuthenticated, onLogout }) => {
                     </li>
                     <li className="nav-item">
                     <Link to="/customer-dashboard" onClick={closeMenu} className="nav-link nav-link-custom"  style={{ color: 'white' }}>
-                      Customer Dashboard
+                      Admin Dashboard
                     </Link>
                   </li>
                   </>
@@ -235,21 +242,7 @@ const Navbar = ({ theme, toggleTheme, isAuthenticated, onLogout }) => {
                         <div className="small text-muted">Signed in as</div>
                         <div className="fw-semibold text-truncate">{userData?.name || 'user@example.com'}</div>
                       </div>
-                      
-                      {/* <Link to="/dashboard" className="dropdown-item dropdown-item-custom d-flex align-items-center" >
-                        <i className="bi bi-speedometer2 me-2"></i>
-                        Dashboard
-                      </Link>
-                      
-                      <Link to="/profile" className="dropdown-item dropdown-item-custom d-flex align-items-center" >
-                        <User size={16} className="me-2" />
-                        My Profile
-                      </Link>
-                      
-                      <Link to="/settings" className="dropdown-item dropdown-item-custom d-flex align-items-center" >
-                        <Settings size={16} className="me-2" />
-                        Settings
-                      </Link> */}
+                  
                       
                     
                       

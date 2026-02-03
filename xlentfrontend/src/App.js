@@ -53,12 +53,51 @@ function AppRoutes({ theme, toggleTheme }) {
     return !!localStorage.getItem("xlent_token") && !!localStorage.getItem("xlent_user");
   });
 
+  // Add userData state
+  const [userData, setUserData] = useState(() => {
+    try {
+      const user = localStorage.getItem("xlent_user");
+      return user ? JSON.parse(user) : null;
+    } catch {
+      return null;
+    }
+  });
+
+
+  // Handle login from Login component
+  const handleLogin = (token, userData) => {
+    localStorage.setItem("xlent_token", token);
+    localStorage.setItem("xlent_user", JSON.stringify(userData));
+    setIsAuthenticated(true);
+    setUserData(userData);
+    navigate("/", { replace: true });
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("xlent_token");
     localStorage.removeItem("xlent_user");
     setIsAuthenticated(false);
+    setUserData(null); // Clear user data
     navigate("/login", { replace: true });
   };
+  // Listen for storage changes (optional, for cross-tab sync)
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const token = localStorage.getItem("xlent_token");
+      const user = localStorage.getItem("xlent_user");
+      
+      setIsAuthenticated(!!token && !!user);
+      
+      try {
+        setUserData(user ? JSON.parse(user) : null);
+      } catch {
+        setUserData(null);
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   return (
     <>
@@ -66,6 +105,8 @@ function AppRoutes({ theme, toggleTheme }) {
         theme={theme}
         toggleTheme={toggleTheme}
         isAuthenticated={isAuthenticated}
+        userData={userData} // Pass userData as prop
+
         onLogout={handleLogout}
       />
 
@@ -111,7 +152,7 @@ function AppRoutes({ theme, toggleTheme }) {
 
           <Route
             path="/login"
-            element={<Login setIsAuthenticated={setIsAuthenticated} />}
+            element={<Login setIsAuthenticated={setIsAuthenticated} onLogin={handleLogin} />}
           />
 
           <Route path="/register" element={<RegisterPage />} />

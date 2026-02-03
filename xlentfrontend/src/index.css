@@ -196,20 +196,19 @@ p { font-size: clamp(0.875rem, 2vw, 1.1rem); line-height: 1.6; }
   box-shadow: none !important;
 }
 
-.modern-search-btn {
+/* .modern-search-btn {
   background: linear-gradient(135deg, #667eea 0%, #0a319f 100%) !important;
   border: none !important;
   border-radius: 50% !important;
   width: 44px !important;
   height: 44px !important;
   display: flex !important;
-  align-items: center !important;
   justify-content: center !important;
   color: white !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3) !important;
   margin-left: 4px !important;
-}
+} */
 
 .modern-search-btn:hover {
   transform: scale(1.05) !important;

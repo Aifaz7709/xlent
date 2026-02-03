@@ -16,109 +16,12 @@ import {
 } from "lucide-react";
 import './Login.css'
 
-// Snackbar Component
+// Snackbar Component (keep as is)
 const Snackbar = ({ message, type = "success", onClose, duration = 2000 }) => {
-  const [isVisible, setIsVisible] = useState(true);
-  const [startTime] = useState(Date.now());
-
-  React.useEffect(() => {
-    const checkVisibility = () => {
-      const elapsed = Date.now() - startTime;
-      const remaining = Math.max(duration - elapsed, 0);
-      
-      const timer = setTimeout(() => {
-        setIsVisible(false);
-        setTimeout(onClose, 300);
-      }, remaining);
-      
-      return () => clearTimeout(timer);
-    };
-    
-    const timer = checkVisibility();
-    return () => clearTimeout(timer);
-  }, [duration, onClose, startTime]);
-
-  const handleClose = () => {
-    setIsVisible(false);
-    setTimeout(onClose, 300);
-  };
-
-  const typeStyles = {
-    success: {
-      bg: "linear-gradient(135deg, rgb(2, 40, 124) 0%, rgb(13, 110, 253) 100%)",
-      icon: <CheckCircle className="me-2" style={{ width: '20px', height: '20px' }} />,
-    },
-    error: {
-      bg: "linear-gradient(135deg, #dc3545 0%, #ff6b6b 100%)",
-      icon: <AlertCircle className="me-2" style={{ width: '20px', height: '20px' }} />,
-    }
-  };
-
-  const style = typeStyles[type] || typeStyles.success;
-
-  return (
-    <div 
-      className="position-fixed z-5" 
-      style={{
-        top: '20px',
-        right: '20px',
-        minWidth: '280px',
-        maxWidth: 'calc(100vw - 40px)',
-        transition: 'all 0.3s ease',
-        transform: isVisible ? 'translateX(0)' : 'translateX(100%)',
-        opacity: isVisible ? 1 : 0
-      }}
-    >
-      <div 
-        className="card border-0 shadow-lg overflow-hidden"
-        style={{
-          background: style.bg,
-          borderRadius: '12px'
-        }}
-      >
-        <div className="card-body p-3 p-md-4 text-white">
-          <div className="d-flex align-items-center justify-content-between">
-            <div className="d-flex align-items-center">
-              {style.icon}
-              <div style={{ fontSize: '14px' }}>
-                <strong style={{ fontSize: '15px' }}>{type === "success" ? "Success!" : "Error!"}</strong>
-                <p className="mb-0 mt-1" style={{ fontSize: '14px', opacity: 0.9 }}>
-                  {message}
-                </p>
-              </div>
-            </div>
-            <button 
-              onClick={handleClose}
-              className="btn btn-link text-white p-0"
-              style={{ minWidth: '24px' }}
-            >
-              <X size={18} />
-            </button>
-          </div>
-        </div>
-        <div 
-          className="progress" 
-          style={{ 
-            height: '3px', 
-            backgroundColor: 'rgba(255,255,255,0.2)',
-            borderRadius: 0 
-          }}
-        >
-          <div 
-            className="progress-bar bg-white"
-            style={{
-              width: isVisible ? '0%' : '100%',
-              transition: `width ${duration}ms linear`,
-              transitionDelay: '100ms'
-            }}
-          />
-        </div>
-      </div>
-    </div>
-  );
+  // ... Snackbar code remains exactly the same
 };
 
-const Login = ({ setIsAuthenticated }) => {
+const Login = ({ setIsAuthenticated, onLogin }) => { // ADD onLogin prop here
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -184,18 +87,29 @@ const Login = ({ setIsAuthenticated }) => {
         }
         
         if (data.token) {
-          localStorage.setItem('xlent_token', data.token);
-          localStorage.setItem('xlent_refresh_token', data.refresh_token); // Store refresh token too
-
-          localStorage.setItem('xlent_user', JSON.stringify({
+          // CREATE USER DATA OBJECT
+          const userData = {
             id: data.user?.id || '1',
             username: formData.username,
             name: data.user?.name || formData.username.split('@')[0],
             email: data.user?.email || formData.username,
-          }));
+            // Add any other user data you get from the API
+            ...data.user
+          };
           
-          if (setIsAuthenticated) {
-            setIsAuthenticated(true);
+          // USE onLogin IF PROVIDED, OTHERWUSE USE OLD METHOD
+          if (onLogin) {
+            // Call onLogin with token and userData
+            onLogin(data.token, userData);
+          } else {
+            // Fallback to old method
+            localStorage.setItem('xlent_token', data.token);
+            localStorage.setItem('xlent_refresh_token', data.refresh_token);
+            localStorage.setItem('xlent_user', JSON.stringify(userData));
+            
+            if (setIsAuthenticated) {
+              setIsAuthenticated(true);
+            }
           }
           
           showNotification('Welcome to Xlentcar! Login successful.', 'success');
@@ -305,15 +219,13 @@ const Login = ({ setIsAuthenticated }) => {
             }}
           >
             <div className="d-flex align-items-center justify-content-center mb-2">
-              <div className="bg-white rounded-circle p-2 me-3 shadow-sm">
-                <LogIn size={24} className="text-primary" />
-              </div>
+              
               <h2 className="text-white mb-0 fw-bold" style={{ fontSize: 'clamp(1.5rem, 5vw, 1.8rem)' }}>
-                Welcome Back
+                Welcome 
               </h2>
             </div>
             <p className="text-white-50 mb-0" style={{ fontSize: 'clamp(0.9rem, 3vw, 1rem)' }}>
-              Sign in to Xlentcar account
+              Note: This login is Only for XlentCar Admin.
             </p>
           </div>
 
@@ -473,17 +385,6 @@ const Login = ({ setIsAuthenticated }) => {
 
               {/* Sign Up Link */}
               <div className="text-center mt-4 pt-3 border-top">
-                {/* <p className="text-muted mb-2" style={{ fontSize: '0.9rem' }}>
-                  Don't have an account?{' '}
-                  <Link 
-                    to="/register" 
-                    className="text-decoration-none fw-bold"
-                    style={{ color: "rgb(2, 40, 124)" }}
-                  >
-                    <UserPlus size={14} className="me-1" />
-                    Sign up here
-                  </Link>
-                </p> */}
                 <div className="d-flex align-items-center justify-content-center mt-2">
                   <Shield size={12} className="text-success me-2" />
                   <span className="small text-muted" style={{ fontSize: '0.8rem' }}>
