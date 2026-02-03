@@ -109,8 +109,8 @@ const Navbar = ({ theme, toggleTheme, isAuthenticated, onLogout }) => {
         <div className="container-fluid px-3 px-md-5">
           {/* Brand on the left corner */}
           <Link className="navbar-brand d-flex align-items-center" to="/" style={{ color: 'white' }}>
-            <img src="/LogoTranWhite.png" alt="xlentcar Icon" width="60" height="50" className="d-inline-block align-text-top" />
-            <span className="ms-2 fw-bolder navbar-brand-text">Xlentcar</span>
+            <img src="/XlentCar-logo-without-bg.png" alt="xlentcar Icon" width="80" height="100" className="d-inline-block align-text-top" />
+            {/* <span className="ms-2 fw-bolder navbar-brand-text">Xlentcar</span> */}
           </Link>
 
           <button

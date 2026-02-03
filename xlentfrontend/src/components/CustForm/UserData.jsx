@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-
+import XlentcarLoader from '../Loader/XlentcarLoader'
 const UserData = ({ onClose }) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
     phone_number: "", 
@@ -20,7 +21,7 @@ const UserData = ({ onClose }) => {
     console.log('button clicked');
     
     e.preventDefault()
-    setIsSubmitting(true)
+    setIsLoading(true)
   
     try {
       const baseUrl = process.env.REACT_APP_API_BASE_URL || 'https://xlent-production.up.railway.app';
@@ -59,7 +60,7 @@ const UserData = ({ onClose }) => {
       console.error('Error saving data:', error)
       showNotification("Something went wrong. Please try again.", "error")
     } finally {
-      setIsSubmitting(false)
+      setIsLoading(false)
     }
   }
   const showNotification = (message, type = "success") => {
@@ -153,13 +154,12 @@ const UserData = ({ onClose }) => {
 
               <button 
                 type="submit" 
-                className={`submit-btn ${isSubmitting ? 'submitting' : ''}`}
-                disabled={isSubmitting}
+                  className={`submit-btn ${isLoading ? 'submitting' : ''}`}
+                disabled={isLoading}
               >
-                {isSubmitting ? (
+                {isLoading ? (
                   <>
-                    <div className="spinner"></div>
-                    Processing...
+                    <XlentcarLoader />
                   </>
                 ) : (
                   <>
@@ -185,6 +185,39 @@ const UserData = ({ onClose }) => {
           </div>
         </div>
       </div>
+      {/* Add CSS for loader overlay */}
+      <style jsx>{`
+        .loader-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(10, 25, 41, 0.95);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 9999;
+        }
+        
+        .loader-container {
+          text-align: center;
+          color: white;
+          padding: 40px;
+          background: rgba(2, 40, 124, 0.2);
+          border-radius: 20px;
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(74, 144, 226, 0.3);
+        }
+        
+        .loader-text {
+          margin-top: 20px;
+          font-size: 1.2rem;
+          color: #87ceeb;
+          font-weight: 300;
+          letter-spacing: 1px;
+        }
+      `}</style>
     </div>
   )
 }

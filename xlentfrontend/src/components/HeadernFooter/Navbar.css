@@ -1,12 +1,11 @@
 /* Navbar Responsive Styles */
 
 .navbar-custom {
-  padding: 0 !important;
   transition: all 0.3s ease;
 }
 
 .navbar-brand {
-  padding: 12px 15px;
+  padding: 5px 5px;
 }
 
 @media (min-width: 576px) {
@@ -17,7 +16,7 @@
 
 @media (min-width: 992px) {
   .navbar-brand {
-    padding: 12px 0;
+    padding: 10px 0;
   }
 }
 
@@ -201,18 +200,18 @@
 
 /* Fixed Navbar Top Spacing */
 body {
-  padding-top: 70px;
+  padding-top: 60px;
 }
 
 @media (min-width: 576px) {
   body {
-    padding-top: 75px;
+    padding-top: 40px;
   }
 }
 
 @media (min-width: 992px) {
   body {
-    padding-top: 70px;
+    padding-top: 40px;
   }
 }
 

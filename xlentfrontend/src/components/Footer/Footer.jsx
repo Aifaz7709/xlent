@@ -15,7 +15,7 @@ const Footer = () => {
               <strong>Xlentcar Rentals</strong><br/>
              Chennai, Tamil Nadu<br/>
             <br/>
-              <abbr>Support </abbr> (+91) 8682844516 
+              <abbr>Support </abbr> (+91) 8682844516  
             </address>
           </div>
 

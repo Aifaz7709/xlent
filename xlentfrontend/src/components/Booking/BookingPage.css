@@ -457,7 +457,7 @@
 }
 
 /* Notification Toast */
-.notification-toast {
+/* .notification-toast {
   position: fixed;
   bottom: 2rem;
   right: 2rem;
@@ -470,7 +470,7 @@
   opacity: 0;
   transition: all 0.3s ease;
   z-index: 1001;
-}
+} */
 
 .notification-toast.show {
   transform: translateY(0);

@@ -241,42 +241,6 @@ const sampleCards = [
     rating: 5,
     verifiedRenter: true,
     featured: true
-  },
-  { 
-    name: "Vikram Singh", 
-    tripPurpose: "Local Commute",
-    location: "Delhi, NCR",
-    carModel: "Tata Altroz",
-    rentalPeriod: "7 days",
-    text: "Needed a car for daily office commute while my car was in service. The Altroz was perfect - great mileage and comfortable for Delhi traffic. The weekly discount was a bonus!",
-    img: "/img/webp/person5.webp",
-    rating: 4,
-    verifiedRenter: true,
-    featured: false
-  },
-  { 
-    name: "Neha Gupta", 
-    tripPurpose: "Moving House",
-    location: "Pune, Maharashtra",
-    carModel: "Mahindra Bolero",
-    rentalPeriod: "1 day",
-    text: "Saved me thousands compared to professional movers! The Bolero had plenty of space for all my belongings. The unlimited kilometer policy was perfect for multiple trips.",
-    img: "/img/webp/person7.webp",
-    rating: 5,
-    verifiedRenter: true,
-    featured: false
-  },
-  { 
-    name: "Rajesh Kumar", 
-    tripPurpose: "Road Trip",
-    location: "Chennai, Tamil Nadu",
-    carModel: "Toyota Innova",
-    rentalPeriod: "10 days",
-    text: "Perfect vehicle for our family road trip to Kodaikanal! The Innova was comfortable for long drives and handled the ghat sections beautifully. The all-India permit made it stress-free.",
-    img: "/img/webp/person12.webp",
-    rating: 5,
-    verifiedRenter: true,
-    featured: false
   }
 ];
 

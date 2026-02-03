@@ -159,43 +159,10 @@ const HelpCenter = () => {
                 Find answers to frequently asked questions or get in touch with our support team.
               </p>
             </div>
-            {/* <div className="col-12 col-lg-4">
-              <div className="card bg-white bg-opacity-10 border-0 text-white">
-                <div className="card-body">
-                  <h5 className="card-title mb-3">Need Immediate Help?</h5>
-                  <p className="card-text small mb-3">
-                    Our team is available 24/7 to assist you with any urgent matters.
-                  </p>
-                  <a href="tel:+9186828XXXXX" className="btn btn-light text-primary w-100 fw-bold">
-                    <Phone size={18} className="me-2" />
-                    Emergency Hotline: +91 86828 *****
-                  </a>
-                </div>
-              </div>
-            </div> */}
+           
           </div>
 
-          {/* Search Bar */}
-          {/* <div className="row mt-4">
-            <div className="col-12 col-md-10 col-lg-8 mx-auto">
-              <div className="input-group input-group-lg">
-                <span className="input-group-text bg-white text-primary border-0">
-                  <Search size={20} />
-                </span>
-                <input
-                  type="text"
-                  className="form-control border-0"
-                  placeholder="Search for help..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  style={{ boxShadow: 'none' }}
-                />
-                <button className="btn btn-light text-primary border-0">
-                  Search
-                </button>
-              </div>
-            </div>
-          </div> */}
+    
         </div>
       </div>
 
@@ -304,7 +271,7 @@ const HelpCenter = () => {
         </div>
 
         {/* Additional Resources */}
-        <div className="row mt-5">
+        {/* <div className="row mt-5">
           <div className="col-12">
             <div className="card border-0 shadow-sm">
               <div className="card-body p-4">
@@ -358,32 +325,9 @@ const HelpCenter = () => {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Didn't Find Answer Section */}
-        {/* <div className="row mt-5">
-          <div className="col-12">
-            <div className="text-center py-5">
-              <div className="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-4 mb-4">
-                <HelpCircle size={48} className="text-primary" />
-              </div>
-              <h3 className="h4 mb-3 text-dark">Still Need Help?</h3>
-              <p className="text-muted mb-4">
-                Can't find what you're looking for? Our team is ready to help you.
-              </p>
-              <div className="d-flex flex-column flex-md-row justify-content-center gap-3">
-                <button className="btn btn-primary px-4">
-                  <MessageSquare size={18} className="me-2" />
-                  Start Live Chat
-                </button>
-                <button className="btn btn-outline-primary px-4">
-                  <Mail size={18} className="me-2" />
-                  Send us an Email
-                </button>
-              </div>
-            </div>
-          </div>
         </div> */}
+
+  
       </div>
 
       {/* Quick Stats */}
@@ -399,11 +343,11 @@ const HelpCenter = () => {
               <div className="text-muted small">Average Response Time</div>
             </div>
             <div className="col-6 col-md-3">
-              <div className="text-primary fw-bold fs-3">98%</div>
+              <div className="text-primary fw-bold fs-3">95%</div>
               <div className="text-muted small">Satisfaction Rate</div>
             </div>
             <div className="col-6 col-md-3">
-              <div className="text-primary fw-bold fs-3">5000+</div>
+              <div className="text-primary fw-bold fs-3">3000+</div>
               <div className="text-muted small">Customers Helped</div>
             </div>
           </div>

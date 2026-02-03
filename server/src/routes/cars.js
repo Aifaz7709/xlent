@@ -302,7 +302,6 @@ router.put('/:id', uploadMiddleware, async (req, res) => {
       .update(updateData)
       .eq('id', id)
       .select()
-      .single();
 
     if (updateError) {
       return res.status(400).json({ error: updateError.message });

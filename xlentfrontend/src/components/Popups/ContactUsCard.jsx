@@ -1,12 +1,14 @@
 import React, { useState } from "react";
+import XlentcarLoader from '../Loader/XlentcarLoader'; // Adjust the path as needed
 
 const ContactUsCard = ({onClose}) => {
   const [formData, setFormData] = useState({
     name: "",
-      phone_number: "",
-      email:''
+    phone_number: "",
+    email:''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -17,22 +19,20 @@ const ContactUsCard = ({onClose}) => {
   };
 
   const handleSubmit = async (e) => {
-    console.log('button clicked');
     
     e.preventDefault()
-    setIsSubmitting(true)
+    setIsLoading(true)
   
     try {
       const baseUrl = process.env.REACT_APP_API_BASE_URL || 'https://xlent-production.up.railway.app';
       
-      // CHANGE: Send as JSON instead of FormData
       const response = await fetch(`${baseUrl}/api/customer_inquiries`,{
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json' // Add this header
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          customer_name: formData.name,      // Must match backend field name
+          customer_name: formData.name,
           phone_number: formData.phone_number,
           email: formData.email
         })
@@ -45,7 +45,7 @@ const ContactUsCard = ({onClose}) => {
       }
   
       // Show success message
-      showNotification("Thank you! Your information has been saved.")
+      showNotification("Thank you! We will Contact You Soon.")
   
       // Reset form
       setFormData({ name: "", phone_number: "", email: "" })
@@ -59,16 +59,16 @@ const ContactUsCard = ({onClose}) => {
       console.error('Error saving data:', error)
       showNotification("Something went wrong. Please try again.", "error")
     } finally {
-      setIsSubmitting(false)
+       setIsLoading(false)
     }
   }
 
-  const showNotification = (message) => {
+  const showNotification = (message, type = "success") => {
     const notification = document.createElement('div');
-    notification.className = 'notification-toast show';
+    notification.className = `notification-toast show ${type}`;
     notification.innerHTML = `
       <div class="notification-content">
-        <div class="notification-icon">✓</div>
+        <div class="notification-icon">${type === "success" ? "✓" : "!"}</div>
         <div class="notification-text">${message}</div>
       </div>
     `;
@@ -84,115 +84,121 @@ const ContactUsCard = ({onClose}) => {
 
   return (
     <>
-     
+      {/* Show loader as overlay when submitting */}
+      {isLoading && (
+        <div className="loader-overlay">
+          <div className="loader-content">
+            <XlentcarLoader />
+          </div>
+        </div>
+      )}
 
-        <div className="modern-modal-overlay" onClick={onClose}>
-          <div className="modern-modal-container" onClick={(e) => e.stopPropagation()}>
-            <div className="modern-modal-content">
-              {/* Animated Background */}
-              <div className="modal-bg-shapes">
-                <div className="shape shape-1"></div>
-                <div className="shape shape-2"></div>
-                <div className="shape shape-3"></div>
+      <div className="modern-modal-overlay" onClick={onClose}>
+        <div className="modern-modal-container" onClick={(e) => e.stopPropagation()}>
+          <div className="modern-modal-content">
+            {/* Animated Background */}
+            <div className="modal-bg-shapes">
+              <div className="shape shape-1"></div>
+              <div className="shape shape-2"></div>
+              <div className="shape shape-3"></div>
+            </div>
+            
+            {/* Header */}
+            <div className="modal-header">
+              <h2 className="modal-title">Get started with XLent</h2>
+              <button 
+                className="modal-close-btn"
+                onClick={onClose}
+                disabled={isLoading}
+              >
+                <span style={{paddingBottom: '5px'}}>×</span>
+              </button>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="modern-form">
+              <div className="form-group floating-group">
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                  className="floating-input"
+                  placeholder=" "
+                  disabled={isLoading}
+                />
+                <label htmlFor="name" className="floating-label">Your Name</label>
+                <div className="input-underline"></div>
               </div>
-              
-              {/* Header */}
-              <div className="modal-header">
-              
-                <h2 className="modal-title">Get started with XLent</h2>
-             
-                <button 
-                  className="modal-close-btn"
-                >
-                  <span style={{paddingBottom: '5px'}} onClick={onClose}>×</span>
-                </button>
+
+              <div className="form-group floating-group">
+                <input
+                  type="tel"
+                  id="phone_number"
+                  name="phone_number"
+                  value={formData.phone_number}
+                  onChange={handleInputChange}
+                  required
+                  className="floating-input"
+                  placeholder=" "
+                  disabled={isLoading}
+                />
+                <label htmlFor="phone_number" className="floating-label">Phone Number</label>
+                <div className="input-underline"></div>
               </div>
 
-              {/* Form */}
-              <form onSubmit={handleSubmit} className="modern-form">
-                <div className="form-group floating-group">
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    required
-                    className="floating-input"
-                    placeholder=" "
-                  />
-                  <label htmlFor="name" className="floating-label">Your Name</label>
-                  <div className="input-underline"></div>
-                </div>
+              <div className="form-group floating-group">
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                  className="floating-input"
+                  placeholder=" "
+                  disabled={isLoading}
+                />
+                <label htmlFor="email" className="floating-label">Email</label>
+                <div className="input-underline"></div>
+              </div>
 
-                <div className="form-group floating-group">
-  <input
-    type="tel"
-    id="phone_number"           // ✅ Changed to phone_number
-    name="phone_number"         // ✅ Changed to phone_number
-    value={formData.phone_number} // ✅ Access correct state field
-    onChange={handleInputChange}
-    required
-    className="floating-input"
-    placeholder=" "
-  />
-  <label htmlFor="phone_number" className="floating-label">Phone Number</label> {/* ✅ Changed */}
-  <div className="input-underline"></div>
-</div>
+              <button 
+                type="submit" 
+                className={`submit-btn ${isLoading ? 'submitting' : ''}`}
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <div className="button"></div>
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <span>Get Started Now</span>
+                    <svg className="btn-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M8 1L14.5 8L8 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M14.5 8H1.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </>
+                )}
+              </button>
+            </form>
 
-    <div className="form-group floating-group">
-                  <input
-                    type="text"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                    className="floating-input"
-                    placeholder=" "
-                  />
-                  <label htmlFor="email" className="floating-label">Email</label>
-                  <div className="input-underline"></div>
-                </div>
-
-              <div>
-
-</div>
-
-                <button 
-                  type="submit" 
-                  className={`submit-btn ${isSubmitting ? 'submitting' : ''}`}
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <div className="spinner"></div>
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      <span>Get Started Now</span>
-                      <svg className="btn-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                        <path d="M8 1L14.5 8L8 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M14.5 8H1.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </>
-                  )}
-                </button>
-              </form>
-
-              {/* Footer */}
-              <div className="modal-footer">
-                <div className="security-badge">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                    <path d="M8 1L14.5 4V7C14.5 10.5 12 13.5 8 15C4 13.5 1.5 10.5 1.5 7V4L8 1Z" fill="currentColor"/>
-                  </svg>
-                  <span>Your information is secure and encrypted</span>
-                </div>
+            {/* Footer */}
+            <div className="modal-footer">
+              <div className="security-badge">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M8 1L14.5 4V7C14.5 10.5 12 13.5 8 15C4 13.5 1.5 10.5 1.5 7V4L8 1Z" fill="currentColor"/>
+                </svg>
+                <span>Your information is secure and encrypted</span>
               </div>
             </div>
           </div>
         </div>
+      </div>
     
       <style jsx>{`
         /* Color Variables */
@@ -201,6 +207,53 @@ const ContactUsCard = ({onClose}) => {
           --secondary-blue: rgb(0, 38, 153);
           --secondary-blue-light: rgb(0, 82, 204);
           --secondary-blue-lighter: rgba(0, 38, 153, 0.1);
+        }
+
+        /* Loader Overlay */
+        .loader-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(10, 25, 41, 0.95);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 10000;
+        }
+        
+        .loader-content {
+          text-align: center;
+          color: white;
+          padding: 40px;
+          background: transparent;
+          border-radius: 20px;
+          backdrop-filter: blur(10px);
+          min-width: 300px;
+        }
+        
+        .loading-text {
+          margin-top: 20px;
+          font-size: 1.2rem;
+          color: #87ceeb;
+          font-weight: 300;
+          letter-spacing: 1px;
+        }
+        
+        .button-spinner {
+          display: inline-block;
+          width: 20px;
+          height: 20px;
+          border: 3px solid rgba(255, 255, 255, 0.3);
+          border-radius: 50%;
+          border-top-color: white;
+          animation: spin 1s ease-in-out infinite;
+          margin-right: 10px;
+        }
+        
+        @keyframes spin {
+          to { transform: rotate(360deg); }
         }
 
         /* Modern Modal Styles */
@@ -285,33 +338,11 @@ const ContactUsCard = ({onClose}) => {
           position: relative;
         }
 
-        .modal-icon {
-          margin-bottom: 1rem;
-        }
-
-        .icon-circle {
-          width: 60px;
-          height: 60px;
-          background: white;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin: 0 auto;
-          color: var(--secondary-blue);
-          box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3);
-        }
-
         .modal-title {
           color: white;
           font-size: 1.5rem;
           font-weight: 700;
           margin-bottom: 0.5rem;
-        }
-
-        .modal-subtitle {
-          color: rgba(255, 255, 255, 0.9);
-          font-size: 0.9rem;
         }
 
         .modal-close-btn {
@@ -334,10 +365,15 @@ const ContactUsCard = ({onClose}) => {
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
-        .modal-close-btn:hover {
+        .modal-close-btn:hover:not(:disabled) {
           background: var(--secondary-blue-light);
           color: white;
           transform: rotate(90deg);
+        }
+
+        .modal-close-btn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
         }
 
         /* Form Styles */
@@ -362,9 +398,14 @@ const ContactUsCard = ({onClose}) => {
           transition: all 0.3s ease;
         }
 
-        .floating-input:focus {
+        .floating-input:focus:not(:disabled) {
           outline: none;
           border-bottom-color: white;
+        }
+
+        .floating-input:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
         }
 
         .floating-input::placeholder {
@@ -423,13 +464,14 @@ const ContactUsCard = ({onClose}) => {
           box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
         }
 
-        .submit-btn:hover:not(.submitting) {
+        .submit-btn:hover:not(.submitting):not(:disabled) {
           transform: translateY(-2px);
           box-shadow: 0 8px 25px rgba(255, 255, 255, 0.4);
           background: rgba(255, 255, 255, 0.95);
         }
 
-        .submit-btn.submitting {
+        .submit-btn.submitting,
+        .submit-btn:disabled {
           opacity: 0.8;
           cursor: not-allowed;
           background: rgba(255, 255, 255, 0.8);
@@ -449,7 +491,7 @@ const ContactUsCard = ({onClose}) => {
           color: var(--secondary-blue);
         }
 
-        .submit-btn:hover .btn-arrow {
+        .submit-btn:hover:not(.submitting) .btn-arrow {
           transform: translateX(3px);
         }
 
@@ -469,39 +511,6 @@ const ContactUsCard = ({onClose}) => {
           background: rgba(255, 255, 255, 0.1);
           padding: 0.75rem 1rem;
           border-radius: 10px;
-          border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        /* Button Animation */
-        .modern-btn {
-          position: relative;
-          overflow: hidden;
-          transition: all 0.3s ease;
-        }
-
-        .modern-btn .btn-content {
-          display: inline-block;
-          transition: transform 0.3s ease;
-        }
-
-        .modern-btn .btn-arrow {
-          display: inline-block;
-          transition: transform 0.3s ease;
-          margin-left: 0.5rem;
-        }
-
-        .modern-btn:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 8px 25px rgba(0, 38, 153, 0.3);
-          background: rgba(255, 255, 255, 0.95);
-        }
-
-        .modern-btn:hover .btn-content {
-          transform: translateX(-5px);
-        }
-
-        .modern-btn:hover .btn-arrow {
-          transform: translateX(5px);
         }
 
         /* Notification Toast */
@@ -516,8 +525,13 @@ const ContactUsCard = ({onClose}) => {
           box-shadow: 0 10px 30px rgba(0, 38, 153, 0.3);
           transform: translateX(400px);
           transition: transform 0.3s ease;
-          z-index: 10000;
+          z-index: 10001;
           border: 2px solid var(--secondary-blue);
+        }
+
+        .notification-toast.error {
+          border-color: #ff4444;
+          color: #ff4444;
         }
 
         .notification-toast.show {
@@ -600,6 +614,15 @@ const ContactUsCard = ({onClose}) => {
           
           .modal-title {
             font-size: 1.3rem;
+          }
+          
+          .loader-content {
+            padding: 30px 20px;
+            min-width: 280px;
+          }
+          
+          .loading-text {
+            font-size: 1rem;
           }
         }
       `}</style>

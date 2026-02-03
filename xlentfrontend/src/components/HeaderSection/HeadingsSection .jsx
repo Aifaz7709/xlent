@@ -22,9 +22,6 @@ const HeadingsSection = () => {
 
   
 
-
-
-
     const showNotification = (message) => {
     const notification = document.createElement('div');
     notification.className = 'notification-toast show';

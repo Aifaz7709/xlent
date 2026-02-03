@@ -102,23 +102,20 @@ const CustomerDashboard = () => {
   ).length
 
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-container mt-5">
       {/* Header */}
       <div className="dashboard-header">
         <div className="header-left">
           <h1>Customer Dashboard</h1>
-          <p className="header-subtitle">Manage and contact your customers</p>
         </div>
         <div className="header-actions">
           <button onClick={fetchCustomers} className="refresh-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
             </svg>
-            Refresh
+            
           </button>
-          <span className="customer-count">
-            <strong>{totalCustomers}</strong> total customers
-          </span>
+         
         </div>
       </div>
 
@@ -133,7 +130,7 @@ const CustomerDashboard = () => {
       <div className="stats-grid">
         <div className="stat-card">
           <div className="stat-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
               <circle cx="9" cy="7" r="4"></circle>
               <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
@@ -226,7 +223,7 @@ const CustomerDashboard = () => {
               <span className="table-count">{filteredCustomers.length} customers</span>
               {search && <span className="table-filtered">(filtered)</span>}
             </div>
-            <div className="table-export">
+            {/* <div className="table-export">
               <button className="export-btn">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -235,7 +232,7 @@ const CustomerDashboard = () => {
                 </svg>
                 Export
               </button>
-            </div>
+            </div> */}
           </div>
           
           {filteredCustomers.length === 0 ? (
@@ -347,16 +344,16 @@ const CustomerDashboard = () => {
                               </svg>
                             </button>
                           )}
-                          <button 
-                            className="action-btn more-btn"
-                            title="More options"
-                          >
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <circle cx="12" cy="12" r="1"></circle>
-                              <circle cx="19" cy="12" r="1"></circle>
-                              <circle cx="5" cy="12" r="1"></circle>
-                            </svg>
-                          </button>
+                            {/* <button 
+                              className="action-btn more-btn"
+                              title="More options"
+                            >
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <circle cx="12" cy="12" r="1"></circle>
+                                <circle cx="19" cy="12" r="1"></circle>
+                                <circle cx="5" cy="12" r="1"></circle>
+                              </svg>
+                            </button> */}
                         </div>
                       </td>
                     </tr>
@@ -412,7 +409,7 @@ const CustomerDashboard = () => {
           background: #3b82f6;
           color: white;
           border: none;
-          padding: 10px 16px;
+          padding: 5px 20px;
           border-radius: 8px;
           cursor: pointer;
           font-size: 14px;
@@ -430,9 +427,7 @@ const CustomerDashboard = () => {
           box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
         }
 
-        .refresh-btn svg {
-          animation: spin 2s linear infinite;
-        }
+     
 
         .customer-count {
           color: #4b5563;
@@ -904,7 +899,6 @@ const CustomerDashboard = () => {
           }
           
           .refresh-btn {
-            width: 100%;
             justify-content: center;
           }
           
