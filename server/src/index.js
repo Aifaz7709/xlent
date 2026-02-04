@@ -16,39 +16,43 @@ const allowedOrigins = [
   'http://localhost:3000',
 ];
 
-app.use(cors({
+// Define corsOptions BEFORE using it
+const corsOptions = {
   origin: (origin, callback) => {
-    // allow non-browser clients (Postman, curl)
+    // Allow requests with no origin (like mobile apps, curl, Postman)
     if (!origin) return callback(null, true);
-
+    
+    // Check if origin is allowed
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
       console.warn(`Blocked by CORS: ${origin}`);
-      callback(null, true);
-
+      callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE','OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: [
     'Content-Type',
     'Authorization',
     'X-Requested-With',
     'Accept',
-     'Origin',
+    'Origin',
     'Access-Control-Allow-Credentials'
   ],
   exposedHeaders: ['Content-Disposition'],
-  maxAge: 86400 
-}));
+  maxAge: 86400 // 24 hours for preflight cache
+};
+
+// Apply CORS middleware
+app.use(cors(corsOptions));
+
+// Preflight handler for all routes
+app.options('*', cors(corsOptions));
+
 
 app.use(express.json({ limit: '25mb' }));
 app.use(express.urlencoded({ extended: true, limit: '25mb' }));
-app.use(cors(corsOptions));
-
-// Add CORS headers manually for preflight
-app.options('*', cors(corsOptions));
 
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} ${req.method} ${req.url}`);
