@@ -91,7 +91,7 @@ const HeadingsSection = () => {
   }}>
     ₹
   </span> 
-  599/Day
+  599/Day 
 </div>
 
 <div className="content-wrapper">

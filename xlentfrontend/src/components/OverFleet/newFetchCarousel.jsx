@@ -459,24 +459,13 @@ const NewPropertyCard = () => {
 
                     {renderCarImage(car)}
 
+
+
                     <div className="car-details">
                       <div className="car-header">
                         <h3 className="car-name">{car.car_model || car.name}</h3>
                         {/* <div className="car-price">${car.price}<span>/day</span></div> */}
                       </div>
-                      
-                      {/* <div className="car-rating">
-                        <span className="stars">
-                          {Array.from({ length: 5 }).map((_, i) => (
-                            <span key={i} className={i < Math.floor(car.rating) ? 'star-filled' : 'star-empty'}>
-                              ★
-                            </span>
-                          ))}
-                        </span>
-                        <span className="rating-text">{car.rating}</span>
-                      </div> */}
-
-                 
 
                       <div className="car-location">
                         <span className="location-icon">📍</span>

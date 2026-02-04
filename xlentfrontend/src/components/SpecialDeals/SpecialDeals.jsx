@@ -627,9 +627,9 @@ const   SpecialDeals = () => {
               </p>
             </div>
             <div className="col-12 col-lg-4 text-lg-end mt-3 mt-lg-0">
-              <a href="tel:+918682844516" className="btn btn-light text-primary btn-lg px-4">
+              <a href="tel:+917568656756" className="btn btn-light text-primary btn-lg px-4">
                 <Phone size={18} className="me-2" />
-                Call Now: +91 8682844516
+                Call Now: +91 7568656756
               </a>
             </div>
           </div>

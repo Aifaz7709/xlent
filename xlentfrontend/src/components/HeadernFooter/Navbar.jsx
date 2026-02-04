@@ -4,7 +4,7 @@ import "./Navbar.css";
 import { LogOut, User, Settings } from "lucide-react";
 import LocationModal from "../LocationModal/LocationModal";
 
-const Navbar = ({ theme, toggleTheme, isAuthenticated, onLogout , userData: propUserData}) => {
+const Navbar = ({  isAuthenticated, onLogout , userData: propUserData, onLoginHover }) => {
   const [showInvestingDropdown, setShowInvestingDropdown] = useState(false);
   const [showBorrowDropdown, setShowBorrowDropdown] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
@@ -280,7 +280,7 @@ const Navbar = ({ theme, toggleTheme, isAuthenticated, onLogout , userData: prop
                         e.target.style.borderColor = 'rgba(255, 255, 255, 0.3)';
                       }}
                     >
-                      <Link to="/login" onClick={closeMenu} style={{ color: 'white', textDecoration: 'none' }}>
+                      <Link to="/login" onClick={closeMenu}  onMouseEnter={onLoginHover} style={{ color: 'white', textDecoration: 'none' }}>
                         Login
                       </Link>
                     </button>

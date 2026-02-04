@@ -354,7 +354,7 @@ const AboutPage = () => {
                   <Car size={20} className="me-2" />
                   Book Your Ride
                 </button>
-                <a href="tel:+918682844516" className="btn btn-outline-primary px-4 py-3">
+                <a href="tel:+7568656756" className="btn btn-outline-primary px-4 py-3">
                   <Phone size={20} className="me-2" />
                   Call Us Now
                 </a>

@@ -63,10 +63,6 @@ const Testimonials = () => {
           
           <div className="header-stats">
             <div className="stat-item">
-              <div className="stat-number">4.7/5</div>
-              <div className="stat-label">Customer Rating</div>
-            </div>
-            <div className="stat-item">
               <div className="stat-number">3K+</div>
               <div className="stat-label">Happy Renters</div>
             </div>
@@ -77,53 +73,7 @@ const Testimonials = () => {
           </div>
         </div>
 
-        {/* Featured Testimonial */}
-        <div className="featured-testimonial">
-          <div className="testimonial-content">
-            <div className="quote-icon">❝</div>
-            <blockquote className="featured-quote">
-              XLent made my first car rental experience incredibly smooth! The Swift Dzire was in perfect condition, 
-              and the pickup process at Pune airport took less than 10 minutes. The 24/7 support team was 
-              extremely helpful throughout my 5-day trip.
-            </blockquote>
-            <div className="author-info">
-              <img 
-                src="/img/webp/person11.webp" 
-                alt="Rizwan Khan"
-                className="author-avatar"
-              />
-              <div className="author-details">
-                <div className="author-name">Rizwan Khan</div>
-                <div className="author-role">Software Engineer</div>
-                <div className="company-badge">Regular Customer</div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="testimonial-stats">
-            <div className="stat-card">
-              <div className="stat-icon">🚗</div>
-              <div className="stat-content">
-                <div className="stat-value">500+</div>
-                <div className="stat-desc">Cars in Our Fleet</div>
-              </div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-icon">🏙️</div>
-              <div className="stat-content">
-                <div className="stat-value">25+</div>
-                <div className="stat-desc">Cities Across India</div>
-              </div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-icon">⭐</div>
-              <div className="stat-content">
-                <div className="stat-value">98%</div>
-                <div className="stat-desc">Satisfaction Rate</div>
-              </div>
-            </div>
-          </div>
-        </div>
+  
 
         {/* Testimonials Grid */}
         <div className="testimonials-grid">

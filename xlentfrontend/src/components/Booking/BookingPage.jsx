@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import "./BookingPage.css";
+import XlentcarLoader from "../Loader/XlentcarLoader";
 
 const BookingPage = () => {
   const location = useLocation();
@@ -64,27 +65,10 @@ const BookingPage = () => {
     setTimeout(() => {
       setIsProcessing(false);
       setIsConfirmed(true);
-    }, 2500);
+    }, 2000);
   };
 
-  const showNotification = (message) => {
-    const notification = document.createElement('div');
-    notification.className = 'notification-toast show';
-    notification.innerHTML = `
-      <div class="notification-content">
-        <div class="notification-icon">✓</div>
-        <div class="notification-text">${message}</div>
-      </div>
-    `;
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-      notification.classList.remove('show');
-      setTimeout(() => {
-        document.body.removeChild(notification);
-      }, 300);
-    }, 3000);
-  };
+
 
   useEffect(() => {
     if (booking.startDate && booking.endDate) {
@@ -105,13 +89,30 @@ const BookingPage = () => {
         className="booking-glass-card1"
       >
         <div className="glass-header">
-          <button className="nav-btn" onClick={() => navigate(-1)}>BACK</button>
+          <button className="nav-btn11" style={{borderRadius: '100px',margin:'5px'}} onClick={() => navigate(-1)}>BACK</button>
           <div className="status-light"><span></span> SYSTEM ACTIVE</div>
         </div>
 
         <div className="main-content1">
           <div className="visual-panel1">
-            <div className="car-id">REF: #CAR-{car.id}00X</div>
+            {/* <div className="car-id">REF: #CAR-{car.id}00X</div> */}
+            <div className="car-image-display">
+              {car.photos ? (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5 }}
+                  className="car-image-container"
+                >
+                  <img 
+                    src={car.photos} 
+                    alt={`${car.brand || car.name} ${car.model}`}
+                    className="car-main-image"
+                    loading="lazy"
+                  />
+                  <div className="image-overlay-glow"></div>
+                </motion.div>
+              ) : (
             <motion.div 
               animate={{ y: [0, -10, 0] }} 
               transition={{ repeat: Infinity, duration: 4 }}
@@ -119,10 +120,11 @@ const BookingPage = () => {
             >
               <div className="car-glow"></div>
               <span className="big-emoji">🚗</span>
-            </motion.div>
-            <div className="car-info-box">
+            </motion.div>)}
+            </div>
+            <div className="car-info-box" style={{marginTop: '10px'}}>
               <h2>{car.name} <br/><span>{car.model}</span></h2>
-              <div className="price-tag-neon1">₹{car.dailyRate} <small>/24H</small></div>
+              {/* <div className="price-tag-neon1">₹{car.dailyRate} <small>/24H</small></div> */}
             </div>
           </div>
 
@@ -135,18 +137,19 @@ const BookingPage = () => {
                 <input 
                  id="pickup-date"
                   type="date" 
+                  color="black"
                   className="neo-input" 
                   onChange={(e)=>setBooking({...booking, startDate: e.target.value})} 
                   style={{color:'black'}}
                   required
                 />
-                <input 
+                {/* <input 
                   type="time" 
                   className="neo-input time" 
                   onChange={(e)=>setBooking({...booking, startTime: e.target.value})} 
                   style={{color:'black'}}
                   required
-                />
+                /> */}
               </div>
             </div>
 
@@ -160,17 +163,17 @@ const BookingPage = () => {
                   style={{color:'black'}}
                   required
                 />
-                <input 
+                {/* <input 
                   type="time" 
                   className="neo-input time" 
                   onChange={(e)=>setBooking({...booking, endTime: e.target.value})} 
                   style={{color:'black'}}
                   required
-                />
+                /> */}
               </div>
             </div>
 
-            <div className="calculation-module">
+            {/* <div className="calculation-module">
               <div className="calc-row">
                 <span>Unit Price</span>
                 <span>₹{car.dailyRate}</span>
@@ -183,7 +186,7 @@ const BookingPage = () => {
                 <label>TOTAL COST</label>
                 <div className="amount">₹{total || car.dailyRate}</div>
               </div>
-            </div>
+            </div> */}
 
             <motion.button 
               whileHover={{ scale: 1.02 }}
@@ -317,18 +320,29 @@ const BookingPage = () => {
         )}
 
         {/* Processing Overlay */}
-        {isProcessing && (
-          <motion.div 
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
-            exit={{ opacity: 0 }} 
-            className="system-overlay"
-          >
-            <div className="scanner-line"></div>
-            <div className="loading-text">Processing Your Booking...</div>
-          </motion.div>
-        )}
-
+        <AnimatePresence>
+  {isProcessing && (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        backgroundColor: 'rgba(10, 25, 41, 0.95)',
+        zIndex: 9999,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}
+    >
+      <XlentcarLoader />
+    </motion.div>
+  )}
+</AnimatePresence>
         {/* Confirmation Modal */}
         {isConfirmed && (
           <div className="success-modal-wrapper"> 
@@ -374,6 +388,39 @@ const BookingPage = () => {
           </div>
         )}
       </AnimatePresence>
+        {/* Add CSS for loader overlay */}
+        <style jsx>{`
+        .loader-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(10, 25, 41, 0.95);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 9999;
+        }
+        
+        .loader-container {
+          text-align: center;
+          color: white;
+          padding: 40px;
+          background: rgba(2, 40, 124, 0.2);
+          border-radius: 20px;
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(74, 144, 226, 0.3);
+        }
+        
+        .loader-text {
+          margin-top: 20px;
+          font-size: 1.2rem;
+          color: #87ceeb;
+          font-weight: 300;
+          letter-spacing: 1px;
+        }
+      `}</style>
     </div>
   );
 };

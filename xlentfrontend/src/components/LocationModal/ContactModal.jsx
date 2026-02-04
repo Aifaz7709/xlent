@@ -79,7 +79,7 @@ const ContactModal = ({ isOpen, onClose }) => {
                     </motion.div>
                     <div className="ms-3">
                       <p className="contact-modal-subtitle mb-1">Call Now for Instant Booking</p>
-                      <h3 className="contact-modal-number mb-0">+91 86828 44516</h3>
+                      <h3 className="contact-modal-number mb-0">+91 7568 656 756</h3>
                     </div>
                   </div>
                 </div>
@@ -87,7 +87,7 @@ const ContactModal = ({ isOpen, onClose }) => {
                   <motion.a
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    href="tel:+918682844516"
+                    href="tel:+917568656756"
                     className="contact-modal-call-btn"
                   >
                     <Phone size={18} className="me-2" />
@@ -124,7 +124,7 @@ const ContactModal = ({ isOpen, onClose }) => {
                     <motion.a
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      href="https://wa.me/918682844516"
+                      href="https://wa.me/917568656756"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="contact-modal-whatsapp-btn"

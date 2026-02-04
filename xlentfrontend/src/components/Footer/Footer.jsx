@@ -8,19 +8,20 @@ const Footer = () => {
           {/* Company Info */}
           <div className="col-12 col-lg-4 col-xl-3 border-end border-secondary p-4">
             <div className="d-flex align-items-center mb-3">
-              <img src="/LogoTranWhite.png" alt="Xlentcar" width="40" height="35" />
-              <span className="ms-2 fw-bold fs-5">Xlentcar</span>
+              <img src="/XlentCar-logo-without-bg.png" alt="Xlentcar" width="90" height="85" />
+          
             </div>
             <address className="text-light mt-3" style={{ opacity: '0.8' }}>
-              <strong>Xlentcar Rentals</strong><br/>
              Chennai, Tamil Nadu<br/>
             <br/>
-              <abbr>Support </abbr> (+91) 8682844516  
+              <abbr>Support </abbr> (+91) 7568656756 
+              <br/>
+              <abbr>Alt No. </abbr> (+91) 9649641077  
             </address>
           </div>
 
           <FooterLinks />
-        </div>
+        </div>  
 
         <div className="container text-center py-2 small" style={{ opacity: '0.7' }}>
           © 2025 Xlentcar — Your Journey, Your Way.
@@ -37,7 +38,6 @@ const FooterLinks = () => (
       <h3 className="h6 mb-3">Our Services</h3>
       <ul className="nav flex-column">
         <li className="nav-item"><a className="nav-link text-light ps-0" href="/deals" style={{ opacity: '0.8' }}>Car Fleet</a></li>
-        <li className="nav-item"><a className="nav-link text-light ps-0" href="#airport" style={{ opacity: '0.8' }}>Airport Pickup</a></li>
         <li className="nav-item"><a className="nav-link text-light ps-0" href="#long-term" style={{ opacity: '0.8' }}>Long Term Rental</a></li>
       </ul>
     </div>
