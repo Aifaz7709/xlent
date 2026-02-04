@@ -73,7 +73,7 @@ const Login = ({ setIsAuthenticated, onLogin }) => { // ADD onLogin prop here
         const res = await fetch(`${apiBase}/api/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
+          // credentials: 'include',
           body: JSON.stringify({ 
             email: formData.username,
             password: formData.password 

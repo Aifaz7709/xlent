@@ -24,24 +24,31 @@ app.use(cors({
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      console.warn(`Blocked by CORS: ${origin}`);
       callback(null, true);
 
     }
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE','OPTIONS'],
   allowedHeaders: [
     'Content-Type',
     'Authorization',
     'X-Requested-With',
-    'Accept'
+    'Accept',
+     'Origin',
+    'Access-Control-Allow-Credentials'
   ],
-  exposedHeaders: ['Content-Disposition']
+  exposedHeaders: ['Content-Disposition'],
+  maxAge: 86400 
 }));
 
 app.use(express.json({ limit: '25mb' }));
 app.use(express.urlencoded({ extended: true, limit: '25mb' }));
+app.use(cors(corsOptions));
 
+// Add CORS headers manually for preflight
+app.options('*', cors(corsOptions));
 
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} ${req.method} ${req.url}`);
