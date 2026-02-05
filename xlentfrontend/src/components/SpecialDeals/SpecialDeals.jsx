@@ -42,10 +42,11 @@ const [carsError, setCarsError] = useState("");
     { id: "all", label: "All Deals" },
     { id: "weekend", label: "Weekend Specials" },
     { id: "long-term", label: "Long Term" },
-    { id: "airport", label: "Airport Deals" },
     { id: "luxury", label: "Luxury Cars" },
     { id: "economy", label: "Economy" },
-    { id: "family", label: "Family Packages" }
+    { id: "family", label: "Family Packages" },
+    { id: "20", label: "24 Seater" },
+    { id: "40", label: "48 Seater" },
   ];
 
 
@@ -123,16 +124,26 @@ const [carsError, setCarsError] = useState("");
   
   const specialDeals = mapCarsToDeals(cars);
 
-
   const filteredDeals = specialDeals.filter(deal => {
-    if (selectedFilter !== "all" && !deal.category.includes(selectedFilter)) {
-      return false;
+    // Search Filter
+    const matchesSearch = !searchQuery || 
+      deal.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      deal.vehicle.toLowerCase().includes(searchQuery.toLowerCase());
+
+    // Category/Seater Filter
+    let matchesCategory = true;
+    if (selectedFilter !== "all") {
+      // Check if selectedFilter is a number (for seaters)
+      const seatCount = parseInt(selectedFilter);
+      if (!isNaN(seatCount)) {
+        matchesCategory = deal.seats === seatCount;
+      } else {
+        // Otherwise check category tags
+        matchesCategory = deal.category.includes(selectedFilter);
+      }
     }
-    if (searchQuery && !deal.title.toLowerCase().includes(searchQuery.toLowerCase()) && 
-        !deal.vehicle.toLowerCase().includes(searchQuery.toLowerCase())) {
-      return false;
-    }
-    return true;
+
+    return matchesSearch && matchesCategory;
   });
 
 
@@ -389,19 +400,23 @@ const [carsError, setCarsError] = useState("");
             </div>
 
             {/* Category Filters */}
-            <div className="col-12 col-md-6 col-lg-5">
-              <div className="d-flex flex-wrap gap-2">
-                {dealCategories.map(category => (
-                  <button
-                    key={category.id}
-                    className={`btn btn-sm ${selectedFilter === category.id ? 'btn-primary' : 'btn-outline-primary'}`}
-                    onClick={() => setSelectedFilter(category.id)}
-                  >
-                    {category.label}
-                  </button>
-                ))}
-              </div>
-            </div>
+          {/* Category Filters */}
+<div className="col-12 col-md-12 col-lg-5">
+  <div 
+    className="d-flex flex-nowrap flex-lg-wrap gap-2 pb-2 pb-lg-0" 
+    style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}
+  >
+    {dealCategories.map(category => (
+      <button
+        key={category.id}
+        className={`btn btn-sm text-nowrap ${selectedFilter === category.id ? 'btn-primary' : 'btn-outline-primary'}`}
+        onClick={() => setSelectedFilter(category.id)}
+      >
+        {category.label}
+      </button>
+    ))}
+  </div>
+</div>
 
             {/* Sort */}
             <div className="col-12 col-lg-3">
