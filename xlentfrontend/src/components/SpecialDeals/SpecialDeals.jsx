@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { 
   Star,
   Clock,
@@ -23,6 +23,7 @@ import {
   Phone
 } from "lucide-react";
 import Footer from "../Footer/Footer";
+import { useSelector } from "react-redux";
 
 const   SpecialDeals = () => {
   const [selectedFilter, setSelectedFilter] = useState("all");
@@ -31,6 +32,12 @@ const   SpecialDeals = () => {
   const [subscriberEmail, setSubscriberEmail] = useState("");
   const [isSubscribing, setIsSubscribing] = useState(false);
   const [subscribeMessage, setSubscribeMessage] = useState("");
+  const [cars, setCars] = useState([]);
+const [loadingCars, setLoadingCars] = useState(false);
+const [carsError, setCarsError] = useState("");
+
+  const reduxCars = useSelector((state) => state.cars.cars);
+
   const dealCategories = [
     { id: "all", label: "All Deals" },
     { id: "weekend", label: "Weekend Specials" },
@@ -41,152 +48,81 @@ const   SpecialDeals = () => {
     { id: "family", label: "Family Packages" }
   ];
 
-  const specialDeals = [
-    {
-      id: 1,
-      title: "Weekend Getaway Special",
-      category: ["weekend", "economy"],
-      originalPrice: 2999,
-      discountedPrice: 1999,
-      discount: 33,
-      period: "3 Days / 2 Nights",
-      features: ["Free Delivery", "Unlimited KMs", "No Security Deposit"],
-      vehicle: "Maruti Swift",
+
+
+  const fetchCars = async () => {
+    try {
+      setLoadingCars(true);
+      setCarsError("");
+  
+      const token = localStorage.getItem("xlent_token");
+      const apiUrl = process.env.REACT_APP_API_BASE_URL
+        ? `${process.env.REACT_APP_API_BASE_URL}/api/cars`
+        : "https://xlent-production.up.railway.app/api/cars";
+  
+      const res = await fetch(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Failed to fetch cars: ${res.status} - ${errorText}`);
+      }
+  
+      const data = await res.json();
+      const fetchedCars = data.cars || data || [];
+  
+      const enhancedCars = fetchedCars.map(car => ({
+        ...car,
+        display_location: car.car_location || "Not specified",
+        location: car.car_location || "Not specified",
+      }));
+      
+  
+      setCars(enhancedCars);
+    } catch (err) {
+      console.error("Car fetch error:", err);
+      setCarsError(err.message);
+    } finally {
+      setLoadingCars(false);
+    }
+  };
+  useEffect(() => {
+    fetchCars();
+  }, []);
+  
+  const mapCarsToDeals = (cars) => {
+    return cars.map((car) => ({
+      id: car.id,
+      title: `${car.car_model} Deal`,
+      category: ["economy"], // or dynamic later
+      originalPrice: (car.price_per_day || 2500) + 500,
+      discountedPrice: car.price_per_day || 2500,
+      discount: 20,
+      period: "Per Day",
+      features: [
+        "Free Cancellation",
+        "Unlimited KMs",
+        "24/7 Support",
+      ],
+      vehicle: car.car_model,
       imageColor: "bg-blue-100",
       popular: true,
-      tag: "Most Popular",
+      tag: "Fleet Offer",
       expiry: "2024-12-31",
-      seats: 5,
-      fuel: "Petrol",
-      transmission: "Manual"
-    },
-    {
-      id: 2,
-      title: "Monthly Rental Bonanza",
-      category: ["long-term", "family"],
-      originalPrice: 24999,
-      discountedPrice: 17999,
-      discount: 28,
-      period: "30 Days",
-      features: ["Free Insurance", "24/7 Support", "Flexible Extension"],
-      vehicle: "Hyundai Creta",
-      imageColor: "bg-indigo-100",
-      popular: true,
-      tag: "Best Value",
-      expiry: "2024-11-30",
-      seats: 5,
-      fuel: "Diesel",
-      transmission: "Automatic"
-    },
-    {
-      id: 3,
-      title: "Airport Express Deal",
-      category: ["airport"],
-      originalPrice: 2499,
-      discountedPrice: 1699,
-      discount: 32,
-      period: "24 Hours",
-      features: ["Airport Pickup", "Flight Tracking", "Free Waiting"],
-      vehicle: "Toyota Etios",
-      imageColor: "bg-sky-100",
-      popular: false,
-      tag: "Limited Time",
-      expiry: "2024-12-15",
-      seats: 5,
-      fuel: "Petrol",
-      transmission: "Manual"
-    },
-    {
-      id: 4,
-      title: "Luxury Experience Package",
-      category: ["luxury", "weekend"],
-      originalPrice: 8999,
-      discountedPrice: 6299,
-      discount: 30,
-      period: "2 Days",
-      features: ["Chauffeur Option", "Premium Insurance", "VIP Service"],
-      vehicle: "Mercedes-Benz C-Class",
-      imageColor: "bg-violet-100",
-      popular: true,
-      tag: "Premium",
-      expiry: "2024-12-25",
-      seats: 5,
-      fuel: "Petrol",
-      transmission: "Automatic"
-    },
-    {
-      id: 5,
-      title: "Family Road Trip Package",
-      category: ["family", "long-term"],
-      originalPrice: 12999,
-      discountedPrice: 8999,
-      discount: 31,
-      period: "7 Days",
-      features: ["Child Seats Free", "Roof Carrier", "Emergency Kit"],
-      vehicle: "Toyota Innova",
-      imageColor: "bg-cyan-100",
-      popular: false,
-      tag: "Family Favorite",
-      expiry: "2024-11-20",
-      seats: 7,
-      fuel: "Diesel",
-      transmission: "Manual"
-    },
-    {
-      id: 6,
-      title: "Business Executive Deal",
-      category: ["luxury"],
-      originalPrice: 14999,
-      discountedPrice: 10499,
-      discount: 30,
-      period: "5 Days",
-      features: ["WiFi Hotspot", "Document Folder", "Priority Service"],
-      vehicle: "BMW 3 Series",
-      imageColor: "bg-blue-50",
-      popular: true,
-      tag: "Business Choice",
-      expiry: "2024-12-10",
-      seats: 5,
-      fuel: "Petrol",
-      transmission: "Automatic"
-    },
-    {
-      id: 7,
-      title: "Fuel Saver Special",
-      category: ["economy"],
-      originalPrice: 3999,
-      discountedPrice: 2799,
-      discount: 30,
-      period: "4 Days",
-      features: ["Fuel Efficient", "Low Deposit", "Free Navigation"],
-      vehicle: "Hyundai i20",
-      imageColor: "bg-teal-100",
-      popular: false,
-      tag: "Eco Friendly",
-      expiry: "2024-11-30",
-      seats: 5,
-      fuel: "Petrol",
-      transmission: "Manual"
-    },
-    {
-      id: 8,
-      title: "Extended Stay Package",
-      category: ["long-term"],
-      originalPrice: 59999,
-      discountedPrice: 41999,
-      discount: 30,
-      period: "90 Days",
-      features: ["Monthly Service", "Tyre Replacement", "Free Upgrades"],
-      vehicle: "Honda City",
-      imageColor: "bg-lightBlue-100",
-      popular: true,
-      tag: "Long Term Save",
-      expiry: "2024-12-31",
-      seats: 5,
-      fuel: "Petrol",
-      transmission: "Automatic"
-    }
-  ];
+      seats: car.seats || 5,
+      fuel: car.fuel_type || "Petrol",
+      transmission: car.transmission || "Manual",
+      photos: car.photos || [],
+      location: car.display_location,
+    }));
+  };
+  
+  const specialDeals = mapCarsToDeals(cars);
+
 
   const filteredDeals = specialDeals.filter(deal => {
     if (selectedFilter !== "all" && !deal.category.includes(selectedFilter)) {
@@ -242,6 +178,8 @@ const   SpecialDeals = () => {
         return deals;
     }
   };
+ 
+  
 
   const sortedDeals = sortDeals(filteredDeals);
 
@@ -250,6 +188,18 @@ const   SpecialDeals = () => {
 
     return (
       <div className="col-12 col-md-6 col-lg-4 col-xl-3" >
+        {loadingCars && (
+  <div className="text-center py-5">
+    <p>Loading deals...</p>
+  </div>
+)}
+
+{carsError && (
+  <div className="alert alert-danger text-center">
+    {carsError}
+  </div>
+)}
+
         <div className="card border-0 shadow-sm h-100 hover-shadow-lg transition-all duration-300">
           {/* Deal Badge */}
           <div className="position-absolute top-0 end-0 m-3">
@@ -271,7 +221,16 @@ const   SpecialDeals = () => {
 
           {/* Vehicle Image Placeholder */}
           <div className={`${deal.imageColor} p-5 text-center`}>
-            <Car size={60} className="text-primary mb-3" />
+          {deal.photos?.length ? (
+  <img
+    src={deal.photos[0]}
+    alt={deal.vehicle}
+    className="img-fluid rounded"
+    style={{ height: "120px", objectFit: "contain" }}
+  />
+) : (
+  <Car size={60} className="text-primary mb-3" />
+)}
             <h5 className="text-dark fw-bold mb-0">{deal.vehicle}</h5>
           </div>
 

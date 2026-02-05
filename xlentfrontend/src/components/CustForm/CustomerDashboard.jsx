@@ -5,6 +5,10 @@ const CustomerDashboard = () => {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [message, setMessage] = useState({ type: '', text: '' })
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(10)
 
   const fetchCustomers = async () => {
     try {
@@ -13,9 +17,9 @@ const CustomerDashboard = () => {
       
       const baseUrl = process.env.REACT_APP_API_BASE_URL || 'https://xlent-production.up.railway.app'
       
-    // ✅ Keep the timestamp to prevent caching
-     const timestamp = new Date().getTime()
-    const url = `${baseUrl}/api/customer_inquiries?_=${timestamp}`
+      // ✅ Keep the timestamp to prevent caching
+      const timestamp = new Date().getTime()
+      const url = `${baseUrl}/api/customer_inquiries?_=${timestamp}`
       
       console.log('📡 Fetching from:', url)
       
@@ -50,6 +54,7 @@ const CustomerDashboard = () => {
       }
   
       setCustomers(data.customers || [])
+      setCurrentPage(1) // Reset to first page when data changes
       
       if (data.customers && data.customers.length === 0) {
         setMessage({ 
@@ -83,13 +88,25 @@ const CustomerDashboard = () => {
     customer.phone_number?.toLowerCase().includes(search.toLowerCase())
   )
 
+  // Pagination calculations
+  const indexOfLastItem = currentPage * itemsPerPage
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage
+  const currentCustomers = filteredCustomers.slice(indexOfFirstItem, indexOfLastItem)
+  const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage)
+
+  // Handle page change
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber)
+    // Smooth scroll to top of table
+    document.querySelector('.customer-table-container')?.scrollIntoView({ behavior: 'smooth' })
+  }
+
   // Format date
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-IN', {
       day: 'numeric',
       month: 'short',
       year: 'numeric',
-    
     })
   }
 
@@ -99,6 +116,110 @@ const CustomerDashboard = () => {
   const todayCustomers = customers.filter(c => 
     new Date(c.created_at).toDateString() === today
   ).length
+
+  // Pagination component
+  const Pagination = () => {
+    if (totalPages <= 1) return null
+
+    const pageNumbers = []
+    const maxVisiblePages = 5
+    
+    // Calculate range of page numbers to show
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2))
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1)
+    
+    // Adjust start page if we're near the end
+    if (endPage - startPage + 1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1)
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(i)
+    }
+
+    return (
+      <div className="pagination">
+        <div className="pagination-info">
+          Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, filteredCustomers.length)} of {filteredCustomers.length} results
+        </div>
+        
+        <div className="pagination-controls">
+          <button
+            className="pagination-btn prev"
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            aria-label="Previous page"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          
+          {startPage > 1 && (
+            <>
+              <button
+                className={`page-number ${currentPage === 1 ? 'active' : ''}`}
+                onClick={() => handlePageChange(1)}
+              >
+                1
+              </button>
+              {startPage > 2 && <span className="page-dots">...</span>}
+            </>
+          )}
+          
+          {pageNumbers.map(page => (
+            <button
+              key={page}
+              className={`page-number ${currentPage === page ? 'active' : ''}`}
+              onClick={() => handlePageChange(page)}
+            >
+              {page}
+            </button>
+          ))}
+          
+          {endPage < totalPages && (
+            <>
+              {endPage < totalPages - 1 && <span className="page-dots">...</span>}
+              <button
+                className={`page-number ${currentPage === totalPages ? 'active' : ''}`}
+                onClick={() => handlePageChange(totalPages)}
+              >
+                {totalPages}
+              </button>
+            </>
+          )}
+          
+          <button
+            className="pagination-btn next"
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            aria-label="Next page"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
+
+        <div className="items-per-page">
+          <label>Show:</label>
+          <select 
+            value={itemsPerPage} 
+            onChange={(e) => {
+              setItemsPerPage(Number(e.target.value))
+              setCurrentPage(1) // Reset to first page
+            }}
+          >
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="dashboard-container mt-5">
@@ -208,6 +329,7 @@ const CustomerDashboard = () => {
         )}
       </div>
 
+    
       {/* Loading State */}
       {loading ? (
         <div className="loading-container">
@@ -246,13 +368,10 @@ const CustomerDashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredCustomers.map((customer) => (
+                  {currentCustomers.map((customer) => (
                     <tr key={customer.id || customer.created_at}>
                       <td>
                         <div className="customer-info">
-                          {/* <div className="customer-avatar">
-                            {customer.customer_name?.charAt(0)?.toUpperCase() || 'C'}
-                          </div> */}
                           <div className="customer-details">
                             <div className="customer-name">
                               {customer.customer_name || 'No name'}
@@ -332,16 +451,6 @@ const CustomerDashboard = () => {
                               </svg>
                             </button>
                           )}
-                            {/* <button 
-                              className="action-btn more-btn"
-                              title="More options"
-                            >
-                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <circle cx="12" cy="12" r="1"></circle>
-                                <circle cx="19" cy="12" r="1"></circle>
-                                <circle cx="5" cy="12" r="1"></circle>
-                              </svg>
-                            </button> */}
                         </div>
                       </td>
                     </tr>
@@ -350,6 +459,13 @@ const CustomerDashboard = () => {
               </table>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Pagination (below table) */}
+      {!loading && filteredCustomers.length > 0 && totalPages > 1 && (
+        <div className="pagination-footer">
+          <Pagination />
         </div>
       )}
 
@@ -362,6 +478,148 @@ const CustomerDashboard = () => {
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
           background: #f8fafc;
           min-height: 100vh;
+        }
+
+        /* Table summary styling */
+        .table-summary {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 16px;
+          padding: 12px 16px;
+          background: white;
+          border-radius: 8px;
+          border: 1px solid #e5e7eb;
+        }
+
+        .table-count {
+          color: #4b5563;
+          font-size: 14px;
+          font-weight: 500;
+        }
+
+        .table-count strong {
+          color: #3b82f6;
+        }
+
+        /* Pagination styling */
+        .pagination {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 16px;
+          padding: 16px 0;
+        }
+
+        .pagination-footer {
+          margin-top: 20px;
+          padding: 16px;
+          background: white;
+          border-radius: 8px;
+          border: 1px solid #e5e7eb;
+        }
+
+        .pagination-info {
+          color: #6b7280;
+          font-size: 14px;
+          min-width: 200px;
+        }
+
+        .pagination-controls {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+        }
+
+        .pagination-btn {
+          padding: 8px 12px;
+          border: 1px solid #e2e8f0;
+          background: white;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          font-size: 14px;
+          color: #4a5568;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+          background: #f7fafc;
+          border-color: #cbd5e0;
+        }
+
+        .pagination-btn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
+        .page-number {
+          min-width: 36px;
+          height: 36px;
+          padding: 0 8px;
+          border: 1px solid #e2e8f0;
+          background: white;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          font-size: 14px;
+          color: #4a5568;
+        }
+
+        .page-number:hover {
+          background: #f7fafc;
+          border-color: #cbd5e0;
+        }
+
+        .page-number.active {
+          background: #3b82f6;
+          color: white;
+          border-color: #3b82f6;
+          font-weight: 600;
+        }
+
+        .page-dots {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 36px;
+          height: 36px;
+          color: #a0aec0;
+          user-select: none;
+        }
+
+        .items-per-page {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          min-width: 120px;
+        }
+
+        .items-per-page label {
+          color: #6b7280;
+          font-size: 14px;
+        }
+
+        .items-per-page select {
+          padding: 6px 12px;
+          border: 1px solid #e2e8f0;
+          border-radius: 6px;
+          background: white;
+          color: #4a5568;
+          font-size: 14px;
+          cursor: pointer;
+        }
+
+        .items-per-page select:hover {
+          border-color: #cbd5e0;
+        }
+
+        .items-per-page select:focus {
+          outline: none;
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
         .dashboard-header {
@@ -378,12 +636,6 @@ const CustomerDashboard = () => {
           margin: 0 0 4px 0;
           font-size: 28px;
           font-weight: 700;
-        }
-
-        .header-subtitle {
-          color: #6b7280;
-          margin: 0;
-          font-size: 14px;
         }
 
         .header-actions {
@@ -413,22 +665,6 @@ const CustomerDashboard = () => {
           background: #2563eb;
           transform: translateY(-1px);
           box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
-        }
-
-     
-
-        .customer-count {
-          color: #4b5563;
-          font-size: 14px;
-          background: white;
-          padding: 8px 12px;
-          border-radius: 6px;
-          border: 1px solid #e5e7eb;
-        }
-
-        .customer-count strong {
-          color: #3b82f6;
-          font-weight: 600;
         }
 
         .alert {
@@ -602,34 +838,9 @@ const CustomerDashboard = () => {
           gap: 8px;
         }
 
-        .table-count {
-          color: #1f2937;
-          font-weight: 600;
-          font-size: 15px;
-        }
-
         .table-filtered {
           color: #6b7280;
           font-size: 14px;
-        }
-
-        .export-btn {
-          background: white;
-          color: #4b5563;
-          border: 1px solid #e5e7eb;
-          padding: 8px 16px;
-          border-radius: 6px;
-          cursor: pointer;
-          font-size: 14px;
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          transition: all 0.2s;
-        }
-
-        .export-btn:hover {
-          background: #f9fafb;
-          border-color: #d1d5db;
         }
 
         .table-wrapper {
@@ -674,20 +885,6 @@ const CustomerDashboard = () => {
           display: flex;
           align-items: center;
           gap: 12px;
-        }
-
-        .customer-avatar {
-          width: 40px;
-          height: 40px;
-          background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-          color: white;
-          border-radius: 10px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: 600;
-          font-size: 16px;
-          flex-shrink: 0;
         }
 
         .customer-details {
@@ -797,12 +994,6 @@ const CustomerDashboard = () => {
           border-color: #e0f2fe;
         }
 
-        .more-btn:hover {
-          background: #f3f4f6;
-          color: #4b5563;
-          border-color: #d1d5db;
-        }
-
         .empty-state {
           text-align: center;
           padding: 64px 24px;
@@ -879,6 +1070,30 @@ const CustomerDashboard = () => {
           .action-buttons1 {
             justify-content: flex-start;
           }
+          
+          .pagination {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 12px;
+          }
+          
+          .pagination-info {
+            text-align: center;
+          }
+          
+          .pagination-controls {
+            justify-content: center;
+          }
+          
+          .items-per-page {
+            justify-content: center;
+          }
+          
+          .table-summary {
+            flex-direction: column;
+            gap: 12px;
+            align-items: stretch;
+          }
         }
 
         @media (max-width: 480px) {
@@ -905,8 +1120,15 @@ const CustomerDashboard = () => {
             gap: 8px;
           }
           
-          .customer-avatar {
-            align-self: center;
+          .page-number {
+            min-width: 32px;
+            height: 32px;
+            font-size: 13px;
+          }
+          
+          .pagination-btn {
+            padding: 6px 10px;
+            font-size: 13px;
           }
         }
 
@@ -914,7 +1136,8 @@ const CustomerDashboard = () => {
         @media print {
           .refresh-btn,
           .export-btn,
-          .action-buttons1 {
+          .action-buttons1,
+          .pagination {
             display: none;
           }
           

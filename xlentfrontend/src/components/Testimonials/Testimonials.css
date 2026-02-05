@@ -453,7 +453,7 @@
 
 /* CTA Section */
 .testimonials-cta {
-  background: linear-gradient(135deg, rgb(61, 103, 241) 0%, #1b129f  100%);
+  background: linear-gradient(135deg, #1b129f 0%,rgb(78, 68, 219) 100%);
   padding: 2rem;
   border-radius: 24px;
   text-align: center;

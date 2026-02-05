@@ -8,6 +8,7 @@ import Navbar from "./components/HeadernFooter/Navbar";
 import BackButton from "./components/BackButton/BackButton";
 import Hero from "./components/GetStarted/Hero";
 import HeadingsSection from "./components/HeaderSection/HeadingsSection ";
+import FranchiseBanner from "./components/FranchiseBanner/FranchiseBanner";
 
 // ⚡ LAZY LOAD EVERYTHING ELSE
 const Login = lazy(() => import("./components/Login&Reg/Login"));
@@ -39,6 +40,7 @@ const ProtectedRoute = ({ children, isAuthenticated }) => {
 const Dashboard = () => {
   const [showGallery, setShowGallery] = useState(false);
   const [showTestimonials, setShowTestimonials] = useState(false);
+  const [showFranchiseBanner, setShowFranchiseBanner] = useState(false);
   const [showFooter, setShowFooter] = useState(false);
   const galleryTriggerRef = React.useRef(null);
   const testimonialsTriggerRef = React.useRef(null);
@@ -122,6 +124,9 @@ const Dashboard = () => {
       <Suspense fallback={<div className="skeleton-loader" style={{ height: '250px' }} />}>
         {showTestimonials && <Testimonials />}
       </Suspense>
+  
+     <FranchiseBanner />
+
       
       {/* Footer Trigger */}
       <div ref={footerTriggerRef} style={{ height: '100px', marginTop: '-50px' }} />

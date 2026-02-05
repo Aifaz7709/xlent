@@ -14,9 +14,22 @@ const Footer = () => {
             <address className="text-light mt-3" style={{ opacity: '0.8' }}>
              Chennai, Tamil Nadu<br/>
             <br/>
-              <abbr>Support </abbr> (+91) 7568656756 
-              <br/>
-              <abbr>Alt No. </abbr> (+91) 9649641077  
+            <div className="d-flex flex-column gap-2" style={{ maxWidth: 'fit-content' }}>
+  {/* Support Line */}
+    <span className="fw-bold  me-2" style={{ minWidth: '70px', fontSize: '0.70rem', textTransform: 'uppercase' , color:'white'}}>
+      Support
+    </span>
+    <a href="tel:+919649641077" className="text-decoration-none fw-semibold" style={{ color: 'inherit' }}>
+      (+91) 9649641077
+    </a>
+
+    <span className="fw-bold  me-2" style={{ minWidth: '70px', fontSize: '0.70rem', textTransform: 'uppercase' }}>
+      Alt No.
+    </span>
+    <a href="tel:+917568656756" className="text-decoration-none fw-semibold" style={{ color: 'inherit' }}>
+      (+91) 7568656756
+    </a>
+</div>
             </address>
           </div>
 
