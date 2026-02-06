@@ -17,7 +17,7 @@ const FranchiseBanner = ({ onContactClick }) => {
   ];
   const [showFranchiseModal, setShowFranchiseModal] = useState(false);
   return (
-    <div className="py-5" style={{background: 'linear-gradient(135deg, #1b129f 0%,rgb(78, 68, 219) 100%)', overflow: 'hidden', margin: '20px', borderRadius: '50px' }}>
+    <div className="py-5" style={{background: 'linear-gradient(135deg, #1b129f 0%,rgb(78, 68, 219) 100%)', overflow: 'hidden', margin: '15px', borderRadius: '25px',  }}>
       <div className="container">
         <div className="row align-items-center">
           <div className="col-12 text-white">
@@ -35,7 +35,7 @@ const FranchiseBanner = ({ onContactClick }) => {
 
               <div className="flex-shrink-0">
                 <button 
-                  className="btn btn-info btn-lg px-5 py-3 fw-bold shadow-lg d-flex align-items-center gap-2"
+                  className="btn btn-info btn-lg px-3 py-3 fw-bold shadow-lg d-flex align-items-center gap-1"
                   onClick={() => setShowFranchiseModal(true)}                  style={{ borderRadius: '15px' , backgroundColor:'transparent', color: 'white'}}
                 >
                   Inquire for Franchise <ArrowRight size={20} />

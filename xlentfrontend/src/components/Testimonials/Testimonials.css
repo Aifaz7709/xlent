@@ -1,25 +1,25 @@
 .testimonials-section {
-  padding: 1rem 0;
+  padding: 0.5rem 0;
   background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   position: relative;
 }
 
 @media (min-width: 768px) {
   .testimonials-section {
-    padding: 1rem 0;
+    padding: 0.5rem 0;
   }
 }
 
 @media (min-width: 1024px) {
   .testimonials-section {
-    padding: 1rem 0;
+    padding: 0.5rem 0;
   }
 }
 
 .testimonials-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 15px;
+  padding: 0 10px;
 }
 
 @media (min-width: 576px) {
@@ -553,7 +553,7 @@
   }
 }
 .mainTestStyle{
-  margin: 10px !important;
+  /* margin: 10px !important; */
   padding: 10px !important
 }
 .popup-overlay {

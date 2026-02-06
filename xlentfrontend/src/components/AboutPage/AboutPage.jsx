@@ -35,28 +35,24 @@ const AboutPage = () => {
     {
       name: "Justin Chacko",
       role: "Founder & CEO",
-      experience: "10+ years in automotive industry",
       imageColor: "bg-blue-100",
       quote: "Driven by innovation and customer satisfaction."
     },
     {
       name: "Varun Nishad",
       role: "Chief Operations Officer",
-      experience: "7+ years in logistics",
       imageColor: "bg-sky-100",
       quote: "Ensuring seamless journeys, every time."
     },
     {
       name: "Aifaz Khan",
       role: "Technology Director",
-      experience: "7+ years pioneering tech solutions in luxury hospitality",
       imageColor: "bg-cyan-100",
       quote: "Your journey is our priority."
     },
     {
       name: "Payal Bahadur",
       role: "Customer Experience Head",
-      experience: "5+ years in automotive",
       imageColor: "bg-lightBlue-100",
       quote: "Maintaining excellence in every vehicle."
     }
@@ -291,78 +287,6 @@ const AboutPage = () => {
       </div>
 
      
-
-      {/* Commitment Section */}
-      <div className="container py-5">
-        <div className="row align-items-center">
-          <div className="col-12 col-lg-6 mb-5 mb-lg-0">
-            <div className="bg-primary bg-opacity-10 rounded-3 p-4 p-lg-5">
-              <h3 className="h2 fw-bold text-dark mb-4">
-                Our Commitment to <span className="text-primary">You</span>
-              </h3>
-              <ul className="list-unstyled">
-                <li className="mb-3">
-                  <div className="d-flex">
-                    <CheckCircle size={20} className="text-primary me-3 mt-1" />
-                    <div>
-                      <h5 className="h6 text-dark mb-1">Quality Assurance</h5>
-                      <p className="text-muted small mb-0">Every vehicle undergoes 50+ point inspection</p>
-                    </div>
-                  </div>
-                </li>
-                <li className="mb-3">
-                  <div className="d-flex">
-                    <CheckCircle size={20} className="text-primary me-3 mt-1" />
-                    <div>
-                      <h5 className="h6 text-dark mb-1">Transparent Pricing</h5>
-                      <p className="text-muted small mb-0">No hidden charges, what you see is what you pay</p>
-                    </div>
-                  </div>
-                </li>
-                <li className="mb-3">
-                  <div className="d-flex">
-                    <CheckCircle size={20} className="text-primary me-3 mt-1" />
-                    <div>
-                      <h5 className="h6 text-dark mb-1">24/7 Support</h5>
-                      <p className="text-muted small mb-0">Round-the-clock assistance for all your needs</p>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div className="d-flex">
-                    <CheckCircle size={20} className="text-primary me-3 mt-1" />
-                    <div>
-                      <h5 className="h6 text-dark mb-1">Easy Booking</h5>
-                      <p className="text-muted small mb-0">Book in under 2 minutes through multiple channels</p>
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="col-12 col-lg-6">
-            <div className="text-center">
-              <div className="display-1 mb-4">🚗</div>
-              <h3 className="h2 fw-bold text-dark mb-3">
-                Ready for Your Next <span className="text-primary">Adventure</span>?
-              </h3>
-              <p className="lead mb-4">
-                Join thousands of satisfied customers who trust Xlentcar for their journeys.
-              </p>
-              <div className="d-flex flex-wrap gap-3 justify-content-center">
-                <button className="btn btn-primary px-4 py-3" onClick={() => navigate('/deals')}>
-                  <Car size={20} className="me-2" />
-                  Book Your Ride
-                </button>
-                <a href="tel:+7568656756" className="btn btn-outline-primary px-4 py-3">
-                  <Phone size={20} className="me-2" />
-                  Call Us Now
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Contact Footer */}
      <Footer/>
