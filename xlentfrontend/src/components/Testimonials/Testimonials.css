@@ -224,14 +224,14 @@
 @media (min-width: 576px) {
   .testimonials-grid {
     grid-template-columns: repeat(2, 10fr);
-    gap: 2rem;
+    gap: 1rem;
   }
 }
 
 @media (min-width: 1024px) {
   .testimonials-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 2.5rem;
+    gap: 1.5rem;
   }
 }
 
@@ -330,7 +330,7 @@
 .testimonials-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 2rem;
+  gap: 1rem;
   margin-bottom: 4rem;
 }
 
