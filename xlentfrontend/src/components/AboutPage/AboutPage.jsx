@@ -59,7 +59,7 @@ const AboutPage = () => {
   ];
 
   const milestones = [
-    { year: "2025", title: "Founded in Chennai", description: "Started with 10 cars" }
+    { year: "2025", title: "Founded in Maharashtra", description: "Started with 10 cars" }
   ];
 
   const values = [
@@ -116,7 +116,7 @@ const AboutPage = () => {
               </h1>
               <p className="lead mb-4" style={{ opacity: '0.9' , color:'white'}}>
                 Xlentcar is more than just a car rental service. We're your trusted partner 
-                for memorable journeys across Tamil Nadu and beyond.
+                for memorable journeys across Maharashtra and beyond.
               </p>
               <div className="d-flex flex-wrap gap-3">
                 <button className="btn btn-light text-primary px-4"  onClick={()=>navigate('/deals')}>
@@ -169,11 +169,11 @@ const AboutPage = () => {
               Our <span className="text-primary">Story</span>
             </h2>
             <p className="lead mb-4">
-              Founded in 2025 in the heart of Chennai, Xlentcar began with a simple vision: 
+              Founded in 2025 in the heart of Maharshtra, Xlentcar began with a simple vision: 
               to make car rental accessible, reliable, and exceptional for everyone.
             </p>
             <p className="mb-4">
-              What started as a small fleet of 10 vehicles has grown into Tamil Nadu's most 
+              What started as a small fleet of 10 vehicles has grown intoMaharashtra's most 
               trusted car rental service. Our journey has been fueled by a passion for 
               automotive excellence and an unwavering commitment to customer satisfaction.
             </p>

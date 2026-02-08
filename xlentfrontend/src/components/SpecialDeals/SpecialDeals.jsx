@@ -42,11 +42,8 @@ const [carsError, setCarsError] = useState("");
     { id: "all", label: "All Deals" },
     { id: "weekend", label: "Weekend Specials" },
     { id: "long-term", label: "Long Term" },
-    { id: "luxury", label: "Luxury Cars" },
     { id: "economy", label: "Economy" },
-    { id: "family", label: "Family Packages" },
     { id: "20", label: "24 Seater" },
-    { id: "40", label: "48 Seater" },
   ];
 
 
@@ -107,17 +104,13 @@ const [carsError, setCarsError] = useState("");
       features: [
         "Free Cancellation",
         "Unlimited KMs",
-        "24/7 Support",
       ],
       vehicle: car.car_model,
       imageColor: "bg-blue-100",
       popular: true,
       tag: "Fleet Offer",
       expiry: "2024-12-31",
-      seats: car.seats || 5,
-      fuel: car.fuel_type || "Petrol",
-      transmission: car.transmission || "Manual",
-      photos: car.photos || [],
+        photos: car.photos || [],
       location: car.display_location,
     }));
   };
@@ -198,7 +191,7 @@ const [carsError, setCarsError] = useState("");
     const [expanded, setExpanded] = useState(false);
 
     return (
-      <div className="col-12 col-md-6 col-lg-4 col-xl-3" >
+      <div className="col-12 col-md-6 col-lg-4 col-xl-3 mb-2" >
         {loadingCars && (
   <div className="text-center py-5">
     <p>Loading deals...</p>
@@ -242,7 +235,7 @@ const [carsError, setCarsError] = useState("");
 ) : (
   <Car size={60} className="text-primary mb-3" />
 )}
-            <h5 className="text-dark fw-bold mb-0">{deal.vehicle}</h5>
+            {/* <h5 className="text-dark fw-bold mb-0">{deal.vehicle}</h5> */}
           </div>
 
           {/* Card Body */}
@@ -288,7 +281,7 @@ const [carsError, setCarsError] = useState("");
 
             {/* Car Details */}
             <div className="row g-2 mb-4">
-              <div className="col-4">
+              {/* <div className="col-4">
                 <div className="text-center border rounded p-2">
                   <Users size={16} className="text-primary mb-1" />
                   <div className="small">{deal.seats} Seats</div>
@@ -305,7 +298,7 @@ const [carsError, setCarsError] = useState("");
                   <Zap size={16} className="text-primary mb-1" />
                   <div className="small">{deal.transmission}</div>
                 </div>
-              </div>
+              </div> */}
             </div>
 
             {/* Action Button */}
@@ -314,12 +307,12 @@ const [carsError, setCarsError] = useState("");
             </button>
 
             {/* Expiry */}
-            <div className="text-center mt-3">
+            {/* <div className="text-center mt-3">
               <div className="d-inline-flex align-items-center bg-danger bg-opacity-10 text-danger rounded-pill px-3 py-1">
                 <Timer size={12} className="me-1" />
                 <span className="small">Expires: {new Date(deal.expiry).toLocaleDateString()}</span>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -336,7 +329,7 @@ const [carsError, setCarsError] = useState("");
   }}
 >        <div className="container" style={{marginTop:'70px'}}>
           <div className="row align-items-center">
-            <div className="col-12 col-lg-8">
+            <div className="col-12 col-lg-8 mb-2">
               <h1 className="display-4 fw-bold mb-3">
                 <Tag className="me-3" size={48} />
                 Special Deals & Offers
@@ -363,7 +356,7 @@ const [carsError, setCarsError] = useState("");
                 </div>
               </div>
             </div>
-            <div className="col-12 col-lg-4 mt-4 mt-lg-0">
+            {/* <div className="col-12 col-lg-4 mt-4 mt-lg-0">
               <div className="card bg-white bg-opacity-10 border-0">
                 <div className="card-body text-center">
                   <div className="display-6 fw-bold mb-2" style={{color:'white'}}>30-50% OFF</div>
@@ -374,7 +367,7 @@ const [carsError, setCarsError] = useState("");
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -384,7 +377,7 @@ const [carsError, setCarsError] = useState("");
         <div className="container">
           <div className="row g-3">
             {/* Search */}
-            <div className="col-12 col-md-6 col-lg-4">
+            {/* <div className="col-12 col-md-6 col-lg-4">
               <div className="input-group">
                 <span className="input-group-text bg-white border-end-0">
                   <Search size={18} className="text-primary" />
@@ -397,9 +390,8 @@ const [carsError, setCarsError] = useState("");
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-            </div>
+            </div> */}
 
-            {/* Category Filters */}
           {/* Category Filters */}
 <div className="col-12 col-md-12 col-lg-5">
   <div 

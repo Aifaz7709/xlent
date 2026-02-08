@@ -12,7 +12,7 @@ const Footer = () => {
           
             </div>
             <address className="text-light mt-3" style={{ opacity: '0.8' }}>
-             Chennai, Tamil Nadu<br/>
+             Chandrapur, Maharashtra<br/>
             <br/>
             <div className="d-flex flex-column gap-2" style={{ maxWidth: 'fit-content' }}>
   {/* Support Line */}
