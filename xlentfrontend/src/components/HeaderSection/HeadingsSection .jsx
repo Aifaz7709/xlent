@@ -105,7 +105,7 @@ const HeadingsSection = () => {
   }}>
     Start your adventure with our premium fleet at unbeatable rates. 
     <br />
-    <strong>No hidden fees, no complicated contracts</strong> - just the perfect car for your journey.
+    <strong>No hidden fees, no complicated contracts</strong> - just the perfect journey.
   </p>
   </div>
   <button
@@ -130,7 +130,7 @@ const HeadingsSection = () => {
     onMouseOver={(e) => (e.target.style.boxShadow = "0 4px 12px rgba(255,255,255,0.4)")}
     onMouseOut={(e) => (e.target.style.boxShadow = "none")}
   >
-    Book Your Ride Today  
+    Book Your Ride 
   </button>
 </div>
 

@@ -343,7 +343,7 @@
 /* Prevent shrinking on mobile */
 @media (max-width: 768px) {
   .responsive-image {
-    min-width: 300px; /* Minimum width on mobile */
+    min-width: 100px; /* Minimum width on mobile */
     max-width: 100%;
   }
   
