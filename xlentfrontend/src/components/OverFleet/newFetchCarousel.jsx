@@ -329,7 +329,7 @@ const NewPropertyCard = () => {
           <h2 className="carousel-title">
             {selectedLocation 
               ? `Cars in ${selectedLocation.name}`
-              : 'Our Premium Fleet'
+              : 'Our Fleet'
             }
           </h2>
           <p className="carousel-subtitle">

@@ -1,0 +1,137 @@
+/* Snackbar.css */
+.snackbar-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 350px;
+  }
+  
+  .snackbar {
+    position: relative;
+    background-color: white;
+    border-left: 5px solid;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 16px 24px 16px 16px;
+    display: flex;
+    align-items: center;
+    min-width: 300px;
+    max-width: 350px;
+    overflow: hidden;
+    transform: translateX(400px);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  
+  .snackbar.show {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  
+  .snackbar.hide {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  
+  .snackbar-icon {
+    font-size: 20px;
+    margin-right: 12px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  
+  .snackbar-content {
+    flex-grow: 1;
+    margin-right: 8px;
+  }
+  
+  .snackbar-content p {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #333;
+  }
+  
+  .snackbar-close {
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    color: #888;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: color 0.2s;
+  }
+  
+  .snackbar-close:hover {
+    color: #333;
+  }
+  
+  .snackbar-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    transition: width 0.05s linear;
+  }
+  
+  /* Type-specific styles */
+  .snackbar-default {
+    border-left-color: rgb(2, 40, 124);
+  }
+  
+  .snackbar-default .snackbar-icon {
+    color: rgb(2, 40, 124);
+    background-color: rgba(2, 40, 124, 0.1);
+  }
+  
+  .snackbar-success {
+    border-left-color: rgb(15, 110, 15);
+  }
+  
+  .snackbar-success .snackbar-icon {
+    color: rgb(15, 110, 15);
+    background-color: rgba(15, 110, 15, 0.1);
+  }
+  
+  .snackbar-error {
+    border-left-color: rgb(180, 10, 10);
+  }
+  
+  .snackbar-error .snackbar-icon {
+    color: rgb(180, 10, 10);
+    background-color: rgba(180, 10, 10, 0.1);
+  }
+  
+  .snackbar-warning {
+    border-left-color: rgb(180, 100, 10);
+  }
+  
+  .snackbar-warning .snackbar-icon {
+    color: rgb(180, 100, 10);
+    background-color: rgba(180, 100, 10, 0.1);
+  }
+  
+  .snackbar-info {
+    border-left-color: rgb(10, 100, 180);
+  }
+  
+  .snackbar-info .snackbar-icon {
+    color: rgb(10, 100, 180);
+    background-color: rgba(10, 100, 180, 0.1);
+  }

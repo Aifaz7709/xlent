@@ -9,6 +9,7 @@ import BackButton from "./components/BackButton/BackButton";
 import Hero from "./components/GetStarted/Hero";
 import HeadingsSection from "./components/HeaderSection/HeadingsSection ";
 import FranchiseBanner from "./components/FranchiseBanner/FranchiseBanner";
+import { SnackbarProvider } from "./components/Snackbar/Snackbar";
 
 // ⚡ LAZY LOAD EVERYTHING ELSE
 const Login = lazy(() => import("./components/Login&Reg/Login"));
@@ -99,6 +100,7 @@ const Dashboard = () => {
   }, []);
 
   return (
+    <SnackbarProvider>
     <main className="main-content">
       {/* Above the fold - Load immediately */}
       <HeadingsSection />
@@ -136,6 +138,7 @@ const Dashboard = () => {
         {showFooter && <Footer />}
       </Suspense>
     </main>
+    </SnackbarProvider>
   );
 };
 

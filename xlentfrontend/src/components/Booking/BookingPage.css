@@ -76,7 +76,11 @@
   cursor: pointer;
   margin-top: 20px;
 }
-
+.neo-input[type="date"] {
+  color-scheme: light;
+  background: white !important;
+  color: black !important;
+}
 /* SUCCESS MODAL FIXES - MUST BE OUTSIDE MEDIA QUERIES */
 .success-modal-wrapper {
   position: fixed;
@@ -194,10 +198,12 @@
 }
 
 .modern-modal-container2{
+  font-family: serif;
+
   width: 90%;
   max-width: 500px;
   position: relative;
-  background-color: #073c8b;
+  background-color: #07118b;
   border-radius: 20px;
 }
 

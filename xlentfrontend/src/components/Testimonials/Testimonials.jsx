@@ -110,11 +110,11 @@ const Testimonials = () => {
               </blockquote>
               
               <div className="author-section">
-                <img 
-                  // src={testimonial.img} 
+                {/* <img 
+                  src={testimonial.img} 
                   alt={testimonial.name}
                   className="author-image"
-                />
+                /> */}
                 <div className="author-info">
                   <div className="author-name">{testimonial.name}</div>
                   <div className="author-role">{testimonial.tripPurpose}</div>
@@ -159,7 +159,7 @@ const sampleCards = [
   { 
     name: "Priya Patel", 
     tripPurpose: "Family Wedding",
-    location: "Ahmedabad, Gujarat",
+    location: "Chandrapur, Maharashtra",
     carModel: "Hyundai Creta",
     rentalPeriod: "4 days",
     text: "Perfect for our family wedding events! The Creta had ample space for 5 adults and all our traditional outfits. The car was spotless and fuel-efficient. Will definitely use XLentagain!",
@@ -171,11 +171,10 @@ const sampleCards = [
   { 
     name: "Arjun Mehta", 
     tripPurpose: "Business Trip",
-    location: "Mumbai, Maharashtra",
+    location: "Nagpur, Maharashtra",
     carModel: "Honda City",
     rentalPeriod: "3 days",
     text: "As a frequent business traveler, I appreciate the professionalism. The Honda City was perfect for client meetings. The airport pickup and drop-off saved me so much time.",
-    img: "/img/webp/person8.webp",
     rating: 5,
     verifiedRenter: true,
     featured: false
@@ -183,7 +182,7 @@ const sampleCards = [
   { 
     name: "Ananya Reddy", 
     tripPurpose: "Weekend Getaway",
-    location: "Hyderabad, Telangana",
+    location: "Gondia, Maharashtra",
     carModel: "Maruti Swift",
     rentalPeriod: "2 days",
     text: "Amazing experience for our weekend trip to Srisailam! The Swift was fuel-efficient and perfect for hill roads. The booking process was completely digital and hassle-free.",

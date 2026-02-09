@@ -90,7 +90,6 @@ const BookingPage = () => {
       >
         <div className="glass-header">
           <button className="nav-btn11" style={{borderRadius: '100px',margin:'5px'}} onClick={() => navigate(-1)}>BACK</button>
-          <div className="status-light"><span></span> SYSTEM ACTIVE</div>
         </div>
 
         <div className="main-content1">
@@ -129,7 +128,7 @@ const BookingPage = () => {
           </div>
 
           <div className="interface-panel1">
-            <h3 className="panel-title">Confirm Booking Details</h3>
+            <h3 className="" style={{fontFamily:'serif'}}>Confirm Booking Dates</h3>
             
             <div className="control-group">
               <label>PICKUP </label>
@@ -369,9 +368,6 @@ const BookingPage = () => {
                 Auto-navigating in <strong>{countdown}s</strong>...
               </p>
 
-              <button className="back-home-btn" onClick={() => navigate('/Payment')}>
-          PAY & EXIT
-              </button>
               <button className="back-home-btn" onClick={() => navigate('/')}>
                 CONFIRM & EXIT
               </button>
