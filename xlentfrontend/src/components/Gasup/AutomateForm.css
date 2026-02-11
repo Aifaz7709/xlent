@@ -1,0 +1,32 @@
+/* GasupFormModal.css */
+.form-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+  
+  .form-modal {
+    width: 90%;
+    max-width: 900px;
+    height: 90%;
+    background: #fff;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    z-index: 10;
+  }
+  

@@ -100,7 +100,7 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <SnackbarProvider>
+    
     <main className="main-content">
       {/* Above the fold - Load immediately */}
       <HeadingsSection />
@@ -138,7 +138,6 @@ const Dashboard = () => {
         {showFooter && <Footer />}
       </Suspense>
     </main>
-    </SnackbarProvider>
   );
 };
 
@@ -356,9 +355,12 @@ function App() {
 
   return (
     <Provider store={store}>
+            <SnackbarProvider>
+
       <Router>
         <AppRoutes theme={theme} toggleTheme={toggleTheme} />
       </Router>
+      </SnackbarProvider>
     </Provider>
   );
 }

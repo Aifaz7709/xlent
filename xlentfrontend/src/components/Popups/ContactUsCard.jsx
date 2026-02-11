@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import XlentcarLoader from '../Loader/XlentcarLoader'; // Adjust the path as needed
 import { useSnackbar } from '../Snackbar/Snackbar';
 
-const ContactUsCard = ({onClose}) => {
+const ContactUsCard = ({onClose, title}) => {
   const [formData, setFormData] = useState({
     name: "",
     phone_number: "",
@@ -103,8 +103,8 @@ const ContactUsCard = ({onClose}) => {
             
             {/* Header */}
             <div className="modal-header">
-              <h2 className="modal-title">Get started with XLent</h2>
-              <button 
+            <h2 className="modal-title">{title || "Get started with XLent"}</h2>
+            <button 
                 className="modal-close-btn"
                 onClick={onClose}
                 disabled={isLoading}
@@ -143,7 +143,7 @@ const ContactUsCard = ({onClose}) => {
                   placeholder=" "
                   disabled={isLoading}
                 />
-                <label htmlFor="phone_number" className="floating-label">Phone Number</label>
+                <label htmlFor="phone_number" className="floating-label">WhatsApp Number</label>
                 <div className="input-underline"></div>
               </div>
 

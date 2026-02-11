@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import "./BookingPage.css";
 import XlentcarLoader from "../Loader/XlentcarLoader";
+import ContactUsCard from "../Popups/ContactUsCard";
 
 const BookingPage = () => {
   const location = useLocation();
@@ -28,6 +29,9 @@ const BookingPage = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   
+  // Snackbar state for BookingPage (since we can't use the hook directly)
+  const [snackbar, setSnackbar] = useState(null);
+  
   // FIX: Set to 6 to match the 6s progress bar animation
   const [countdown, setCountdown] = useState(116); 
 
@@ -41,34 +45,50 @@ const BookingPage = () => {
     return () => clearTimeout(timer);
   }, [isConfirmed, countdown, navigate]);
 
-  const handleBooking = () => {
-    // Show user form first instead of processing immediately
+  // Snackbar functions for BookingPage
+  const showSnackbar = (message, type = 'default', duration = 5000) => {
+    const id = Date.now();
+    setSnackbar({ id, message, type, duration });
+    
+    setTimeout(() => {
+      setSnackbar(null);
+    }, duration);
+  };
+
+  const showError = (message, duration) => showSnackbar(message, 'error', duration);
+  const showWarning = (message, duration) => showSnackbar(message, 'warning', duration);
+  const showSuccess = (message, duration) => showSnackbar(message, 'success', duration);
+  const showInfo = (message, duration) => showSnackbar(message, 'info', duration);
+
+  const handleBooking = (e) => {
+    e.preventDefault();
+  
+    // Check if dates are selected
+    if (!booking.startDate || !booking.endDate) {
+      showError("Please select both pickup and return dates", 4000);
+      return;
+    }
+  
+    // Check if return date is before pickup date
+    if (new Date(booking.endDate) < new Date(booking.startDate)) {
+      showError("Return date cannot be before pickup date", 4000);
+      return;
+    }
+
+    // Check if pickup date is today or in the future
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const pickupDate = new Date(booking.startDate);
+    
+    if (pickupDate < today) {
+      showError("Pickup date cannot be in the past", 4000);
+      return;
+    }
+  
+    // All validations passed
+    showSuccess("Dates selected successfully! Please complete your details.", 3000);
     setShowUserForm(true);
   };
-
-  const handleUserFormSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Simulate API call to save user data
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setIsSubmitting(false);
-    
-    // Close the user form and start processing booking
-    setShowUserForm(false);
-    
-    // Show processing overlay
-    setIsProcessing(true);
-    
-    // Simulate booking processing
-    setTimeout(() => {
-      setIsProcessing(false);
-      setIsConfirmed(true);
-    }, 2000);
-  };
-
-
 
   useEffect(() => {
     if (booking.startDate && booking.endDate) {
@@ -83,18 +103,45 @@ const BookingPage = () => {
     <div className="futuristic-page1">
       <div className="grid-overlay1"></div>
 
+      {/* Snackbar Component for BookingPage */}
+      {snackbar && (
+        <div className={`booking-snackbar snackbar-${snackbar.type} show`}>
+          <div className="snackbar-icon">
+            {snackbar.type === 'success' && '✓'}
+            {snackbar.type === 'error' && '✗'}
+            {snackbar.type === 'warning' && '⚠'}
+            {snackbar.type === 'info' && 'ℹ'}
+            {snackbar.type === 'default' && '●'}
+          </div>
+          <div className="snackbar-content">
+            <p>{snackbar.message}</p>
+          </div>
+          <button className="snackbar-close" onClick={() => setSnackbar(null)}>
+            ×
+          </button>
+        </div>
+      )}
+
       <motion.div 
         initial={{ opacity: 0, scale: 0.9 }} 
         animate={{ opacity: 1, scale: 1 }}
         className="booking-glass-card1"
       >
         <div className="glass-header">
-          <button className="nav-btn11" style={{borderRadius: '100px',margin:'5px'}} onClick={() => navigate(-1)}>BACK</button>
+          <button 
+            className="nav-btn11" 
+            style={{borderRadius: '100px', margin:'5px'}} 
+            onClick={() => {
+              showInfo("Returning to previous page...", 2000);
+              setTimeout(() => navigate(-1), 500);
+            }}
+          >
+            BACK
+          </button>
         </div>
 
         <div className="main-content1">
           <div className="visual-panel1">
-            {/* <div className="car-id">REF: #CAR-{car.id}00X</div> */}
             <div className="car-image-display">
               {car.photos ? (
                 <motion.div 
@@ -112,43 +159,41 @@ const BookingPage = () => {
                   <div className="image-overlay-glow"></div>
                 </motion.div>
               ) : (
-            <motion.div 
-              animate={{ y: [0, -10, 0] }} 
-              transition={{ repeat: Infinity, duration: 4 }}
-              className="hologram-container1"
-            >
-              <div className="car-glow"></div>
-              <span className="big-emoji">🚗</span>
-            </motion.div>)}
+                <motion.div 
+                  animate={{ y: [0, -10, 0] }} 
+                  transition={{ repeat: Infinity, duration: 4 }}
+                  className="hologram-container1"
+                >
+                  <div className="car-glow"></div>
+                  <span className="big-emoji">🚗</span>
+                </motion.div>
+              )}
             </div>
             <div className="car-info-box" style={{marginTop: '10px'}}>
               <h2>{car.name} <br/><span>{car.model}</span></h2>
-              {/* <div className="price-tag-neon1">₹{car.dailyRate} <small>/24H</small></div> */}
             </div>
           </div>
 
           <div className="interface-panel1">
-            <h3 className="" style={{fontFamily:'serif'}}>Confirm Booking Dates</h3>
+            <h3 style={{fontFamily:'serif'}}>Confirm Booking Dates</h3>
             
             <div className="control-group">
               <label>PICKUP </label>
               <div className="input-row">
                 <input 
-                 id="pickup-date"
+                  id="pickup-date"
                   type="date" 
-                  color="black"
                   className="neo-input" 
-                  onChange={(e)=>setBooking({...booking, startDate: e.target.value})} 
+                  onChange={(e) => {
+                    setBooking({...booking, startDate: e.target.value});
+                    if (e.target.value) {
+                      showInfo(`Pickup date: ${e.target.value}`, 2000);
+                    }
+                  }} 
                   style={{color:'black'}}
+                  min={new Date().toISOString().split('T')[0]} // Disable past dates
                   required
                 />
-                {/* <input 
-                  type="time" 
-                  className="neo-input time" 
-                  onChange={(e)=>setBooking({...booking, startTime: e.target.value})} 
-                  style={{color:'black'}}
-                  required
-                /> */}
               </div>
             </div>
 
@@ -158,34 +203,71 @@ const BookingPage = () => {
                 <input 
                   type="date" 
                   className="neo-input" 
-                  onChange={(e)=>setBooking({...booking, endDate: e.target.value})} 
+                  onChange={(e) => {
+                    setBooking({...booking, endDate: e.target.value});
+                    if (e.target.value) {
+                      showInfo(`Return date: ${e.target.value}`, 2000);
+                    }
+                  }} 
                   style={{color:'black'}}
+                  min={booking.startDate || new Date().toISOString().split('T')[0]} // Disable dates before pickup
                   required
                 />
-                {/* <input 
-                  type="time" 
-                  className="neo-input time" 
-                  onChange={(e)=>setBooking({...booking, endTime: e.target.value})} 
-                  style={{color:'black'}}
-                  required
-                /> */}
               </div>
             </div>
 
-            {/* <div className="calculation-module">
-              <div className="calc-row">
-                <span>Unit Price</span>
-                <span>₹{car.dailyRate}</span>
-              </div>
-              <div className="calc-row">
-                <span>Time Delta</span>
-                <span>{total/car.dailyRate || 0} Days</span>
-              </div>
-              <div className="total-display">
-                <label>TOTAL COST</label>
-                <div className="amount">₹{total || car.dailyRate}</div>
-              </div>
-            </div> */}
+            {/* Booking summary preview */}
+            {booking.startDate && booking.endDate && (
+  <div className="booking-summary-preview">
+    <div className="summary-item">
+      <span>Booking Period:</span>
+      <strong>{booking.startDate} to {booking.endDate}</strong>
+    </div>
+    <div className="summary-item duration">
+      <span>Duration:</span>
+      <strong>
+        {(() => {
+          const days = Math.ceil(Math.abs(new Date(booking.endDate) - new Date(booking.startDate)) / (1000 * 60 * 60 * 24));
+          
+          if (days === 1) {
+            return "1 Day";
+          } else if (days < 7) {
+            return `${days} Days`;
+          } else if (days === 7) {
+            return "1 Week";
+          } else if (days < 30) {
+            const weeks = Math.floor(days / 7);
+            const remainingDays = days % 7;
+            if (remainingDays === 0) {
+              return `${weeks} ${weeks === 1 ? 'Week' : 'Weeks'}`;
+            } else {
+              return `${weeks} ${weeks === 1 ? 'Week' : 'Weeks'} ${remainingDays} ${remainingDays === 1 ? 'Day' : 'Days'}`;
+            }
+          } else if (days === 30 || days === 31) {
+            return "1 Month";
+          } else if (days < 365) {
+            const months = Math.floor(days / 30);
+            const remainingDays = days % 30;
+            if (remainingDays === 0) {
+              return `${months} ${months === 1 ? 'Month' : 'Months'}`;
+            } else {
+              return `${months} ${months === 1 ? 'Month' : 'Months'} ${remainingDays} ${remainingDays === 1 ? 'Day' : 'Days'}`;
+            }
+          } else {
+            const years = Math.floor(days / 365);
+            const remainingDays = days % 365;
+            if (remainingDays === 0) {
+              return `${years} ${years === 1 ? 'Year' : 'Years'}`;
+            } else {
+              const months = Math.floor(remainingDays / 30);
+              return `${years} ${years === 1 ? 'Year' : 'Years'} ${months} ${months === 1 ? 'Month' : 'Months'}`;
+            }
+          }
+        })()}
+      </strong>
+    </div>
+  </div>
+)}
 
             <motion.button 
               whileHover={{ scale: 1.02 }}
@@ -194,154 +276,60 @@ const BookingPage = () => {
               onClick={handleBooking}
               disabled={!booking.startDate || !booking.endDate}
             >
-              INITIALIZE BOOKING
+              {!booking.startDate || !booking.endDate ? 'SELECT DATES FIRST' : 'INITIALIZE BOOKING'}
             </motion.button>
           </div>
         </div>
       </motion.div>
 
       <AnimatePresence>
-        {/* User Data Form Modal */}
         {showUserForm && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="modern-modal-overlay2"
-          >
-            <motion.div 
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="modern-modal-container2"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="modern-modal-content2">
-                {/* Animated Background */}
-                <div className="modal-bg-shapes2">
-                  <div className="shape shape-1"></div>
-                  <div className="shape shape-2"></div>
-                  <div className="shape shape-3"></div>
-                </div>
-                
-                {/* Header */}
-                <div className="modal-header">
-                  <h2 className="modal-title2">Complete Your Booking</h2>
-                  <button 
-                    className="modal-close-btn"
-                    onClick={() => setShowUserForm(false)}
-                  >
-                    <span style={{paddingBottom: '5px'}}>×</span>
-                  </button>
-                </div>
-
-
-                {/* Form */}
-                <form onSubmit={handleUserFormSubmit} className="modern-form">
-                  <div className="form-group floating-group">
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={userData.name}
-                      onChange={(e) => setUserData({...userData, name: e.target.value})}
-                      required
-                      className="floating-input"
-                      placeholder=" "
-                    />
-                    <label htmlFor="name" className="floating-label">Your Name</label>
-                    <div className="input-underline"></div>
-                  </div>
-
-                  <div className="form-group floating-group">
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      value={userData.phone}
-                      onChange={(e) => setUserData({...userData, phone: e.target.value})}
-                      required
-                      className="floating-input"
-                      placeholder=" "
-                    />
-                    <label htmlFor="phone" className="floating-label">Phone Number</label>
-                    <div className="input-underline"></div>
-                  </div>
-
-                  <div className="form-group floating-group">
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={userData.email}
-                      onChange={(e) => setUserData({...userData, email: e.target.value})}
-                      className="floating-input"
-                      placeholder=" "
-                    />
-                    <label htmlFor="email" className="floating-label">Email Address</label>
-                    <div className="input-underline"></div>
-                  </div>
-
-                  <button 
-                    type="submit" 
-                    className={`submit-btn ${isSubmitting ? 'submitting' : ''}`}
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <div className="spinner"></div>
-                        Processing...
-                      </>
-                    ) : (
-                      <>
-                        <span>Confirm Booking</span>
-                        <svg className="btn-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                          <path d="M8 1L14.5 8L8 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          <path d="M14.5 8H1.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </>
-                    )}
-                  </button>
-                </form>
-
-                {/* Footer */}
-                <div className="modal-footer">
-                  <div className="security-badge">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                      <path d="M8 1L14.5 4V7C14.5 10.5 12 13.5 8 15C4 13.5 1.5 10.5 1.5 7V4L8 1Z" fill="currentColor"/>
-                    </svg>
-                    <span>Your information is secure and encrypted</span>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
+          <ContactUsCard
+            title="Complete Your Booking"
+            onClose={() => {
+              setShowUserForm(false);
+              showWarning("Booking process cancelled", 3000);
+            }}
+            onSuccess={() => {
+              // This would be called from ContactUsCard after successful submission
+              setShowUserForm(false);
+              setIsProcessing(true);
+              
+              setTimeout(() => {
+                setIsProcessing(false);
+                setIsConfirmed(true);
+                showSuccess("Booking confirmed successfully! 🎉", 4000);
+              }, 2000);
+            }}
+          />
         )}
 
         {/* Processing Overlay */}
         <AnimatePresence>
-  {isProcessing && (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100vw',
-        height: '100vh',
-        backgroundColor: 'rgba(10, 25, 41, 0.95)',
-        zIndex: 9999,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center'
-      }}
-    >
-      <XlentcarLoader />
-    </motion.div>
-  )}
-</AnimatePresence>
+          {isProcessing && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100vw',
+                height: '100vh',
+                backgroundColor: 'rgba(10, 25, 41, 0.95)',
+                zIndex: 9999,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+              <XlentcarLoader />
+              <div className="processing-text">Processing your booking...</div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Confirmation Modal */}
         {isConfirmed && (
           <div className="success-modal-wrapper"> 
@@ -384,8 +372,9 @@ const BookingPage = () => {
           </div>
         )}
       </AnimatePresence>
-        {/* Add CSS for loader overlay */}
-        <style jsx>{`
+
+      {/* CSS Styles */}
+      <style jsx>{`
         .loader-overlay {
           position: fixed;
           top: 0;
@@ -394,6 +383,7 @@ const BookingPage = () => {
           bottom: 0;
           background: rgba(10, 25, 41, 0.95);
           display: flex;
+          flex-direction: column;
           justify-content: center;
           align-items: center;
           z-index: 9999;
@@ -415,6 +405,158 @@ const BookingPage = () => {
           color: #87ceeb;
           font-weight: 300;
           letter-spacing: 1px;
+        }
+
+        .processing-text {
+          color: white;
+          margin-top: 20px;
+          font-size: 1.1rem;
+          font-family: 'Orbitron', sans-serif;
+        }
+
+        /* Booking Summary Preview */
+        .booking-summary-preview {
+          margin-top: 20px;
+          padding: 15px;
+          background: rgba(2, 40, 124, 0.05);
+          border-radius: 8px;
+          border-left: 4px solid rgb(2, 40, 124);
+        }
+
+        .summary-item {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 8px;
+          font-size: 14px;
+          color: #333;
+        }
+
+        .summary-item.total {
+          margin-top: 8px;
+          padding-top: 8px;
+          border-top: 1px solid #ddd;
+          font-weight: bold;
+        }
+
+        /* Snackbar Styles for BookingPage */
+        .booking-snackbar {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: white;
+          border-left: 5px solid;
+          border-radius: 4px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          padding: 16px 24px 16px 16px;
+          display: flex;
+          align-items: center;
+          min-width: 300px;
+          max-width: 350px;
+          z-index: 10000;
+          transform: translateX(400px);
+          opacity: 0;
+          transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .booking-snackbar.show {
+          transform: translateX(0);
+          opacity: 1;
+        }
+
+        .booking-snackbar.snackbar-success {
+          border-left-color: rgb(15, 110, 15);
+        }
+
+        .booking-snackbar.snackbar-error {
+          border-left-color: rgb(180, 10, 10);
+        }
+
+        .booking-snackbar.snackbar-warning {
+          border-left-color: rgb(180, 100, 10);
+        }
+
+        .booking-snackbar.snackbar-info {
+          border-left-color: rgb(10, 100, 180);
+        }
+
+        .booking-snackbar.snackbar-default {
+          border-left-color: rgb(2, 40, 124);
+        }
+
+        .booking-snackbar .snackbar-icon {
+          font-size: 20px;
+          margin-right: 12px;
+          width: 24px;
+          height: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          flex-shrink: 0;
+        }
+
+        .booking-snackbar.snackbar-success .snackbar-icon {
+          color: rgb(15, 110, 15);
+          background: rgba(15, 110, 15, 0.1);
+        }
+
+        .booking-snackbar.snackbar-error .snackbar-icon {
+          color: rgb(180, 10, 10);
+          background: rgba(180, 10, 10, 0.1);
+        }
+
+        .booking-snackbar.snackbar-warning .snackbar-icon {
+          color: rgb(180, 100, 10);
+          background: rgba(180, 100, 10, 0.1);
+        }
+
+        .booking-snackbar.snackbar-info .snackbar-icon {
+          color: rgb(10, 100, 180);
+          background: rgba(10, 100, 180, 0.1);
+        }
+
+        .booking-snackbar.snackbar-default .snackbar-icon {
+          color: rgb(2, 40, 124);
+          background: rgba(2, 40, 124, 0.1);
+        }
+
+        .booking-snackbar .snackbar-content {
+          flex-grow: 1;
+          margin-right: 8px;
+        }
+
+        .booking-snackbar .snackbar-content p {
+          margin: 0;
+          font-size: 14px;
+          line-height: 1.4;
+          color: #333;
+        }
+
+        .booking-snackbar .snackbar-close {
+          background: transparent;
+          border: none;
+          font-size: 24px;
+          color: #888;
+          cursor: pointer;
+          padding: 0;
+          width: 24px;
+          height: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          transition: color 0.2s;
+        }
+
+        .booking-snackbar .snackbar-close:hover {
+          color: #333;
+        }
+
+        /* Execute button disabled state */
+        .execute-btn:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+          background: #999;
         }
       `}</style>
     </div>
