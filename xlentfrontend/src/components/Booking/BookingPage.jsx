@@ -4,30 +4,24 @@ import { motion, AnimatePresence } from "framer-motion";
 import "./BookingPage.css";
 import XlentcarLoader from "../Loader/XlentcarLoader";
 import ContactUsCard from "../Popups/ContactUsCard";
+import { useSelector, useDispatch } from "react-redux";
 
-const BookingPage = () => {
+const BookingPage = ( formData) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { car } = location.state || {};
+  
 
   const [booking, setBooking] = useState({
     startDate: "", 
-    startTime: "10:00",
     endDate: "", 
-    endTime: "10:00"
   });
   const [total, setTotal] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [showUserForm, setShowUserForm] = useState(false);
-  
-  // User form state
-  const [userData, setUserData] = useState({
-    name: "",
-    phone: "",
-    email: ""
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const customerData = useSelector((state) => state.customerInfo);
+
   
   // Snackbar state for BookingPage (since we can't use the hook directly)
   const [snackbar, setSnackbar] = useState(null);
@@ -60,7 +54,7 @@ const BookingPage = () => {
   const showSuccess = (message, duration) => showSnackbar(message, 'success', duration);
   const showInfo = (message, duration) => showSnackbar(message, 'info', duration);
 
-  const handleBooking = (e) => {
+  const handleBooking =  async (e) => {
     e.preventDefault();
   
     // Check if dates are selected
@@ -87,7 +81,65 @@ const BookingPage = () => {
   
     // All validations passed
     showSuccess("Dates selected successfully! Please complete your details.", 3000);
-    setShowUserForm(true);
+
+    try {
+      const baseUrl =  'https://services.leadconnectorhq.com/hooks/TjM5taSPltE7LMcOsEUH/webhook-trigger/c0dafae8-d990-45a5-8f2e-35cdf13cab30';
+      
+      const response = await fetch(`${baseUrl}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          startDate: booking.startDate,
+          endDate: booking.endDate,
+       
+        })
+      });
+
+    } catch (error) {
+      console.error('Error saving data:', error);
+      // Show error snackbar
+      showError("Something went wrong. Please try again.", 4000);
+    } finally {
+      setShowUserForm(true);
+
+    }
+
+  };
+  const handleBooking1 =  (e) => {
+    e.preventDefault();
+  
+    // Check if dates are selected
+    if (!booking.startDate || !booking.endDate) {
+      showError("Please select both pickup and return dates", 4000);
+      return;
+    }
+  
+    // Check if return date is before pickup date
+    if (new Date(booking.endDate) < new Date(booking.startDate)) {
+      showError("Return date cannot be before pickup date", 4000);
+      return;
+    }
+
+    // Check if pickup date is today or in the future
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const pickupDate = new Date(booking.startDate);
+    
+    if (pickupDate < today) {
+      showError("Pickup date cannot be in the past", 4000);
+      return;
+    }
+  
+    // All validations passed
+    showSuccess("Dates selected successfully! Please complete your details.", 3000);
+
+ 
+      setShowUserForm(true);
+
+    
+
   };
 
   useEffect(() => {
@@ -273,7 +325,7 @@ const BookingPage = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="execute-btn"
-              onClick={handleBooking}
+               onClick={handleBooking1}
               disabled={!booking.startDate || !booking.endDate}
             >
               {!booking.startDate || !booking.endDate ? 'SELECT DATES FIRST' : 'INITIALIZE BOOKING'}
@@ -286,26 +338,28 @@ const BookingPage = () => {
         {showUserForm && (
           <ContactUsCard
             title="Complete Your Booking"
+            booking1={booking}
             onClose={() => {
               setShowUserForm(false);
-              showWarning("Booking process cancelled", 3000);
+              setIsConfirmed(true);
+
+              // showWarning("Booking process cancelled", 3000);
             }}
             onSuccess={() => {
               // This would be called from ContactUsCard after successful submission
               setShowUserForm(false);
               setIsProcessing(true);
-              
+              handleBooking();
+
               setTimeout(() => {
                 setIsProcessing(false);
-                setIsConfirmed(true);
-                showSuccess("Booking confirmed successfully! 🎉", 4000);
-              }, 2000);
+                showSuccess("Booking confirmed successfully! 🎉", 2000);
+              }, 1000);
             }}
           />
         )}
 
         {/* Processing Overlay */}
-        <AnimatePresence>
           {isProcessing && (
             <motion.div
               initial={{ opacity: 0 }}
@@ -328,7 +382,6 @@ const BookingPage = () => {
               <div className="processing-text">Processing your booking...</div>
             </motion.div>
           )}
-        </AnimatePresence>
 
         {/* Confirmation Modal */}
         {isConfirmed && (
@@ -344,9 +397,10 @@ const BookingPage = () => {
               
               <div className="receipt-details">
                 <p>VEHICLE <span>{car.name} {car.model}</span></p>
-                <p>CUSTOMER <span>{userData.name}</span></p>
-                <p>CONTACT <span>{userData.phone}</span></p>
-                <p>EMAIL <span>{userData.email}</span></p>
+                <p>CUSTOMER <span>{customerData.customer_name}</span></p>
+<p>CONTACT <span>{customerData.phone_number}</span></p>
+<p>EMAIL <span>{customerData.email}</span></p>
+
                 <p>PICKUP <span>{booking.startDate || 'TBD'} at {booking.startTime}</span></p>
                 <p>RETURN <span>{booking.endDate || 'TBD'} at {booking.endTime}</span></p>
                 <p className="total-row">TOTAL <span>₹{total || car.dailyRate}</span></p>
@@ -374,191 +428,7 @@ const BookingPage = () => {
       </AnimatePresence>
 
       {/* CSS Styles */}
-      <style jsx>{`
-        .loader-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(10, 25, 41, 0.95);
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          z-index: 9999;
-        }
-        
-        .loader-container {
-          text-align: center;
-          color: white;
-          padding: 40px;
-          background: rgba(2, 40, 124, 0.2);
-          border-radius: 20px;
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(74, 144, 226, 0.3);
-        }
-        
-        .loader-text {
-          margin-top: 20px;
-          font-size: 1.2rem;
-          color: #87ceeb;
-          font-weight: 300;
-          letter-spacing: 1px;
-        }
-
-        .processing-text {
-          color: white;
-          margin-top: 20px;
-          font-size: 1.1rem;
-          font-family: 'Orbitron', sans-serif;
-        }
-
-        /* Booking Summary Preview */
-        .booking-summary-preview {
-          margin-top: 20px;
-          padding: 15px;
-          background: rgba(2, 40, 124, 0.05);
-          border-radius: 8px;
-          border-left: 4px solid rgb(2, 40, 124);
-        }
-
-        .summary-item {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 8px;
-          font-size: 14px;
-          color: #333;
-        }
-
-        .summary-item.total {
-          margin-top: 8px;
-          padding-top: 8px;
-          border-top: 1px solid #ddd;
-          font-weight: bold;
-        }
-
-        /* Snackbar Styles for BookingPage */
-        .booking-snackbar {
-          position: fixed;
-          top: 20px;
-          right: 20px;
-          background: white;
-          border-left: 5px solid;
-          border-radius: 4px;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-          padding: 16px 24px 16px 16px;
-          display: flex;
-          align-items: center;
-          min-width: 300px;
-          max-width: 350px;
-          z-index: 10000;
-          transform: translateX(400px);
-          opacity: 0;
-          transition: transform 0.3s ease, opacity 0.3s ease;
-        }
-
-        .booking-snackbar.show {
-          transform: translateX(0);
-          opacity: 1;
-        }
-
-        .booking-snackbar.snackbar-success {
-          border-left-color: rgb(15, 110, 15);
-        }
-
-        .booking-snackbar.snackbar-error {
-          border-left-color: rgb(180, 10, 10);
-        }
-
-        .booking-snackbar.snackbar-warning {
-          border-left-color: rgb(180, 100, 10);
-        }
-
-        .booking-snackbar.snackbar-info {
-          border-left-color: rgb(10, 100, 180);
-        }
-
-        .booking-snackbar.snackbar-default {
-          border-left-color: rgb(2, 40, 124);
-        }
-
-        .booking-snackbar .snackbar-icon {
-          font-size: 20px;
-          margin-right: 12px;
-          width: 24px;
-          height: 24px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 50%;
-          flex-shrink: 0;
-        }
-
-        .booking-snackbar.snackbar-success .snackbar-icon {
-          color: rgb(15, 110, 15);
-          background: rgba(15, 110, 15, 0.1);
-        }
-
-        .booking-snackbar.snackbar-error .snackbar-icon {
-          color: rgb(180, 10, 10);
-          background: rgba(180, 10, 10, 0.1);
-        }
-
-        .booking-snackbar.snackbar-warning .snackbar-icon {
-          color: rgb(180, 100, 10);
-          background: rgba(180, 100, 10, 0.1);
-        }
-
-        .booking-snackbar.snackbar-info .snackbar-icon {
-          color: rgb(10, 100, 180);
-          background: rgba(10, 100, 180, 0.1);
-        }
-
-        .booking-snackbar.snackbar-default .snackbar-icon {
-          color: rgb(2, 40, 124);
-          background: rgba(2, 40, 124, 0.1);
-        }
-
-        .booking-snackbar .snackbar-content {
-          flex-grow: 1;
-          margin-right: 8px;
-        }
-
-        .booking-snackbar .snackbar-content p {
-          margin: 0;
-          font-size: 14px;
-          line-height: 1.4;
-          color: #333;
-        }
-
-        .booking-snackbar .snackbar-close {
-          background: transparent;
-          border: none;
-          font-size: 24px;
-          color: #888;
-          cursor: pointer;
-          padding: 0;
-          width: 24px;
-          height: 24px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-          transition: color 0.2s;
-        }
-
-        .booking-snackbar .snackbar-close:hover {
-          color: #333;
-        }
-
-        /* Execute button disabled state */
-        .execute-btn:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-          background: #999;
-        }
-      `}</style>
+    
     </div>
   );
 };
