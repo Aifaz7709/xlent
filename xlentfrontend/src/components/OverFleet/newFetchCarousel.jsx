@@ -83,13 +83,6 @@ const NewPropertyCard = () => {
       photos: car.photos || [],
       car_model: car.car_model || "Unknown Model",
       car_number: car.car_number || "N/A",
-      // price: car.price || Math.floor(Math.random() * 200) + 50,
-      // fuel_type: car.fuel_type || "Petrol",
-      // transmission: car.transmission || "Automatic",
-      // seats: car.seats || 5,
-      // year: car.year ,
-      // rating: car.rating || (4 + Math.random()).toFixed(1),
-      // mileage: car.mileage || `${Math.floor(Math.random() * 50) + 10} km/l`
     }));
   };
 
@@ -234,10 +227,7 @@ const NewPropertyCard = () => {
     };
   }, [isAutoPlaying, nextSlide, localCars.length]);
 
-  // Toggle auto-play
-  const toggleAutoPlay = () => {
-    setIsAutoPlaying(!isAutoPlaying);
-  };
+
 
   // Touch events for mobile swipe
   const onTouchStart = (e) => {
@@ -464,17 +454,12 @@ const NewPropertyCard = () => {
                     <div className="car-details">
                       <div className="car-header">
                         <h3 className="car-name">{car.car_model || car.name}</h3>
-                        {/* <div className="car-price">${car.price}<span>/day</span></div> */}
                       </div>
 
                       <div className="car-location">
                         <span className="location-icon">📍</span>
                         <span className="location-text">{car.location}</span>
                       </div>
-
-                      {/* <div className="car-mileage">
-                        <span className="mileage-text">Mileage: {car.mileage}</span>
-                      </div> */}
 
                       <button className="book-btn">
                         Book Now

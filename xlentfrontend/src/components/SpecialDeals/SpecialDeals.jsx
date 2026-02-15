@@ -5,10 +5,7 @@ import {
   Tag,
   Shield,
   Zap,
-  Calendar,
-  MapPin,
-  Users,
-  Fuel,
+
   Car,
   Filter,
   Search,
@@ -24,6 +21,7 @@ import {
 } from "lucide-react";
 import Footer from "../Footer/Footer";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const   SpecialDeals = () => {
   const [selectedFilter, setSelectedFilter] = useState("all");
@@ -37,6 +35,7 @@ const [loadingCars, setLoadingCars] = useState(false);
 const [carsError, setCarsError] = useState("");
 
   const reduxCars = useSelector((state) => state.cars.cars);
+  const navigate = useNavigate();
 
   const dealCategories = [
     { id: "all", label: "All Deals" },
@@ -95,22 +94,20 @@ const [carsError, setCarsError] = useState("");
   const mapCarsToDeals = (cars) => {
     return cars.map((car) => ({
       id: car.id,
+      carData: car,   // ✅ keep original car here
       title: `${car.car_model} Deal`,
-      category: ["economy"], // or dynamic later
+      category: ["economy"],
       originalPrice: (car.price_per_day || 2500) + 500,
-      discountedPrice: car.price_per_day || 2500,
+      discountedPrice: car.price_per_day || 3000,
       discount: 20,
       period: "Per Day",
-      features: [
-        "Free Cancellation",
-        "Unlimited KMs",
-      ],
+      features: ["Unlimited KMs"],
       vehicle: car.car_model,
       imageColor: "bg-blue-100",
       popular: true,
       tag: "Fleet Offer",
       expiry: "2024-12-31",
-        photos: car.photos || [],
+      photos: car.photos || [],
       location: car.display_location,
     }));
   };
@@ -279,40 +276,27 @@ const [carsError, setCarsError] = useState("");
               )}
             </div>
 
-            {/* Car Details */}
-            <div className="row g-2 mb-4">
-              {/* <div className="col-4">
-                <div className="text-center border rounded p-2">
-                  <Users size={16} className="text-primary mb-1" />
-                  <div className="small">{deal.seats} Seats</div>
-                </div>
-              </div>
-              <div className="col-4">
-                <div className="text-center border rounded p-2">
-                  <Fuel size={16} className="text-primary mb-1" />
-                  <div className="small">{deal.fuel}</div>
-                </div>
-              </div>
-              <div className="col-4">
-                <div className="text-center border rounded p-2">
-                  <Zap size={16} className="text-primary mb-1" />
-                  <div className="small">{deal.transmission}</div>
-                </div>
-              </div> */}
-            </div>
 
             {/* Action Button */}
-            <button className="btn btn-primary w-100">
-              Book Now <ArrowRight size={16} className="ms-2" />
-            </button>
+            <button
+  className="btn btn-primary w-100"
+  onClick={() =>
+    navigate(`/book/${deal.id}`, {
+      state: {
+        car: {
+          ...deal.carData,
+          originalData:
+            reduxCars.find((c) => c.id === deal.id) || deal.carData,
+        },
+      },
+    })
+  }
+>
+  Book Now <ArrowRight size={16} className="ms-2" />
+</button>
 
-            {/* Expiry */}
-            {/* <div className="text-center mt-3">
-              <div className="d-inline-flex align-items-center bg-danger bg-opacity-10 text-danger rounded-pill px-3 py-1">
-                <Timer size={12} className="me-1" />
-                <span className="small">Expires: {new Date(deal.expiry).toLocaleDateString()}</span>
-              </div>
-            </div> */}
+
+           
           </div>
         </div>
       </div>
@@ -356,18 +340,6 @@ const [carsError, setCarsError] = useState("");
                 </div>
               </div>
             </div>
-            {/* <div className="col-12 col-lg-4 mt-4 mt-lg-0">
-              <div className="card bg-white bg-opacity-10 border-0">
-                <div className="card-body text-center">
-                  <div className="display-6 fw-bold mb-2" style={{color:'white'}}>30-50% OFF</div>
-                  <p className="mb-0" style={{color:'white'}}>On Selected Packages</p>
-                  <div className="mt-3" style={{color:'white'}}>
-                    <Timer size={24} className="mb-2" />
-                    <div className="small" style={{color:'white'}}>Limited Time Offer</div>
-                  </div>
-                </div>
-              </div>
-            </div> */}
           </div>
         </div>
       </div>
@@ -376,21 +348,6 @@ const [carsError, setCarsError] = useState("");
       <div className="bg-light py-4">
         <div className="container">
           <div className="row g-3">
-            {/* Search */}
-            {/* <div className="col-12 col-md-6 col-lg-4">
-              <div className="input-group">
-                <span className="input-group-text bg-white border-end-0">
-                  <Search size={18} className="text-primary" />
-                </span>
-                <input
-                  type="text"
-                  className="form-control border-start-0"
-                  placeholder="Search deals or vehicles..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-            </div> */}
 
           {/* Category Filters */}
 <div className="col-12 col-md-12 col-lg-5">
@@ -439,9 +396,7 @@ const [carsError, setCarsError] = useState("");
             <div className="d-flex justify-content-between align-items-center">
               <div>
                 <h2 className="h3 text-dark mb-1">Available Deals</h2>
-                <p className="text-muted mb-0">
-                  {sortedDeals.length} offers found {selectedFilter !== "all" && `in ${dealCategories.find(c => c.id === selectedFilter)?.label}`}
-                </p>
+               
               </div>
               <div className="text-end">
                 <div className="badge bg-primary bg-opacity-10 text-primary px-3 py-2">
@@ -537,49 +492,7 @@ const [carsError, setCarsError] = useState("");
 </div>
 
         {/* FAQ Section */}
-        <div className="row mt-5">
-          <div className="col-12">
-            <h3 className="h4 text-dark mb-4">Deal FAQs</h3>
-            <div className="accordion" id="dealFaq">
-              <div className="accordion-item border-1 mb-2">
-                <h2 className="accordion-header">
-                  <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
-                    Can I combine multiple offers?
-                  </button>
-                </h2>
-                <div id="faq1" className="accordion-collapse collapse">
-                  <div className="accordion-body">
-                    Only one offer can be applied per booking. The system will automatically apply the best available offer for your selection.
-                  </div>
-                </div>
-              </div>
-              <div className="accordion-item border-1 mb-2">
-                <h2 className="accordion-header">
-                  <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
-                    Are there any hidden charges?
-                  </button>
-                </h2>
-                <div id="faq2" className="accordion-collapse collapse">
-                  <div className="accordion-body">
-                    All prices displayed include taxes and mandatory charges. Additional costs may apply for extras like GPS, child seats, or additional drivers.
-                  </div>
-                </div>
-              </div>
-              <div className="accordion-item border-1">
-                <h2 className="accordion-header">
-                  <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
-                    How long are these deals valid?
-                  </button>
-                </h2>
-                <div id="faq3" className="accordion-collapse collapse">
-                  <div className="accordion-body">
-                    Each deal has its own expiry date mentioned on the card. Most deals are valid until the end of the month or as specified.
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      
       </div>
 
       {/* Contact CTA */}
