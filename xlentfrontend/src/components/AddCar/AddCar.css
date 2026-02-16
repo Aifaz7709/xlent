@@ -1,349 +1,177 @@
-/* Add Car Component Styles */
+/* ----------------- Global ----------------- */
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+}
+
+/* ----------------- Container ----------------- */
 .add-car-container {
-  background: linear-gradient(135deg, rgba(2, 40, 124, 0.03) 0%, rgba(248, 249, 250, 1) 100%);
+  padding: 3rem 1rem;
   min-height: 100vh;
 }
 
-/* Animations */
-.fade-in {
-  animation: fadeIn 420ms ease-out both;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.slide-up {
-  animation: slideUp 520ms cubic-bezier(.2,.9,.3,1) both;
-}
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(12px) scale(.995); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-/* Card Styling */
+/* ----------------- Cards ----------------- */
 .add-car-container .card {
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.35s cubic-bezier(.25,.8,.25,1);
+  box-shadow: 0 6px 18px rgba(2,40,124,0.08);
 }
-
 
 .add-car-container .card:hover {
-  box-shadow: 0 10px 25px rgba(2, 40, 124, 0.1), 0 4px 10px rgba(0, 0, 0, 0.08);
-  transform: translateY(-2px);
+  transform: translateY(-6px) scale(1.005);
+  box-shadow: 0 16px 36px rgba(2,40,124,0.15), 0 6px 16px rgba(0,0,0,0.08);
+  border: 1px solid rgb(2,40,124);
 }
 
+/* ----------------- Card Titles ----------------- */
 .add-car-container .card-title {
-  color: #1a202c;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: 700;
-  margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
+  gap: 0.5rem;
+  color: #111827;
 }
 
-.add-car-container .card-title .text-primary {
-  color: rgb(2, 40, 124) !important;
-}
-
-/* Form Input Styling */
-.add-car-container .form-label {
-  color: #374151;
-  font-weight: 600;
-  font-size: 0.95rem;
-  margin-bottom: 0.5rem;
-}
-
+/* ----------------- Form ----------------- */
 .add-car-container .form-control {
+  border-radius: 14px;
   border: 2px solid #e5e7eb;
-  border-radius: 10px;
-  padding: 0.75rem 1rem;
-  font-size: 0.95rem;
+  padding: 0.85rem 1rem;
   transition: all 0.3s ease;
-  background-color: #ffffff;
 }
 
 .add-car-container .form-control:focus {
-  border-color: rgb(2, 40, 124);
-  box-shadow: 0 0 0 0.2rem rgba(2, 40, 124, 0.15);
-  outline: none;
-  background-color: #ffffff;
+  border-color: rgb(2,40,124);
+  box-shadow: 0 0 12px rgba(2,40,124,0.25);
 }
 
-.add-car-container .form-control::placeholder {
-  color: #9ca3af;
-  opacity: 0.7;
-}
-
-/* Photo Upload Zone */
+/* ----------------- Drag & Drop Zone ----------------- */
 .photo-drop-zone {
-  border: 2px dashed #d1d5db;
-  border-radius: 12px;
-  padding: 2.5rem 1.5rem;
+  border: 2px dashed #cbd5e1;
+  border-radius: 16px;
+  padding: 3rem 1.5rem;
   text-align: center;
   transition: all 0.3s ease;
-  cursor: pointer;
-  background-color: #f9fafb;
   position: relative;
-}
-
-.photo-drop-zone:hover {
-  border-color: rgb(2, 40, 124);
-  background-color: rgba(2, 40, 124, 0.05);
-  transform: translateY(-2px);
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(14px);
 }
 
 .photo-drop-zone.dragover {
-  border-color: rgb(2, 40, 124);
-  background-color: rgba(2, 40, 124, 0.1);
-  border-style: solid;
+  animation: pulseGlow 1.2s infinite alternate;
+  border-color: rgb(2,40,124);
+  box-shadow: 0 0 12px rgba(2,40,124,0.3);
 }
 
-.upload-hint {
-  color: #6b7280;
-  font-size: 0.9rem;
-  margin: 0.25rem 0;
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 12px rgba(2,40,124,0.2); }
+  100% { box-shadow: 0 0 24px rgba(2,40,124,0.35); }
 }
 
-.upload-hint:first-of-type {
-  font-weight: 500;
-  color: #4b5563;
-}
-
-/* Photo Preview */
+/* ----------------- Photo Previews ----------------- */
 .photo-preview {
-  position: relative;
-  width: 80px;
-  height: 80px;
-  border-radius: 10px;
+  border-radius: 14px;
   overflow: hidden;
-  display: inline-block;
-  margin-right: 0.5rem;
-  margin-bottom: 0.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease;
+  width: 90px;
+  height: 90px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
+  cursor: pointer;
 }
 
 .photo-preview:hover {
-  transform: scale(1.05);
+  transform: scale(1.1);
+  box-shadow: 0 8px 24px rgba(2,40,124,0.25);
 }
 
-.photo-preview img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
+/* Remove button */
 .photo-preview .remove-btn {
-  position: absolute;
   top: 6px;
   right: 6px;
-  background: rgba(220, 38, 38, 0.9);
-  color: white;
-  border: none;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+  background: rgba(220,38,38,0.85);
+  width: 28px;
+  height: 28px;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .photo-preview .remove-btn:hover {
-  background: rgba(220, 38, 38, 1);
-  transform: scale(1.1);
+  transform: scale(1.15);
+  background: rgba(220,38,38,1);
 }
 
-/* Car List Items */
-.add-car-container .border.rounded {
-  border: 2px solid #e5e7eb !important;
-  border-radius: 12px !important;
-  padding: 1.25rem !important;
+/* ----------------- Buttons ----------------- */
+.btn-primary {
+  border-radius: 14px;
+  background: linear-gradient(135deg,#02287c,#0d6efd);
+  box-shadow: 0 4px 14px rgba(2,40,124,0.25);
   transition: all 0.3s ease;
-  background-color: #ffffff;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 10px 28px rgba(2,40,124,0.35);
+}
+
+.btn-outline-primary {
+  border-radius: 12px;
+  border: 2px solid rgb(2,40,124);
+  color: rgb(2,40,124);
+  transition: all 0.2s ease;
+}
+
+.btn-outline-primary:hover {
+  background-color: rgb(2,40,124);
+  color: white;
+}
+
+/* ----------------- Alerts ----------------- */
+.alert {
+  border-radius: 14px;
+  font-size: 0.95rem;
+  padding: 1rem 1.25rem;
+  animation: slideFade 0.4s ease-out both;
+}
+
+@keyframes slideFade {
+  0% { opacity: 0; transform: translateY(-20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ----------------- Cars List ----------------- */
+.add-car-container .border.rounded {
+  border-radius: 18px;
+  border: 1px solid #e5e7eb;
+  transition: all 0.35s ease;
+  padding: 1.5rem;
   margin-bottom: 1rem;
 }
 
 .add-car-container .border.rounded:hover {
-  border-color: rgb(2, 40, 124) !important;
-  box-shadow: 0 4px 12px rgba(2, 40, 124, 0.1);
-  transform: translateX(4px);
+  transform: translateY(-4px) scale(1.003);
+  box-shadow: 0 12px 28px rgba(2,40,124,0.18);
+  border: 1px solid rgb(2,40,124);
 }
 
-.add-car-container .border.rounded h5 {
-  color: #1a202c;
-  font-weight: 700;
-  font-size: 1.1rem;
-  margin-bottom: 0.75rem;
-}
-
-.add-car-container .border.rounded .text-muted {
-  color: #6b7280 !important;
-  font-size: 0.875rem;
-}
-
-.add-car-container .border.rounded .text-muted strong {
-  color: #374151;
-}
-
-/* Buttons */
-.add-car-container .btn-primary {
-  background: linear-gradient(135deg, rgb(2, 40, 124) 0%, rgb(13, 110, 253) 100%);
-  border: none;
-  border-radius: 10px;
-  font-weight: 600;
-  padding: 0.75rem 1.5rem;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(2, 40, 124, 0.2);
-}
-
-.add-car-container .btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(2, 40, 124, 0.3);
-  background: linear-gradient(135deg, rgb(1, 30, 100) 0%, rgb(10, 90, 220) 100%);
-}
-
-.add-car-container .btn-primary:active {
-  transform: translateY(0);
-}
-
-.add-car-container .btn-primary:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.add-car-container .btn-danger {
-  background-color: #dc2626;
-  border: none;
-  border-radius: 8px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.add-car-container .btn-danger:hover {
-  background-color: #b91c1c;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(220, 38, 38, 0.3);
-}
-
-.add-car-container .btn-outline-primary {
-  border: 2px solid rgb(2, 40, 124);
-  color: rgb(2, 40, 124);
-  border-radius: 8px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.add-car-container .btn-outline-primary:hover {
-  background-color: rgb(2, 40, 124);
-  color: white;
-  transform: translateY(-1px);
-}
-
-.add-car-actions .btn-primary {
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
-}
-
-.add-car-actions .btn-primary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 24px rgba(2, 40, 124, 0.2);
-}
-
-/* Alert Messages */
-.add-car-container .alert {
-  border-radius: 12px;
-  border: none;
-  padding: 1rem 1.25rem;
-  font-size: 0.95rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.add-car-container .alert-success {
-  background-color: #d1fae5;
-  color: #065f46;
-  border-left: 4px solid #10b981;
-}
-
-.add-car-container .alert-danger {
-  background-color: #fee2e2;
-  color: #991b1b;
-  border-left: 4px solid #ef4444;
-}
-
-/* Car Images in List */
 .add-car-container .border.rounded img {
-  border-radius: 8px;
-  transition: transform 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  transition: transform 0.3s ease;
 }
 
-.add-car-container .border.rounded:hover img {
-  transform: scale(1.05);
+.add-car-container .border.rounded img:hover {
+  transform: scale(1.08);
 }
 
-/* VIN Badge */
-.vin-badge {
-  display: inline-block;
-  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
-  padding: 0.35rem 0.85rem;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  font-family: 'Courier New', monospace;
-  color: #374151;
-  font-weight: 600;
-  border: 1px solid #d1d5db;
+/* ----------------- Responsive ----------------- */
+@media(max-width:768px) {
+  .add-car-container { padding: 2rem 1rem; }
+  .photo-preview { width: 70px; height: 70px; }
 }
-
-/* Loading Spinner */
-.add-car-container .spinner-border {
-  width: 1rem;
-  height: 1rem;
-  border-width: 0.15em;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .add-car-container .card-title {
-    font-size: 1.25rem;
-  }
-  
-  .photo-drop-zone {
-    padding: 2rem 1rem;
-  }
-  
-  .upload-hint {
-    font-size: 0.85rem;
-  }
-  
-  .add-car-container .btn-primary {
-    padding: 0.65rem 1.25rem;
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 576px) {
-  .add-car-container {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-  }
-  
-  .add-car-container .card-body {
-    padding: 1.25rem !important;
-  }
-  
-  .photo-drop-zone {
-    padding: 1.5rem 1rem;
-  }
-  
-  .add-car-container .border.rounded {
-    padding: 1rem !important;
-  }
+@media(max-width:576px) {
+  .add-car-container .card-body { padding: 1rem; }
+  .add-car-container .card-title { font-size: 1.3rem; }
+  .photo-drop-zone { padding: 2rem 1rem; }
 }

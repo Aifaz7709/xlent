@@ -422,13 +422,18 @@ const NewPropertyCard = () => {
              
               }}
             >
-              {localCars.map((car) => (
+              {localCars.map((car, index) => (
                 <div 
                   key={car.id}
                   className="car-card"
                   style={{
-                    width: `${100 / itemsPerSlide}%`
-                  }}
+    width: `${100 / itemsPerSlide}%`,
+    transform: isMobile
+      ? `scale(${currentSlide === index ? 1 : 0.85}) translateX(${(index - currentSlide) * 10}%)`
+      : 'scale(1)',
+    zIndex: isMobile ? (currentSlide === index ? 10 : 5) : 'auto',
+    transition: 'transform 0.4s ease, z-index 0.4s ease',
+  }}
                   onClick={() => navigate(`/book/${car.id}`, { 
                     state: { 
                       car: {

@@ -1,0 +1,239 @@
+/* =========================
+   FOOTER BASE
+========================= */
+
+.modern-footer {
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    #0f172a,
+    #111827,
+    #0f172a
+  );
+  color: #e5e7eb;
+  padding: 60px 0 20px;
+  overflow: hidden;
+}
+
+/* Soft Glow Top Line */
+.modern-footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #3b82f6,
+    transparent
+  );
+  transform: translateX(-50%);
+  opacity: 0.6;
+}
+
+/* =========================
+   LAYOUT
+========================= */
+
+.footer-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 40px;
+}
+
+/* =========================
+   COLUMNS
+========================= */
+
+.footer-column h4 {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 18px;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+
+.footer-column a {
+  display: block;
+  margin-bottom: 10px;
+  text-decoration: none;
+  color: #e5e7eb;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.footer-column a:hover {
+  color: #3b82f6;
+  transform: translateX(4px);
+}
+
+.footer-location {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+/* =========================
+   LOGO & CONTACT
+========================= */
+
+.footer-logo {
+  width: 100px;
+  margin-bottom: 20px;
+}
+
+.footer-location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  margin-bottom: 15px;
+  opacity: 0.8;
+}
+
+.footer-contact div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.footer-contact a {
+  text-decoration: none;
+  color: #e5e7eb;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.footer-contact a:hover {
+  color: #3b82f6;
+}
+
+/* =========================
+   BOTTOM
+========================= */
+
+.footer-bottom {
+  margin-top: 50px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+  .modern-footer {
+    padding: 50px 0 20px;
+  }
+
+  .footer-grid {
+    gap: 30px;
+  }
+
+  .footer-bottom {
+    margin-top: 30px;
+  }
+}
+
+
+
+
+.footer-map h4 {
+  margin-bottom: 1rem;
+}
+
+@media(max-width:1024px) {
+  .footer-map iframe {
+    height: 180px;
+  }
+}
+
+
+
+
+/* Base footer styles remain the same */
+
+/* Responsive adjustments for mobile */
+
+@media (max-width: 768px) {
+  .footer-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .footer-column {
+    width: 100%;
+  }
+
+  .footer-map iframe {
+    width: 100% !important;
+    height: 250px !important;
+    border-radius: 12px;
+  }
+  
+  /* Add some padding around content */
+  .footer-container {
+    padding: 1rem 1.5rem;
+  }
+  
+  /* Logo and hamburger adjustments */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-logo {
+    width: 120px;
+    margin-bottom: 1rem;
+  }
+
+  /* Increase touch targets for links */
+  .footer-column a {
+    padding: 0.5rem 0;
+    font-size: 1.1rem;
+  }
+
+  .footer-column h4 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 480px) {
+  .footer-map iframe {
+    height: 200px !important;
+  }
+  
+  .footer-column a {
+    font-size: 1rem;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+

@@ -245,9 +245,7 @@ function AppRoutes({ theme, toggleTheme }) {
           <Route
             path="/login"
             element={
-              <Suspense fallback={<div>Loading login...</div>}>
                 <Login setIsAuthenticated={setIsAuthenticated} onLogin={handleLogin} />
-              </Suspense>
             }
           />
 
@@ -255,81 +253,64 @@ function AppRoutes({ theme, toggleTheme }) {
           <Route 
             path="/register" 
             element={
-              <Suspense fallback={<div>Loading registration...</div>}>
                 <RegisterPage />
-              </Suspense>
             } 
           />
           
           <Route 
             path="/HelpCenter" 
             element={
-              <Suspense fallback={<div>Loading help center...</div>}>
                 <HelpCenter />
-              </Suspense>
             } 
           />
           
           <Route 
             path="/about" 
             element={
-              <Suspense fallback={<div>Loading about page...</div>}>
                 <AboutPage />
-              </Suspense>
             } 
           />
           
           <Route 
             path="/deals" 
             element={
-              <Suspense fallback={<div>Loading deals...</div>}>
                 <SpecialDeals />
-              </Suspense>
             } 
           />
           
           <Route 
             path="/terms" 
             element={
-              <Suspense fallback={<div>Loading terms...</div>}>
                 <TermsConditionsPage />
-              </Suspense>
             } 
           />
           
           <Route 
             path="/book/:carId" 
             element={
-              <Suspense fallback={<div>Loading booking...</div>}>
                 <BookingPage />
-              </Suspense>
             } 
           />
           
           <Route 
             path="/Payment" 
             element={
-              <Suspense fallback={<div>Loading payment...</div>}>
                 <Qrcode />
-              </Suspense>
             } 
           />
           
           <Route 
             path="/PrivacyPolicy" 
             element={
-              <Suspense fallback={<div>Loading privacy policy...</div>}>
                 <PrivacyPolicyPage />
-              </Suspense>
             } 
           />
           
           <Route 
             path="/RefundPolicy" 
             element={
-              <Suspense fallback={<div>Loading refund policy...</div>}>
                 <RefundPolicyPage />
-              </Suspense>
+            
             } 
           />
 

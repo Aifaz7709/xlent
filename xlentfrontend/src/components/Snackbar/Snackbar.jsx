@@ -100,27 +100,26 @@ const Snackbar = ({ message, type = 'default', onClose }) => {
   const [progress, setProgress] = useState(100);
 
   useEffect(() => {
+    const totalDuration = 2000;
+    const start = Date.now();
+  
     const timer = setTimeout(() => {
       setIsVisible(false);
-      setTimeout(onClose, 300); // Wait for fade out animation
-    }, 5000);
-
-    // Progress bar animation
+      setTimeout(onClose, 400);
+    }, totalDuration);
+  
     const interval = setInterval(() => {
-      setProgress(prev => {
-        if (prev <= 0) {
-          clearInterval(interval);
-          return 0;
-        }
-        return prev - (100 / 5000) * 50; // Update every 50ms
-      });
-    }, 50);
-
+      const elapsed = Date.now() - start;
+      const percentage = 100 - (elapsed / totalDuration) * 100;
+      setProgress(percentage > 0 ? percentage : 0);
+    }, 30);
+  
     return () => {
       clearTimeout(timer);
       clearInterval(interval);
     };
   }, [onClose]);
+  
 
   const handleClose = () => {
     setIsVisible(false);

@@ -1,518 +1,249 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { 
-  User, 
-  Lock, 
-  Eye, 
-  EyeOff, 
-  LogIn, 
-  UserPlus, 
-  Shield, 
-  Car,
-  AlertCircle,
-  CheckCircle,
-  Sparkles,
-  X
-} from "lucide-react";
-import './Login.css'
+  import React, { useState } from "react";
+  import { Link, useNavigate } from "react-router-dom";
+  import { User, Lock, Eye, EyeOff, LogIn, AlertCircle, Shield } from "lucide-react";
+  import "./Login.css";
+  import { useSnackbar } from "../Snackbar/Snackbar";
 
-// Snackbar Component (keep as is)
-const Snackbar = ({ message, type = "success", onClose, duration = 2000 }) => {
-  // ... Snackbar code remains exactly the same
-};
+  const API_BASE =
+    process.env.REACT_APP_API_BASE_URL ||
+    "https://xlent-production.up.railway.app";
 
-const Login = ({ setIsAuthenticated, onLogin }) => { // ADD onLogin prop here
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-    rememberMe: false
-  });
-  const [errors, setErrors] = useState({});
-  const [snackbar, setSnackbar] = useState(null);
-  const navigate = useNavigate();
+  const Login = ({ setIsAuthenticated, onLogin }) => {
+    const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [formData, setFormData] = useState({
+      username: "",
+      password: "",
+      rememberMe: false,
+    });
+    const [errors, setErrors] = useState({});
+    const navigate = useNavigate();
+    const { showSuccess, showError } = useSnackbar();
 
-  const showNotification = (message, type = "success") => {
-    setSnackbar({ message, type });
-  };
+    const handleChange = (e) => {
+      const { name, value, type, checked } = e.target;
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
-    }
-  };
+      setFormData((prev) => ({
+        ...prev,
+        [name]: type === "checkbox" ? checked : value,
+      }));
 
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.username.trim()) {
-      newErrors.username = 'Username or Email is required';
-    }
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
-    return newErrors;
-  };
+      setErrors((prev) => {
+        if (!prev[name]) return prev;
+        return { ...prev, [name]: "" };
+      });
+    };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const validationErrors = validateForm();
+    const validateForm = () => {
+      const newErrors = {};
+      if (!formData.username.trim()) {
+        newErrors.username = "Username or Email is required";
+      }
+      if (!formData.password) {
+        newErrors.password = "Password is required";
+      } else if (formData.password.length < 6) {
+        newErrors.password = "Password must be at least 6 characters";
+      }
+      return newErrors;
+    };
 
-    if (Object.keys(validationErrors).length === 0) {
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      const validationErrors = validateForm();
+
+      if (Object.keys(validationErrors).length !== 0) {
+        setErrors(validationErrors);
+        return;
+      }
+
       setIsLoading(true);
-      try {
-        const apiBase = process.env.REACT_APP_API_BASE_URL || 'https://xlent-production.up.railway.app';
 
-        const res = await fetch(`${apiBase}/api/auth/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          // credentials: 'include',
-          body: JSON.stringify({ 
+      try {
+        const res = await fetch(`${API_BASE}/api/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
             email: formData.username,
-            password: formData.password 
-          })
+            password: formData.password,
+          }),
         });
-        
-        const data = await res.json();
-        
-        if (!res.ok) {
-          throw new Error(data.message || 'Login failed. Please check your credentials.');
+
+        let data;
+        try {
+          data = await res.json();
+        } catch {
+          throw new Error("Invalid server response");
         }
-        
+
+        if (!res.ok) {
+          throw new Error(
+            data.message || "Login failed. Please check your credentials."
+          );
+        }
+
         if (data.token) {
-          // CREATE USER DATA OBJECT
           const userData = {
-            id: data.user?.id || '1',
+            id: data.user?.id || "1",
             username: formData.username,
-            name: data.user?.name || formData.username.split('@')[0],
+            name:
+              data.user?.name ||
+              formData.username.split("@")[0],
             email: data.user?.email || formData.username,
-            // Add any other user data you get from the API
-            ...data.user
+            ...data.user,
           };
-          
-          // USE onLogin IF PROVIDED, OTHERWUSE USE OLD METHOD
+
           if (onLogin) {
-            // Call onLogin with token and userData
             onLogin(data.token, userData);
           } else {
-            // Fallback to old method
-            localStorage.setItem('xlent_token', data.token);
-            localStorage.setItem('xlent_refresh_token', data.refresh_token);
-            localStorage.setItem('xlent_user', JSON.stringify(userData));
-            
+            localStorage.setItem("xlent_token", data.token);
+            localStorage.setItem(
+              "xlent_user",
+              JSON.stringify(userData)
+            );
             if (setIsAuthenticated) {
               setIsAuthenticated(true);
             }
           }
-          
-          showNotification('Welcome to Xlentcar! Login successful.', 'success');
-          
-          setTimeout(() => {
-            navigate('/');
-          }, 2000);
+
+          showSuccess("Login successful!");
+          navigate("/");
         }
-        
       } catch (err) {
         console.error(err);
-        showNotification(err.message || 'Login failed. Please try again.', 'error');
-        setErrors({ form: err.message || 'Login failed. Please try again.' });
+        showError(err.message || "Login failed. Try again.");
+        
       } finally {
         setIsLoading(false);
       }
-    } else {
-      setErrors(validationErrors);
-    }
-  };
+    };
 
-  return (
-    <div className="min-vh-100 d-flex align-items-center justify-content-center position-relative overflow-hidden p-3">
-      {/* Snackbar Component */}
-      {snackbar && (
-        <Snackbar
-          message={snackbar.message}
-          type={snackbar.type}
-          onClose={() => setSnackbar(null)}
-          duration={snackbar.type === 'error' ? 4000 : 3000}
-        />
-      )}
-
-      {/* Animated Background Elements */}
-      <div className="position-absolute top-0 start-0 w-100 h-100 d-none d-md-block">
-        <div 
-          className="position-absolute top-0 start-0 w-100 h-100"
-          style={{
-            backgroundImage: "url('/OrginalLogo.png')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            backgroundColor: "rgba(255,255,255,0.92)",
-            backgroundBlendMode: "overlay",
-            animation: 'zoomInOut 20s infinite alternate'
-          }}
-        />
-        
-        {/* Animated gradient overlay */}
-        <div 
-          className="position-absolute top-0 start-0 w-100 h-100"
-          style={{
-            background: 'linear-gradient(45deg, rgba(2, 40, 124, 0.03) 0%, rgba(255, 255, 255, 0.95) 100%)',
-            animation: 'gradientShift 10s ease-in-out infinite alternate'
-          }}
-        />
-        
-        {/* Floating elements - hide on mobile */}
-        <div className="position-absolute d-none d-lg-block" style={{ top: '10%', left: '5%' }}>
-          <div className="floating-element" style={{ animationDelay: '0s' }}>
-            <div className="bg-primary bg-opacity-10 rounded-circle p-3">
-              <Car size={24} className="text-primary" />
-            </div>
-          </div>
-        </div>
-        <div className="position-absolute d-none d-lg-block" style={{ top: '70%', right: '8%' }}>
-          <div className="floating-element" style={{ animationDelay: '1s' }}>
-            <div className="bg-primary bg-opacity-10 rounded-circle p-3">
-              <Shield size={24} className="text-primary" />
-            </div>
-          </div>
-        </div>
-        <div className="position-absolute d-none d-lg-block" style={{ bottom: '20%', left: '15%' }}>
-          <div className="floating-element" style={{ animationDelay: '2s' }}>
-            <div className="bg-primary bg-opacity-10 rounded-circle p-3">
-              <Car size={24} className="text-primary" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Background - Simpler */}
-      <div className="position-absolute top-0 start-0 w-100 h-100 d-md-none"
-        style={{
-          backgroundColor: "#f8f9fa",
-          background: 'linear-gradient(135deg, rgba(2, 40, 124, 0.05) 0%, rgba(255, 255, 255, 1) 100%)'
-        }}
-      />
-
-      {/* Main Login Card */}
-      <div className="position-relative z-2 w-100" style={{ maxWidth: "480px" }}>
-        <div 
-          className="card border-0 shadow-lg overflow-hidden animate-slide-up"
-          style={{
-            width: "100%",
-            backdropFilter: "blur(10px)",
-            backgroundColor: "rgba(255, 255, 255, 0.97)",
-            borderRadius: "20px",
-            borderTop: "5px solid rgb(2, 40, 124)"
-          }}
-        >
-          {/* Card Header with gradient */}
-          <div 
-            className="text-center py-4 px-3 px-md-4"
+    return (
+      <div className="login-container">
+        {/* Background Image */}
+        <div className="position-absolute top-0 start-0 w-100 h-100 background-animation">
+          <div
+            className="w-100 h-100"
             style={{
-              background: 'linear-gradient(135deg, rgb(2, 40, 124) 0%, rgb(13, 110, 253) 100%)'
+              backgroundImage: "url('/OrginalLogo.png')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+              backgroundColor: "rgba(255,255,255,0.92)",
+              backgroundBlendMode: "overlay",
             }}
-          >
-            <div className="d-flex align-items-center justify-content-center mb-2">
-              
-              <h2 className="text-white mb-0 fw-bold" style={{ fontSize: 'clamp(1.5rem, 5vw, 1.8rem)' }}>
-                Welcome 
-              </h2>
-            </div>
-            <p className="text-white-50 mb-0" style={{ fontSize: 'clamp(0.9rem, 3vw, 1rem)' }}>
-              Note: This login is Only for XlentCar Admin.
-            </p>
-          </div>
+          />
+        </div>
 
-          {/* Card Body */}
-          <div className="card-body p-3 p-md-4 p-lg-5">
-            <form onSubmit={handleSubmit} noValidate>
-              {/* Username/Email Field */}
-              <div className="mb-4">
-                <label className="form-label fw-semibold d-flex align-items-center mb-2">
-                  <User size={16} className="me-2 text-primary" />
-                  <span style={{ fontSize: 'clamp(0.9rem, 3vw, 1rem)' }}>
-                    Username or Email
-                  </span>
-                </label>
-                <div className="input-group input-group-lg">
-                  <span className="input-group-text bg-light border-end-0">
-                    <User size={18} className="text-muted" />
-                  </span>
-                  <input 
-                    type="text"
-                    name="username"
-                    className={`form-control border-start-0 ${errors.username ? 'is-invalid' : ''}`}
-                    placeholder="Enter username or email"
-                    value={formData.username}
-                    onChange={handleChange}
-                    style={{ 
-                      borderRadius: "10px",
-                      fontSize: 'clamp(0.9rem, 3vw, 1rem)',
-                      padding: '0.75rem 1rem'
-                    }}
-                    autoComplete="username"
-                  />
-                </div>
-                {errors.username && (
-                  <div className="invalid-feedback d-flex align-items-center mt-2">
-                    <AlertCircle size={14} className="me-2" />
-                    <span style={{ fontSize: '0.875rem' }}>{errors.username}</span>
-                  </div>
-                )}
-              </div>
+        {/* Gradient Overlay */}
+        <div className="position-absolute w-100 h-100 gradient-overlay" />
 
-              {/* Password Field */}
-              <div className="mb-4">
-                <label className="form-label fw-semibold d-flex align-items-center mb-2">
-                  <Lock size={16} className="me-2 text-primary" />
-                  <span style={{ fontSize: 'clamp(0.9rem, 3vw, 1rem)' }}>
-                    Password
-                  </span>
-                </label>
-                <div className="input-group input-group-lg">
-                  <span className="input-group-text bg-light border-end-0">
-                    <Lock size={18} className="text-muted" />
-                  </span>
-                  <input 
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    className={`form-control border-start-0 ${errors.password ? 'is-invalid' : ''}`}
-                    placeholder="Enter your password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    style={{ 
-                      borderRadius: "10px",
-                      fontSize: 'clamp(0.9rem, 3vw, 1rem)',
-                      padding: '0.75rem 1rem'
-                    }}
-                    autoComplete="current-password"
-                  />
-                  <button
-                    type="button"
-                    className="btn btn-outline-secondary border-start-0"
-                    onClick={() => setShowPassword(!showPassword)}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
-                    style={{ 
-                      padding: '0 0.75rem',
-                      fontSize: 'clamp(0.9rem, 3vw, 1rem)'
-                    }}
-                  >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                  </button>
-                </div>
-                {errors.password && (
-                  <div className="invalid-feedback d-flex align-items-center mt-2">
-                    <AlertCircle size={14} className="me-2" />
-                    <span style={{ fontSize: '0.875rem' }}>{errors.password}</span>
-                  </div>
-                )}
-              </div>
+        {/* Futuristic Glow Orbs */}
+        <div className="glow-orb one"></div>
+        <div className="glow-orb two"></div>
 
-              {/* Form Error */}
-              {errors.form && (
-                <div className="alert alert-danger d-flex align-items-center" role="alert" style={{ fontSize: '0.875rem' }}>
-                  <AlertCircle size={16} className="me-2" />
-                  <div>{errors.form}</div>
+        {/* Login Card */}
+        <div className="login-card position-relative z-2">
+          <h2 className="login-title text-center mb-2">
+            Welcome Back
+          </h2>
+          <p className="login-subtitle text-center mb-4">
+            Admin access to XlentCar dashboard
+          </p>
+
+          <form onSubmit={handleSubmit} noValidate>
+            {/* Username */}
+            <div className="mb-3">
+              <label className="form-label d-flex align-items-center">
+                <User size={16} className="me-2" />
+                Username or Email
+              </label>
+              <input
+                type="text"
+                name="username"
+                className={`form-control ${
+                  errors.username ? "is-invalid" : ""
+                }`}
+                placeholder="Enter username or email"
+                value={formData.username}
+                onChange={handleChange}
+                autoComplete="username"
+              />
+              {errors.username && (
+                <div className="invalid-feedback d-flex align-items-center">
+                  <AlertCircle size={14} className="me-2" />
+                  {errors.username}
                 </div>
               )}
+            </div>
 
-              {/* Remember Me & Forgot Password */}
-              <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-2">
-                <div className="form-check">
-                  <input 
-                    type="checkbox" 
-                    className="form-check-input"
-                    name="rememberMe"
-                    id="rememberMe"
-                    checked={formData.rememberMe}
-                    onChange={handleChange}
-                  />
-                  <label className="form-check-label" htmlFor="rememberMe" style={{ fontSize: '0.9rem' }}>
-                    Remember me
-                  </label>
-                </div>
-                <Link 
-                  to="/forgot-password" 
-                  className="text-decoration-none fw-semibold"
-                  style={{ 
-                    color: "rgb(2, 40, 124)",
-                    fontSize: '0.9rem'
-                  }}
+            {/* Password */}
+            <div className="mb-3">
+              <label className="form-label d-flex align-items-center">
+                <Lock size={16} className="me-2" />
+                Password
+              </label>
+              <div className="position-relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  className={`form-control ${
+                    errors.password ? "is-invalid" : ""
+                  }`}
+                  placeholder="Enter your password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  autoComplete="current-password"
+                />
+                <button
+                  type="button"
+                  className="position-absolute top-50 end-0 translate-middle-y me-3 border-0 bg-transparent"
+                  onClick={() =>
+                    setShowPassword(!showPassword)
+                  }
                 >
-                  Forgot password?
-                </Link>
+                  {showPassword ? (
+                    <EyeOff size={18} />
+                  ) : (
+                    <Eye size={18} />
+                  )}
+                </button>
               </div>
-
-              {/* Submit Button */}
-              <button
-                type="submit"
-                className="btn btn-primary w-100 py-3 mb-3 d-flex align-items-center justify-content-center"
-                disabled={isLoading}
-                style={{
-                  background: "linear-gradient(135deg, rgb(2, 40, 124) 0%, rgb(13, 110, 253) 100%)",
-                  border: "none",
-                  borderRadius: "12px",
-                  transition: "all 0.3s ease",
-                  fontSize: 'clamp(1rem, 3vw, 1.1rem)'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.transform = "translateY(-2px)";
-                  e.target.style.boxShadow = "0 10px 20px rgba(13, 110, 253, 0.3)";
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.transform = "translateY(0)";
-                  e.target.style.boxShadow = "none";
-                }}
-              >
-                {isLoading ? (
-                  <>
-                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                    <span>Signing in...</span>
-                  </>
-                ) : (
-                  <>
-                    <LogIn size={20} className="me-2" />
-                    <span>Sign In</span>
-                  </>
-                )}
-              </button>
-
-              {/* Sign Up Link */}
-              <div className="text-center mt-4 pt-3 border-top">
-                <div className="d-flex align-items-center justify-content-center mt-2">
-                  <Shield size={12} className="text-success me-2" />
-                  <span className="small text-muted" style={{ fontSize: '0.8rem' }}>
-                    Secure login required to access Xlentcar services
-                  </span>
+              {errors.password && (
+                <div className="invalid-feedback d-flex align-items-center">
+                  <AlertCircle size={14} className="me-2" />
+                  {errors.password}
                 </div>
+              )}
+            </div>
+
+            {/* Form Error */}
+            {errors.form && (
+              <div className="alert alert-danger mt-2">
+                {errors.form}
               </div>
-            </form>
-          </div>
+            )}
+
+            {/* Submit */}
+            <button
+              type="submit"
+              className="login-btn mt-4"
+              disabled={isLoading}
+            >
+              {isLoading ? "Signing in..." : "Sign In"}
+            </button>
+
+            {/* Footer */}
+            <div className="text-center mt-4">
+              <Shield size={14} className="me-2 text-success" />
+              <small className="text-muted">
+                Secure admin authentication
+              </small>
+            </div>
+
+          </form>
         </div>
       </div>
+    );
+  };
 
-      {/* Add responsive styles */}
-      <style jsx>{`
-        @keyframes zoomInOut {
-          0% {
-            transform: scale(1);
-          }
-          100% {
-            transform: scale(1.05);
-          } 
-        }
-        
-        @keyframes gradientShift {
-          0% {
-            opacity: 0.7;
-          }
-          100% {
-            opacity: 0.9;
-          }
-        }
-        
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0) rotate(0deg);
-          }
-          50% {
-            transform: translateY(-20px) rotate(5deg);
-          }
-        }
-        
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        .floating-element {
-          animation: float 6s ease-in-out infinite;
-        }
-        
-        .animate-slide-up {
-          animation: slideUp 0.6s ease-out;
-        }
-        
-        .form-control:focus {
-          border-color: rgb(2, 40, 124);
-          box-shadow: 0 0 0 0.25rem rgba(2, 40, 124, 0.25);
-        }
-        
-        .btn-primary {
-          transition: all 0.3s ease;
-        }
-        
-        .btn-primary:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 10px 20px rgba(2, 40, 124, 0.3);
-        }
-        
-        .form-check-input:checked {
-          background-color: rgb(2, 40, 124);
-          border-color: rgb(2, 40, 124);
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-          .min-vh-100 {
-            min-height: 100vh;
-            padding-top: 1rem;
-            padding-bottom: 1rem;
-          }
-          
-          .input-group-lg {
-            flex-wrap: nowrap;
-          }
-          
-          .input-group-text {
-            padding: 0.5rem;
-          }
-        }
-
-        @media (max-width: 576px) {
-          .card-body {
-            padding: 1.5rem !important;
-          }
-          
-          .btn {
-            padding: 0.75rem 1rem !important;
-          }
-          
-          .input-group-lg > .form-control,
-          .input-group-lg > .input-group-text {
-            padding: 0.5rem 0.75rem;
-          }
-        }
-
-        @media (max-width: 375px) {
-          .card {
-            border-radius: 15px !important;
-          }
-          
-          .card-body {
-            padding: 1rem !important;
-          }
-          
-          .btn {
-            padding: 0.625rem 0.875rem !important;
-            font-size: 0.95rem !important;
-          }
-        }
-      `}</style>
-    </div>
-  );
-};
-  
-export default Login;
+  export default Login;

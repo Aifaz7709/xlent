@@ -487,89 +487,93 @@
 }
 
 /* Mobile-specific styles */
-@media (max-width: 480px) {
-  .carousel-container {
-    padding: 0.75rem;
-  }
-  
-  .carousel-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-  
-  .carousel-controls-group {
-    width: 100%;
-    justify-content: space-between;
-  }
-  
+/* MOBILE CAROUSEL STACK EFFECT */
+@media (max-width: 768px) {
   .carousel-wrapper {
-    margin: 0 -0.25rem;
-    padding: 0.25rem;
+    perspective: 1200px; /* gives 3D depth */
   }
-  
-  .car-image-container {
-    height: 160px;
+
+  .car-card {
+    cursor: grab;
+    flex-shrink: 0;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+    position: relative;
   }
-  
-  .car-image-placeholder {
-    height: 160px;
+
+  .car-card:active {
+    cursor: grabbing;
   }
-  
-  .car-details {
-    padding: 0.75rem;
+
+  .carousel-track {
+    display: flex;
+    align-items: center;
+    gap: 0;
   }
-  
-  .car-specs {
+}
+
+/* Add subtle shadow and lift to active card */
+.car-card.active {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  transform: scale(1) translateY(-5px);
+  border-radius: 16px;
+}
+
+/* Fade neighbors slightly */
+.car-card:not(.active) .card-inner {
+  filter: brightness(0.95);
+}
+
+/* Optional: swipe hint */
+.carousel-wrapper::after {
+  content: "← Swipe →";
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+  font-weight: 500;
+  pointer-events: none;
+  animation: floatHint 1.5s infinite alternate;
+}
+
+@keyframes floatHint {
+  0% { transform: translateX(-50%) translateY(0px); }
+  100% { transform: translateX(-50%) translateY(-4px); }
+}
+@media (max-width: 768px) {
+  .carousel-wrapper {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory; /* snap to cards */
+    -webkit-overflow-scrolling: touch;
     gap: 0.5rem;
+    padding: 1rem 0;
   }
-  
-  .spec-item {
-    font-size: 0.7rem;
-    padding: 0.2rem 0.4rem;
+
+  .carousel-track {
+    display: flex;
+    transition: none; /* remove translate effect */
   }
-  
-  .carousel-btn {
-    width: 40px;
-    height: 40px;
-    font-size: 1rem;
+
+  .car-card {
+    flex: 0 0 70%; /* center card takes 70% width */
+    scroll-snap-align: center;
+    transition: transform 0.3s ease;
+  }
+
+  .car-card:nth-child(n) {
+    transform: scale(0.9); /* slightly smaller side cards */
+  }
+
+  .car-card:focus, 
+  .car-card:hover,
+  .car-card:active {
+    transform: scale(1); /* zoom center card */
   }
 }
 
-/* Tablet styles */
-@media (min-width: 481px) and (max-width: 768px) {
-  .carousel-container {
-    padding: 1rem;
-  }
-  
-  .car-image-container {
-    height: 200px;
-  }
-  
-  .car-image-placeholder {
-    height: 200px;
-  }
-  
-  .carousel-wrapper {
-    margin: 0 -0.5rem;
-    padding: 0.5rem;
-  }
-}
-
-/* Small desktop */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .carousel-container {
-    padding: 1.5rem;
-  }
-  
-  .car-image-container {
-    height: 220px;
-  }
-  
-  .car-image-placeholder {
-    height: 220px;
-  }
-}
 
 /* Large desktop */
 @media (min-width: 1025px) {
@@ -652,3 +656,7 @@
     flex: 0 0 25%;
   }
 }
+
+
+
+
