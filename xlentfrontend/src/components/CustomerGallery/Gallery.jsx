@@ -2,7 +2,7 @@
 
   const Gallery = () => {
     return (
-      <section className="position-relative bg-light" id="gallery">
+      <section className="position-relative bg-white " id="gallery">
         <div className="container-fluid">
           <div className="row" >
             <div className="col-12">

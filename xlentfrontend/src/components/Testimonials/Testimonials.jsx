@@ -22,12 +22,7 @@ const Testimonials = () => {
   return (
 <>
 <>
-      <button
-        className="cta-btn secondary"
-        onClick={() => setShowPopup(true)}
-      >
-        Download App
-      </button>
+   
 
       {showPopup && (
         <div className="popup-overlay">
@@ -162,7 +157,7 @@ const sampleCards = [
     location: "Chandrapur, Maharashtra",
     carModel: "Hyundai Creta",
     rentalPeriod: "4 days",
-    text: "Perfect for our family wedding events! The Creta had ample space for 5 adults and all our traditional outfits. The car was spotless and fuel-efficient. Will definitely use XLentagain!",
+    text: "Perfect for our family wedding events! The Creta had ample space for 5 adults and all our traditional outfits. Will definitely use XLentagain!",
     img: "/img/webp/person3.webp",
     rating: 5,
     verifiedRenter: true,
@@ -174,7 +169,7 @@ const sampleCards = [
     location: "Nagpur, Maharashtra",
     carModel: "Honda City",
     rentalPeriod: "3 days",
-    text: "As a frequent business traveler, I appreciate the professionalism. The Honda City was perfect for client meetings. The airport pickup and drop-off saved me so much time.",
+    text: "As a frequent business traveler, I appreciate the professionalism. The Honda City was perfect for client meetings.",
     rating: 5,
     verifiedRenter: true,
     featured: false
@@ -185,7 +180,7 @@ const sampleCards = [
     location: "Gondia, Maharashtra",
     carModel: "Maruti Swift",
     rentalPeriod: "2 days",
-    text: "Amazing experience for our weekend trip to Srisailam! The Swift was fuel-efficient and perfect for hill roads. The booking process was completely digital and hassle-free.",
+    text: "Amazing experience for our weekend trip to Srisailam! The Swift was fuel-efficient and perfect for hill roads.",
     img: "/img/webp/person18.webp",
     rating: 5,
     verifiedRenter: true,

@@ -59,7 +59,7 @@ const Hero = ( {onCloseContactUs} ) => {
     
         
 
-          <div className="justify-content-start m-3">
+          <div className="justify-content-start">
             <div className="col-lg-6 py-vh-7 position-relative hero-copy" data-aos="fade-right">
              
               <button 
