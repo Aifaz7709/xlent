@@ -2,7 +2,6 @@ import React, { useEffect, useState, lazy, Suspense, useCallback } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./components/Redux/Store";
-import { Analytics } from "@vercel/analytics/react";
 // ⚡ IMMEDIATELY NEEDED COMPONENTS (Above the fold)
 import Navbar from "./components/HeadernFooter/Navbar";
 import BackButton from "./components/BackButton/BackButton";
@@ -11,6 +10,7 @@ import HeadingsSection from "./components/HeaderSection/HeadingsSection ";
 import FranchiseBanner from "./components/FranchiseBanner/FranchiseBanner";
 import { SnackbarProvider } from "./components/Snackbar/Snackbar";
 import BookingDashboard from "./components/BookingDashboard/BookingDashboard";
+import { Analytics } from "@vercel/analytics/react";
 
 // ⚡ LAZY LOAD EVERYTHING ELSE
 const Login = lazy(() => import("./components/Login&Reg/Login"));
