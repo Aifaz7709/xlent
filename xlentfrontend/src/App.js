@@ -103,7 +103,6 @@ const Dashboard = () => {
   return (
     
     <main className="main-content">
-      <Analytics/>
       {/* Above the fold - Load immediately */}
       <HeadingsSection />
       <Hero />
@@ -343,6 +342,7 @@ function App() {
   }, [theme]);
 
   return (
+    <>
     <Provider store={store}>
             <SnackbarProvider>
 
@@ -351,6 +351,8 @@ function App() {
       </Router>
       </SnackbarProvider>
     </Provider>
+          <Analytics/>
+          </>
   );
 }
 
