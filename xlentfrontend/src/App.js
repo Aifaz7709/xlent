@@ -2,7 +2,7 @@ import React, { useEffect, useState, lazy, Suspense, useCallback } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./components/Redux/Store";
-
+import { Analytics } from "@vercel/analytics/react";
 // ⚡ IMMEDIATELY NEEDED COMPONENTS (Above the fold)
 import Navbar from "./components/HeadernFooter/Navbar";
 import BackButton from "./components/BackButton/BackButton";
@@ -10,6 +10,7 @@ import Hero from "./components/GetStarted/Hero";
 import HeadingsSection from "./components/HeaderSection/HeadingsSection ";
 import FranchiseBanner from "./components/FranchiseBanner/FranchiseBanner";
 import { SnackbarProvider } from "./components/Snackbar/Snackbar";
+import BookingDashboard from "./components/BookingDashboard/BookingDashboard";
 
 // ⚡ LAZY LOAD EVERYTHING ELSE
 const Login = lazy(() => import("./components/Login&Reg/Login"));
@@ -102,6 +103,7 @@ const Dashboard = () => {
   return (
     
     <main className="main-content">
+      <Analytics/>
       {/* Above the fold - Load immediately */}
       <HeadingsSection />
       <Hero />
@@ -112,7 +114,7 @@ const Dashboard = () => {
       </Suspense>
       
       {/* Gallery Trigger - Hidden element to trigger loading */}
-      <div ref={galleryTriggerRef} style={{ height: '100px', marginTop: '-50px' }} />
+      <div ref={galleryTriggerRef}  />
       
       {/* Gallery - Load on viewport */}
       <Suspense fallback={<div className="skeleton-loader" style={{ height: '300px' }} />}>
@@ -120,21 +122,19 @@ const Dashboard = () => {
       </Suspense>
       
       {/* Testimonials Trigger */}
-      <div ref={testimonialsTriggerRef} style={{ height: '100px', marginTop: '-50px' }} />
+      <div ref={testimonialsTriggerRef} style={{ height: '100px', marginTop: '-50px', backgroundColor: 'white' }} />
       
       {/* Testimonials - Load on viewport */}
-      <Suspense fallback={<div className="skeleton-loader" style={{ height: '250px' }} />}>
-        {showTestimonials && <Testimonials />}
-      </Suspense>
+       <Testimonials />
   
-     <FranchiseBanner />
+     <FranchiseBanner  />
 
       
       {/* Footer Trigger */}
-      <div ref={footerTriggerRef} style={{ height: '100px', marginTop: '-50px' }} />
+      <div ref={footerTriggerRef}  />
       
       {/* Footer - Load on viewport */}
-      <Suspense fallback={<div className="skeleton-loader" style={{ height: '200px' }} />}>
+      <Suspense fallback={<div className="skeleton-loader"  />}>
         {showFooter && <Footer />}
       </Suspense>
     </main>
@@ -237,6 +237,14 @@ function AppRoutes({ theme, toggleTheme }) {
                 <Suspense fallback={<div className="skeleton-loader" style={{ minHeight: '400px' }} />}>
                   <CustomerDashboard />
                 </Suspense>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/BookingDashboard"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                  <BookingDashboard />
               </ProtectedRoute>
             }
           />

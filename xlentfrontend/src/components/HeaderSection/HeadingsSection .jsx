@@ -137,7 +137,7 @@ const HeadingsSection = () => {
   {/* RIGHT SIDE IMAGE */}
   <div style={{ flex: "1", display: "flex", justifyContent: "center" }}>
     <img
-      src="/HSImage.jpg"
+      src="/XlentHeader.jpg"
       alt="Stock Visual"
       className='image-container '
       onMouseOver={(e) => {
@@ -156,18 +156,16 @@ const HeadingsSection = () => {
 
       {/* Stats Section */}
       {/* Add this to your component */}
-<div className="stats-section" style={{ 
+<div className="stats" style={{ 
   display: 'grid', 
   gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
   gap: '20px', 
-  padding: '20px 10px 0',
   background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
   borderRadius: '15px',
   margin: '30px 0'
 }}>
- 
 
-  <div className="stat-card" style={{ 
+  <div className="desktop-only" style={{ 
     textAlign: 'center', 
     padding: '20px',
     background: 'rgba(255,255,255,0.1)',
@@ -179,7 +177,7 @@ const HeadingsSection = () => {
     <p className="stat-description" style={{ color: 'rgba(255,255,255,0.8)', fontSize: '12px', margin: '0' }}>Served</p>
   </div>
 
-  <div className="stat-card" style={{ 
+  <div className="desktop-only" style={{ 
     textAlign: 'center', 
     padding: '20px',
     background: 'rgba(255,255,255,0.1)',
@@ -191,7 +189,7 @@ const HeadingsSection = () => {
     <p className="stat-description" style={{ color: 'rgba(255,255,255,0.8)', fontSize: '12px', margin: '0' }}>Nationwide Coverage</p>
   </div>
 
-  <div className="stat-card" style={{ 
+  <div className="desktop-only" style={{ 
     textAlign: 'center', 
     padding: '20px',
     background: 'rgba(255,255,255,0.1)',
@@ -205,7 +203,7 @@ const HeadingsSection = () => {
 
  
 
-  <div className="stat-card" style={{ 
+  <div className="desktop-only" style={{ 
     textAlign: 'center', 
     padding: '20px',
     background: 'rgba(255,255,255,0.1)',

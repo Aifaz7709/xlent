@@ -171,6 +171,11 @@ const Navbar = ({  isAuthenticated, onLogout , userData: propUserData, onLoginHo
                       Admin Dashboard
                     </Link>
                   </li>
+                    <li className="nav-item">
+                    <Link to="/BookingDashboard" onClick={closeMenu} className="nav-link nav-link-custom"  style={{ color: 'white' }}>
+                    Booking Dashboard
+                    </Link>
+                  </li>
                   </>
                   )}
 

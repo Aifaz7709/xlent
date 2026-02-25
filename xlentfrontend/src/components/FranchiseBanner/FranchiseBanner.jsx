@@ -17,7 +17,7 @@ const FranchiseBanner = ({ onContactClick }) => {
   ];
   const [showFranchiseModal, setShowFranchiseModal] = useState(false);
   return (
-    <div className="py-5" style={{background: 'linear-gradient(135deg, #1b129f 0%,rgb(78, 68, 219) 100%)', overflow: 'hidden', margin: '15px', borderRadius: '25px'  }}>
+    <div className="py-5" style={{background: 'linear-gradient(303deg, #1b129f 0%,rgb(78, 68, 219) 100%)', overflow: 'hidden', margin: '15px', borderRadius: '25px'  }}>
       <div className="container">
         <div className="row align-items-center">
           <div className="col-12 text-white">

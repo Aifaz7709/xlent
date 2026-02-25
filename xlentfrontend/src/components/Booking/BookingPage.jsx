@@ -134,6 +134,13 @@ const BookingPage = ( formData) => {
   
     // All validations passed
     showSuccess("Dates selected successfully! Please complete your details.", 3000);
+// After booking confirmation in BookingPage
+localStorage.setItem("latestBooking", JSON.stringify({
+  car: car,
+  booking: booking,
+  total: total,
+  customer: customerData
+}));
 
  
       setShowUserForm(true);

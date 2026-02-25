@@ -87,8 +87,8 @@ const FranchiseInquiryModal = ({ isOpen, onClose }) => {
                     </div>
                   </div>
 
-                  <div className="col-md-6">
-                    <label className="form-label small fw-bold text-muted">Investment Capacity</label>
+                  {/* <div className="col-md-6"> */}
+                    {/* <label className="form-label small fw-bold text-muted">Investment Capacity</label>
                     <div className="input-group">
                       <span className="input-group-text bg-light border-0"><IndianRupee size={16}/></span>
                       <select className="form-select bg-light border-0" required
@@ -99,7 +99,7 @@ const FranchiseInquiryModal = ({ isOpen, onClose }) => {
                         <option value="50L+">50L +</option>
                       </select>
                     </div>
-                  </div>
+                  </div> */}
 
                   <div className="col-12">
                     <label className="form-label small fw-bold text-muted">Additional Details</label>

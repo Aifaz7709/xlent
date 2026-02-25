@@ -495,25 +495,7 @@ const [carsError, setCarsError] = useState("");
       
       </div>
 
-      {/* Contact CTA */}
-      <div className="text-white py-5" style={{ margin:'30px',  borderRadius: "15px",  background: "linear-gradient(135deg, #02287c 0%, #0d6efd 100%)",}}>
-        <div className="container">
-          <div className="row align-items-center">
-            <div className="col-8 col-lg-8">
-              <h3 className="h2 fw-bold mb-3">Need Help Choosing?</h3>
-              <p className="mb-0" style={{ opacity: '0.9' }}>
-                Our rental experts are available 24/7 to help you pick the perfect deal.
-              </p>
-            </div>
-            <div className="col-12 col-lg-4 text-lg-end mt-3 mt-lg-0">
-              <a href="tel:+917568656756" className="btn btn-light text-primary btn-lg px-4">
-                <Phone size={18} className="me-2" />
-                Call Now: +91 7568656756
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
+ 
 
       <Footer/>
     </div>
