@@ -137,7 +137,7 @@ const HeadingsSection = () => {
   {/* RIGHT SIDE IMAGE */}
   <div style={{ flex: "1", display: "flex", justifyContent: "center" }}>
     <img
-      src="/XlentHeader.jpg"
+      src="/XlentHeader.webp"
       alt="Stock Visual"
       className='image-container '
       onMouseOver={(e) => {
