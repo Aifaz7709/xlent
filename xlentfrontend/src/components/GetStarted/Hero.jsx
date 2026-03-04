@@ -58,7 +58,7 @@ const Hero = ( {onCloseContactUs} ) => {
   
     
         
-
+<div className="desktop-only">
           <div className="justify-content-start">
             <div className="col-lg-6 py-vh-7 position-relative hero-copy" data-aos="fade-right">
              
@@ -88,6 +88,7 @@ const Hero = ( {onCloseContactUs} ) => {
                   fontWeight: '600'
                 }}    onClick={() => navigate('/about')}>Why XLentCar</a>
             </div>
+          </div>
           </div>
 
 

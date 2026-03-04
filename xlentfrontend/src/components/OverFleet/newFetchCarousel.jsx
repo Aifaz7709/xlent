@@ -104,13 +104,18 @@ const NewPropertyCard = () => {
     localStorage.setItem("favorites", JSON.stringify(updated));
   };
 
-  if (reduxLoading && !filteredCars.length) return <div className="loader">Loading...</div>;
+  if (reduxLoading && !filteredCars.length) return <div className="loader">Verifying Login...</div>;
 
   return (
     <section className="fleet-carousel">
       <div className="carousel-header">
         <div>
-          <h2 className="title">{selectedLocation ? `Cars in ${selectedLocation.name}` : 'Our Fleet'}</h2>
+          <h2  style={{ 
+          cursor: 'pointer',
+       color: 'rgb(2, 40, 124)',
+          marginRight: '1.5rem',
+          fontWeight: '600'
+        }}>{selectedLocation ? `Cars in ${selectedLocation.name}` : 'Our Cars'}</h2>
           <p className="subtitle">{filteredCars.length} vehicles available</p>
         </div>
         
@@ -137,10 +142,10 @@ const NewPropertyCard = () => {
               <div className="car-card" onClick={() => navigate(`/book/${car.id}`, { state: { car: car.original } })}>
                 <div className="image-box">
                   <img src={car.photos[0] || 'placeholder.jpg'} alt={car.name} loading="lazy" />
-                  <button className={`fav-btn ${favorites.includes(car.id) ? 'active' : ''}`} 
+                  {/* <button className={`fav-btn ${favorites.includes(car.id) ? 'active' : ''}`} 
                           onClick={(e) => toggleFavorite(car.id, e)}>
                     ❤️
-                  </button>
+                  </button> */}
                 </div>
                 <div className="info">
                   <h3>{car.name}</h3>
