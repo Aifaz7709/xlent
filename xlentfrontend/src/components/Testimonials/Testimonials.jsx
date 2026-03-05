@@ -131,7 +131,7 @@ const Testimonials = () => {
         <div className="testimonials-cta">
           <div className="cta-content">
             <h3>Ready to experience hassle-free car rental?</h3>
-            <p>Join thousands of satisfied customers across India</p>
+         <div className="desktop-only">     <p>Join thousands of satisfied customers across India</p> </div>
             <div className="cta-buttons">
               <button className="cta-btn primary"      onClick={() => setShowForm(true)} >Book Your Car Now</button>
               <button className="cta-btn secondary"  onClick={() => setShowPopup(true)}>Download App</button>

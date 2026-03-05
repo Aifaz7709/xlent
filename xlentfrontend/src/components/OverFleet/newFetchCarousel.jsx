@@ -5,6 +5,7 @@ import { setCars as setCarsRedux, setLoading as setLoadingRedux } from "../Redux
 import { clearSelectedLocation } from "../Redux/Slices/LocationSlice";
 import { MapPin, X, ArrowLeft, ArrowRight } from "lucide-react";
 import "./NewPropertyCard.css";
+import XlentcarLoader from "../Loader/XlentcarLoader";
 
 const NewPropertyCard = () => {
   const dispatch = useDispatch();
@@ -104,7 +105,7 @@ const NewPropertyCard = () => {
     localStorage.setItem("favorites", JSON.stringify(updated));
   };
 
-  if (reduxLoading && !filteredCars.length) return <div className="loader">Verifying Login...</div>;
+  if (reduxLoading && !filteredCars.length) return <div className="loader"><XlentcarLoader /></div>;
 
   return (
     <section className="fleet-carousel">

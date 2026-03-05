@@ -29,7 +29,7 @@ const FranchiseBanner = ({ onContactClick }) => {
                   Partner with <span style={{ color: 'white' }}>Xlentcar</span>
                 </h2>
                 <p className="lead mb-0 opacity-90">
-                  Join India's fastest-growing car rental network and expand our footprint.
+                  Maharashtra's fastest-growing car rental network and expand our footprint.
                 </p>
               </div>
 
@@ -43,9 +43,10 @@ const FranchiseBanner = ({ onContactClick }) => {
               </div>
             </div>
 
-            <hr className="opacity-25 mb-5" />
+           <div className="desktop-only"> <hr className="opacity-25 mb-5" /> </div>
 
             {/* Benefits Grid */}
+            <div className="desktop-only"> 
             <div className="row g-4">
               {benefits.map((item, index) => (
                 <div key={index} className="col-6 col-lg-3">
@@ -58,6 +59,7 @@ const FranchiseBanner = ({ onContactClick }) => {
                   </div>
                 </div>
               ))}
+            </div>
             </div>
 
           </div>
