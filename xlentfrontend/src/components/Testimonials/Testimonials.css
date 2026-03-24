@@ -96,6 +96,23 @@
   line-height: 1.6;
 }
 
+.google-review-link {
+  display: inline-block;
+  padding: 0.7rem 1.2rem;
+  border-radius: 10px;
+  border: 1px solid #dbeafe;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.google-review-link:hover {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
 .header-stats {
   display: flex;
   gap: 1rem;
@@ -214,38 +231,44 @@
   font-weight: 600;
 }
 
-/* Testimonials Grid */
-.testimonials-grid {
-  display: grid;
-  gap: 1.5rem;
-  margin-top: 3rem;
+/* Testimonials carousel */
+.testimonials-carousel {
+  margin-top: 2rem;
+  overflow: hidden;
+  width: 100%;
+  position: relative;
 }
 
-@media (min-width: 576px) {
-  .testimonials-grid {
-    grid-template-columns: repeat(2, 10fr);
-    gap: 1rem;
-  }
+.testimonials-track {
+  display: flex;
+  align-items: stretch;
+  gap: 1rem;
+  width: max-content;
+  animation: autoScrollTestimonials 32s linear infinite;
+  padding: 0.5rem 0;
 }
 
-@media (min-width: 1024px) {
-  .testimonials-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-  }
+.testimonials-carousel:hover .testimonials-track {
+  animation-play-state: paused;
 }
 
 .testimonial-card {
   background: white;
-  padding: 0.5rem;
+  padding: 1rem;
   border-radius: 16px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
+  width: 340px;
+  min-width: 340px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 @media (min-width: 768px) {
   .testimonial-card {
-    padding: 0rem;
+    width: 360px;
+    min-width: 360px;
   }
 }
 
@@ -336,12 +359,17 @@
 
 .testimonial-card {
   background: white;
-  padding: 0.5rem;
+  padding: 1rem;
   border-radius: 20px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
   position: relative;
   border: 1px solid #f1f5f9;
+  width: 340px;
+  min-width: 340px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .testimonial-card:hover {
@@ -390,6 +418,7 @@
   color: #475569;
   margin-bottom: 2rem;
   font-style: italic;
+  min-height: 105px;
 }
 
 .author-section {
@@ -437,6 +466,7 @@
   border-radius: 12px;
   font-size: 0.8rem;
   font-weight: 600;
+  margin-top: auto;
 }
 
 .verified-icon {
@@ -607,5 +637,25 @@
   100% {
     transform: scale(1);
     opacity: 1;
+  }
+}
+
+@keyframes autoScrollTestimonials {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-50% - 0.5rem));
+  }
+}
+
+@media (max-width: 768px) {
+  .testimonial-card {
+    width: 290px;
+    min-width: 290px;
+  }
+
+  .testimonials-track {
+    animation-duration: 24s;
   }
 }

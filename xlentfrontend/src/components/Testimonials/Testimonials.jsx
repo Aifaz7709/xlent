@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import './Testimonials.css'
-import UserData from "../CustForm/UserData";
 import ContactUsCard from "../Popups/ContactUsCard";
 
 const Testimonials = () => {
 
   const [showForm, setShowForm] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const allTestimonials = [...googleReviewCards, ...sampleCards];
 
 
   useEffect(() => {
@@ -54,6 +54,16 @@ const Testimonials = () => {
             <p className="section-description">
               Discover why car owners across India choose XLent for reliable, affordable car rental solutions
             </p>
+            <div style={{ marginTop: "14px" }}>
+              <a
+                className="google-review-link"
+                href={GOOGLE_REVIEW_URL}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Review us on Google
+              </a>
+            </div>
           </div>
           
           <div className="header-stats">
@@ -70,9 +80,10 @@ const Testimonials = () => {
 
   
 
-        {/* Testimonials Grid */}
-        <div className="testimonials-grid">
-          {sampleCards.map((testimonial, index) => (
+        {/* Auto-scrolling Testimonials */}
+        <div className="testimonials-carousel">
+          <div className="testimonials-track">
+          {[...allTestimonials, ...allTestimonials].map((testimonial, index) => (
             <div 
               className={`testimonial-card ${testimonial.featured ? 'featured' : ''}`}
               key={index}
@@ -114,6 +125,9 @@ const Testimonials = () => {
                   <div className="author-name">{testimonial.name}</div>
                   <div className="author-role">{testimonial.tripPurpose}</div>
                   <div className="author-location">{testimonial.location}</div>
+                  {testimonial.source && (
+                    <div className="author-location">{testimonial.source}</div>
+                  )}
                 </div>
               </div>
               
@@ -125,6 +139,7 @@ const Testimonials = () => {
               )}
             </div>
           ))}
+          </div>
         </div>
 
         {/* CTA Section */}
@@ -149,6 +164,25 @@ const Testimonials = () => {
     </>
   );
 };
+
+const GOOGLE_REVIEW_URL =
+  process.env.REACT_APP_GOOGLE_REVIEW_URL ||
+  "https://www.google.com/maps/search/?api=1&query=XLent+Car+Rental";
+
+const googleReviewCards = [
+  {
+    name: "Google User",
+    tripPurpose: "Verified Google Review",
+    location: "India",
+    carModel: "Google Reviews",
+    rentalPeriod: "Recent",
+    text: "Super smooth booking and clean vehicle. The support team was very responsive throughout the trip.",
+    rating: 5,
+    verifiedRenter: true,
+    featured: false,
+    source: "via Google"
+  }
+];
 
 const sampleCards = [
   { 

@@ -133,9 +133,7 @@ const Dashboard = () => {
       <div ref={footerTriggerRef}  />
       
       {/* Footer - Load on viewport */}
-      <Suspense fallback={<div className="skeleton-loader"  />}>
-        {showFooter && <Footer />}
-      </Suspense>
+         <Footer />
     </main>
   );
 };
