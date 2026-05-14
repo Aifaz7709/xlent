@@ -6,7 +6,7 @@ import { clearSelectedLocation } from "../Redux/Slices/LocationSlice";
 import { MapPin, X, ArrowLeft, ArrowRight } from "lucide-react";
 import "./NewPropertyCard.css";
 import XlentcarLoader from "../Loader/XlentcarLoader";
-
+import { supabase } from "../../supabaseClient";
 const NewPropertyCard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -24,27 +24,29 @@ const NewPropertyCard = () => {
   const autoPlayTimerRef = useRef(null);
 
   // 1. Optimized Data Fetching (only if empty)
-  useEffect(() => {
-    if (reduxCars.length > 0) return;
+ useEffect(() => {
+  if (reduxCars.length > 0) return;
 
-    const fetchData = async () => {
-      dispatch(setLoadingRedux(true));
-      try {
-        const token = localStorage.getItem('xlent_token');
-        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL || 'https://xlent-production.up.railway.app'}/api/cars`, {
-          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
-        });
-        const data = await res.json();
-        const carArray = data.cars || data || [];
-        dispatch(setCarsRedux(carArray));
-      } catch (err) {
-        console.error("Fetch error:", err);
-      } finally {
-        dispatch(setLoadingRedux(false));
-      }
-    };
-    fetchData();
-  }, [dispatch, reduxCars.length]);
+  const fetchData = async () => {
+    dispatch(setLoadingRedux(true));
+
+    try {
+      const { data, error } = await supabase
+        .from("cars")
+        .select("*");
+
+      if (error) throw error;
+
+      dispatch(setCarsRedux(data || []));
+    } catch (err) {
+      console.error("Supabase fetch error:", err);
+    } finally {
+      dispatch(setLoadingRedux(false));
+    }
+  };
+
+  fetchData();
+}, [dispatch, reduxCars.length]);
 
   // 2. Memoized Filtering (Prevents lag when typing or clicking elsewhere)
   const filteredCars = useMemo(() => {
