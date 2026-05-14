@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setCars as setCarsRedux, setLoading as setLoadingRedux } from "../Redux/Slices/carSlice";
 import { clearSelectedLocation } from "../Redux/Slices/LocationSlice";
 import { MapPin, X, ArrowLeft, ArrowRight } from "lucide-react";
 import "./NewPropertyCard.css";
@@ -13,9 +12,10 @@ const NewPropertyCard = () => {
 
   // Redux Selectors
   const selectedLocation = useSelector((state) => state.location.selectedLocation);
-  const { cars: reduxCars, loading: reduxLoading } = useSelector((state) => state.cars);
 
   // Local State
+  const [cars, setCars] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [favorites, setFavorites] = useState(() => JSON.parse(localStorage.getItem("favorites")) || []);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [itemsPerSlide, setItemsPerSlide] = useState(4);
@@ -23,37 +23,35 @@ const NewPropertyCard = () => {
 
   const autoPlayTimerRef = useRef(null);
 
-  // 1. Optimized Data Fetching (only if empty)
- useEffect(() => {
-  if (reduxCars.length > 0) return;
+  // 1. Optimized Data Fetching
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
 
-  const fetchData = async () => {
-    dispatch(setLoadingRedux(true));
+      try {
+        const { data, error } = await supabase
+          .from("cars")
+          .select("*");
 
-    try {
-      const { data, error } = await supabase
-        .from("cars")
-        .select("*");
+        if (error) throw error;
 
-      if (error) throw error;
+        setCars(data || []);
+      } catch (err) {
+        console.error("Supabase fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      dispatch(setCarsRedux(data || []));
-    } catch (err) {
-      console.error("Supabase fetch error:", err);
-    } finally {
-      dispatch(setLoadingRedux(false));
-    }
-  };
-
-  fetchData();
-}, [dispatch, reduxCars.length]);
+    fetchData();
+  }, []);
 
   // 2. Memoized Filtering (Prevents lag when typing or clicking elsewhere)
   const filteredCars = useMemo(() => {
-    if (!reduxCars.length) return [];
+    if (!cars.length) return [];
     
     // Transform and Filter in one pass
-    const transformed = reduxCars.map(car => ({
+    const transformed = cars.map(car => ({
       id: car.id,
       name: car.car_model || "Car",
       location: car.car_location || "Location not specified",
@@ -65,7 +63,7 @@ const NewPropertyCard = () => {
 
     const locName = selectedLocation.name?.toLowerCase();
     return transformed.filter(car => car.location.toLowerCase().includes(locName));
-  }, [reduxCars, selectedLocation]);
+  }, [cars, selectedLocation]);
 
   // 3. Responsive Logic
   const handleResize = useCallback(() => {
@@ -107,7 +105,7 @@ const NewPropertyCard = () => {
     localStorage.setItem("favorites", JSON.stringify(updated));
   };
 
-  if (reduxLoading && !filteredCars.length) return <div className="loader"><XlentcarLoader /></div>;
+  if (loading && !filteredCars.length) return <div className="loader"><XlentcarLoader /></div>;
 
   return (
     <section className="fleet-carousel">
