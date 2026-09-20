@@ -5,6 +5,7 @@ import "./BookingPage.css";
 import XlentcarLoader from "../Loader/XlentcarLoader";
 import ContactUsCard from "../Popups/ContactUsCard";
 import { useSelector, useDispatch } from "react-redux";
+import { getServiceTypeLabel, getStoredServiceType } from "../ServiceChoice/ServiceChoiceModal";
 
 const BookingPage = ( formData) => {
   const location = useLocation();
@@ -93,7 +94,8 @@ const BookingPage = ( formData) => {
         body: JSON.stringify({
           startDate: booking.startDate,
           endDate: booking.endDate,
-           service_type: sessionStorage.getItem('xlent_service_type') || 'not_selected',
+          service_type: getStoredServiceType() || 'not_selected',
+          driver_requirement: getServiceTypeLabel(),
        
         })
       });

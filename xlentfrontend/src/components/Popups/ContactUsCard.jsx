@@ -4,6 +4,7 @@ import { useSnackbar } from '../Snackbar/Snackbar';
 import './ContactCard.css'
 import { useDispatch } from 'react-redux';
 import { setCustomerInfo } from '../Redux/Slices/customerInfoSlice';
+import { getServiceTypeLabel, getStoredServiceType } from '../ServiceChoice/ServiceChoiceModal';
 
 const ContactUsCard = ({onClose, title, booking1 }) => {
 
@@ -65,7 +66,8 @@ const ContactUsCard = ({onClose, title, booking1 }) => {
           Location: formData.Location,
           startDate: formData.startDate,
            endDate: formData.endDate,
-           service_type: sessionStorage.getItem('xlent_service_type') || 'not_selected'
+          service_type: getStoredServiceType() || 'not_selected',
+          driver_requirement: getServiceTypeLabel()
         })
       });
    

@@ -5,6 +5,9 @@ import './ServiceChoiceModal.css';
 const SERVICE_KEY = 'xlent_service_type';
 
 export const getStoredServiceType = () => sessionStorage.getItem(SERVICE_KEY);
+export const getServiceTypeLabel = (serviceType = getStoredServiceType()) => (
+  serviceType === 'with_driver' ? 'With driver' : serviceType === 'self_drive' ? 'Self-drive' : 'Not selected'
+);
 
 const ServiceChoiceModal = ({ onSelect, onClose }) => {
   useEffect(() => {
