@@ -4,10 +4,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import "./BookingPage.css";
 import XlentcarLoader from "../Loader/XlentcarLoader";
 import ContactUsCard from "../Popups/ContactUsCard";
-import { useSelector, useDispatch } from "react-redux";
-import { getServiceTypeLabel, getStoredServiceType } from "../ServiceChoice/ServiceChoiceModal";
+import { useSelector } from "react-redux";
 
-const BookingPage = ( formData) => {
+const BookingPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { car } = location.state || {};
@@ -27,8 +26,7 @@ const BookingPage = ( formData) => {
   // Snackbar state for BookingPage (since we can't use the hook directly)
   const [snackbar, setSnackbar] = useState(null);
   
-  // FIX: Set to 6 to match the 6s progress bar animation
-  const [countdown, setCountdown] = useState(116); 
+  const [countdown, setCountdown] = useState(8);
 
   useEffect(() => {
     let timer;
@@ -55,106 +53,42 @@ const BookingPage = ( formData) => {
   const showSuccess = (message, duration) => showSnackbar(message, 'success', duration);
   const showInfo = (message, duration) => showSnackbar(message, 'info', duration);
 
-  const handleBooking =  async (e) => {
-    e.preventDefault();
-  
-    // Check if dates are selected
-    if (!booking.startDate || !booking.endDate) {
-      showError("Please select both pickup and return dates", 4000);
-      return;
-    }
-  
-    // Check if return date is before pickup date
-    if (new Date(booking.endDate) < new Date(booking.startDate)) {
-      showError("Return date cannot be before pickup date", 4000);
-      return;
-    }
-
-    // Check if pickup date is today or in the future
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const pickupDate = new Date(booking.startDate);
-    
-    if (pickupDate < today) {
-      showError("Pickup date cannot be in the past", 4000);
-      return;
-    }
-  
-    // All validations passed
-    showSuccess("Dates selected successfully! Please complete your details.", 3000);
-
-    try {
-      const baseUrl =  'https://services.leadconnectorhq.com/hooks/TjM5taSPltE7LMcOsEUH/webhook-trigger/c0dafae8-d990-45a5-8f2e-35cdf13cab30';
-      
-      const response = await fetch(`${baseUrl}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          startDate: booking.startDate,
-          endDate: booking.endDate,
-          service_type: getStoredServiceType() || 'not_selected',
-          driver_requirement: getServiceTypeLabel(),
-       
-        })
-      });
-
-    } catch (error) {
-      console.error('Error saving data:', error);
-      // Show error snackbar
-      showError("Something went wrong. Please try again.", 4000);
-    } finally {
-      setShowUserForm(true);
-
-    }
-
+  const getBookingDays = () => {
+    if (!booking.startDate || !booking.endDate) return 0;
+    return Math.max(1, Math.ceil((new Date(booking.endDate) - new Date(booking.startDate)) / 86400000));
   };
-  const handleBooking1 =  (e) => {
-    e.preventDefault();
-  
-    // Check if dates are selected
+
+  const formatDate = (date) => new Intl.DateTimeFormat('en-IN', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  }).format(new Date(`${date}T00:00:00`));
+
+  const validateDates = () => {
     if (!booking.startDate || !booking.endDate) {
-      showError("Please select both pickup and return dates", 4000);
-      return;
-    }
-  
-    // Check if return date is before pickup date
-    if (new Date(booking.endDate) < new Date(booking.startDate)) {
-      showError("Return date cannot be before pickup date", 4000);
-      return;
+      showError("Choose your pickup and return dates to continue.", 4000);
+      return false;
     }
 
-    // Check if pickup date is today or in the future
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const pickupDate = new Date(booking.startDate);
-    
-    if (pickupDate < today) {
-      showError("Pickup date cannot be in the past", 4000);
-      return;
+    if (booking.endDate < booking.startDate) {
+      showError("Your return date must be after your pickup date.", 4000);
+      return false;
     }
-  
-    // All validations passed
-    showSuccess("Dates selected successfully! Please complete your details.", 3000);
-// After booking confirmation in BookingPage
-localStorage.setItem("latestBooking", JSON.stringify({
-  car: car,
-  booking: booking,
-  total: total,
-  customer: customerData
-}));
 
- 
-      setShowUserForm(true);
+    return true;
+  };
 
-    
-
+  const handleBooking = (e) => {
+    e.preventDefault();
+    if (!validateDates()) return;
+    localStorage.setItem("latestBooking", JSON.stringify({ car, booking, total, customer: customerData }));
+    showSuccess("Great choice. Tell us where to reach you next.", 3000);
+    setShowUserForm(true);
   };
 
   useEffect(() => {
     if (booking.startDate && booking.endDate) {
-      const days = Math.ceil(Math.abs(new Date(booking.endDate) - new Date(booking.startDate)) / (1000 * 60 * 60 * 24)) || 1;
+      const days = getBookingDays();
       setTotal(days * car.dailyRate);
     }
   }, [booking, car?.dailyRate]);
@@ -213,8 +147,8 @@ localStorage.setItem("latestBooking", JSON.stringify({
                   className="car-image-container"
                 >
                   <img 
-                    src={car.photos} 
-                    alt={`${car.brand || car.name} ${car.model}`}
+                    src={Array.isArray(car.photos) ? car.photos[0] : car.photos}
+                    alt={`${car.name || car.car_model || 'Selected car'}`}
                     className="car-main-image"
                     loading="lazy"
                   />
@@ -232,15 +166,23 @@ localStorage.setItem("latestBooking", JSON.stringify({
               )}
             </div>
             <div className="car-info-box" style={{marginTop: '10px'}}>
-              <h2>{car.name} <br/><span>{car.model}</span></h2>
+              <p className="booking-eyebrow">YOUR SELECTED VEHICLE</p>
+              <h2>{car.name || car.car_model || 'Selected vehicle'} <span>{car.model}</span></h2>
             </div>
           </div>
 
           <div className="interface-panel1">
-            <h3 style={{fontFamily:'serif'}}>Confirm Booking Dates</h3>
+            <div className="booking-step-heading">
+              <span className="booking-step-number">1</span>
+              <div>
+                <p className="booking-eyebrow">STEP ONE</p>
+                <h3>Choose your dates</h3>
+                <p>Tell us when you need the car.</p>
+              </div>
+            </div>
             
             <div className="control-group">
-              <label>PICKUP </label>
+              <label htmlFor="pickup-date">Pick-up date</label>
               <div className="input-row">
                 <input 
                   id="pickup-date"
@@ -249,7 +191,6 @@ localStorage.setItem("latestBooking", JSON.stringify({
                   onChange={(e) => {
                     setBooking({...booking, startDate: e.target.value});
                     if (e.target.value) {
-                      showInfo(`Pickup date: ${e.target.value}`, 2000);
                     }
                   }} 
                   style={{color:'black'}}
@@ -260,15 +201,15 @@ localStorage.setItem("latestBooking", JSON.stringify({
             </div>
 
             <div className="control-group">
-              <label>RETURN </label>
+              <label htmlFor="return-date">Return date</label>
               <div className="input-row">
                 <input 
+                  id="return-date"
                   type="date" 
                   className="neo-input" 
                   onChange={(e) => {
                     setBooking({...booking, endDate: e.target.value});
                     if (e.target.value) {
-                      showInfo(`Return date: ${e.target.value}`, 2000);
                     }
                   }} 
                   style={{color:'black'}}
@@ -282,14 +223,14 @@ localStorage.setItem("latestBooking", JSON.stringify({
             {booking.startDate && booking.endDate && (
   <div className="booking-summary-preview">
     <div className="summary-item">
-      <span>Booking Period:</span>
-      <strong>{booking.startDate} to {booking.endDate}</strong>
+      <span>Dates</span>
+      <strong>{formatDate(booking.startDate)} - {formatDate(booking.endDate)}</strong>
     </div>
     <div className="summary-item duration">
       <span>Duration:</span>
       <strong>
         {(() => {
-          const days = Math.ceil(Math.abs(new Date(booking.endDate) - new Date(booking.startDate)) / (1000 * 60 * 60 * 24));
+          const days = getBookingDays();
           
           if (days === 1) {
             return "1 Day";
@@ -335,10 +276,10 @@ localStorage.setItem("latestBooking", JSON.stringify({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="execute-btn"
-               onClick={handleBooking1}
+              onClick={handleBooking}
               disabled={!booking.startDate || !booking.endDate}
             >
-              {!booking.startDate || !booking.endDate ? 'SELECT DATES FIRST' : 'INITIALIZE BOOKING'}
+              {!booking.startDate || !booking.endDate ? 'Choose dates to continue' : 'Continue to your details'}
             </motion.button>
           </div>
         </div>
@@ -358,13 +299,7 @@ localStorage.setItem("latestBooking", JSON.stringify({
             onSuccess={() => {
               // This would be called from ContactUsCard after successful submission
               setShowUserForm(false);
-              setIsProcessing(true);
-              handleBooking();
-
-              setTimeout(() => {
-                setIsProcessing(false);
-                showSuccess("Booking confirmed successfully! 🎉", 2000);
-              }, 1000);
+              setIsProcessing(false);
             }}
           />
         )}
