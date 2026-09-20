@@ -22,6 +22,7 @@ const NewPropertyCard = () => {
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
   const autoPlayTimerRef = useRef(null);
+  const touchStartX = useRef(null);
 
   // 1. Optimized Data Fetching
   useEffect(() => {
@@ -68,7 +69,7 @@ const NewPropertyCard = () => {
   // 3. Responsive Logic
   const handleResize = useCallback(() => {
     const width = window.innerWidth;
-    if (width < 480) setItemsPerSlide(1);
+    if (width < 360) setItemsPerSlide(1);
     else if (width < 768) setItemsPerSlide(2);
     else if (width < 1024) setItemsPerSlide(3);
     else setItemsPerSlide(4);
@@ -84,12 +85,34 @@ const NewPropertyCard = () => {
   const totalSlides = Math.ceil(filteredCars.length / itemsPerSlide);
 
   const nextSlide = useCallback(() => {
+    if (totalSlides <= 1) return;
     setCurrentSlide(p => (p >= totalSlides - 1 ? 0 : p + 1));
   }, [totalSlides]);
 
   const prevSlide = useCallback(() => {
+    if (totalSlides <= 1) return;
     setCurrentSlide(p => (p <= 0 ? totalSlides - 1 : p - 1));
   }, [totalSlides]);
+
+  useEffect(() => {
+    setCurrentSlide((slide) => Math.min(slide, Math.max(totalSlides - 1, 0)));
+  }, [totalSlides]);
+
+  const handleTouchStart = (event) => {
+    touchStartX.current = event.changedTouches[0].clientX;
+    setIsAutoPlaying(false);
+  };
+
+  const handleTouchEnd = (event) => {
+    if (touchStartX.current === null) return;
+    const distance = event.changedTouches[0].clientX - touchStartX.current;
+    if (Math.abs(distance) > 45) {
+      if (distance < 0) nextSlide();
+      else prevSlide();
+    }
+    touchStartX.current = null;
+    setIsAutoPlaying(true);
+  };
 
   // Auto-play Effect
   useEffect(() => {
@@ -135,7 +158,9 @@ const NewPropertyCard = () => {
 
       <div className="carousel-window" 
            onMouseEnter={() => setIsAutoPlaying(false)} 
-           onMouseLeave={() => setIsAutoPlaying(true)}>
+         onMouseLeave={() => setIsAutoPlaying(true)}
+         onTouchStart={handleTouchStart}
+         onTouchEnd={handleTouchEnd}>
         <div className="carousel-track" 
              style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
           {filteredCars.map((car) => (
