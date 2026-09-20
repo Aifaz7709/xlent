@@ -8,6 +8,7 @@ import { getServiceTypeLabel, getStoredServiceType } from '../ServiceChoice/Serv
 
 const ContactUsCard = ({onClose, title, booking1 }) => {
 
+  const isBooking = Boolean(booking1);
   const { startDate, endDate, } = booking1 || {};
   const [formData, setFormData] = useState({
     name: "",
@@ -46,14 +47,14 @@ const ContactUsCard = ({onClose, title, booking1 }) => {
     e.preventDefault();
     
     // Validate form
-    if (!formData.name.trim() || !formData.phone_number.trim() || !formData.email.trim()) {
+    if (!formData.name.trim() || !formData.phone_number.trim() || (isBooking && !formData.email.trim())) {
       showWarning("Please fill in all required fields");
       return;
     }
 
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
+    if (isBooking && !emailRegex.test(formData.email)) {
       showWarning("Please enter a valid email address");
       return;
     }
@@ -71,7 +72,7 @@ const ContactUsCard = ({onClose, title, booking1 }) => {
         body: JSON.stringify({
           customer_name: formData.name,
           phone_number: formData.phone_number,
-          email: formData.email,
+          ...(isBooking ? { email: formData.email } : {}),
           Location: formData.Location,
           startDate: formData.startDate,
            endDate: formData.endDate,
@@ -84,7 +85,7 @@ const ContactUsCard = ({onClose, title, booking1 }) => {
         setCustomerInfo({
           customer_name: formData.name,
           phone_number: formData.phone_number,
-          email: formData.email,
+          email: isBooking ? formData.email : '',
           location: formData.Location,
           startDate: formData.startDate,
           endDate: formData.endDate,
@@ -183,21 +184,23 @@ const ContactUsCard = ({onClose, title, booking1 }) => {
                 <div className="input-underline"></div>
               </div>
 
-              <div className="form-group floating-group">
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  required
-                  className="floating-input"
-                  placeholder=" "
-                  disabled={isLoading}
-                />
-                <label htmlFor="email" className="floating-label">Email</label>
-                <div className="input-underline"></div>
-              </div>
+              {isBooking && (
+                <div className="form-group floating-group">
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                    className="floating-input"
+                    placeholder=" "
+                    disabled={isLoading}
+                  />
+                  <label htmlFor="email" className="floating-label">Email</label>
+                  <div className="input-underline"></div>
+                </div>
+              )}
               <div className="form-group floating-group">
                 <input
                   type="text"
