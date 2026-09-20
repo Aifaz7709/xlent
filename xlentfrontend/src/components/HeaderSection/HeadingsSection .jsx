@@ -135,7 +135,7 @@ const HeadingsSection = () => {
 </div>
 
   {/* RIGHT SIDE IMAGE */}
-  <div style={{ flex: "1", display: "flex", justifyContent: "center" }}>
+  <div className="hero-visual" style={{ flex: "1", display: "flex", justifyContent: "center" }}>
     <img
       src="/XlentHeader.webp"
       alt="Stock Visual"

@@ -361,6 +361,10 @@
     font-size: 16px; /* Smaller on mobile */
     line-height: 1.5;
   }
+
+  .hero-visual {
+    display: none !important;
+  }
   
   /* Optional: reduce all paragraph margins */
   p {
@@ -377,6 +381,8 @@
   max-width: 500px; /* Adjust as needed */
   margin: 0 auto;
     border-radius: 15px;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
 }
 
 .responsive-image {
