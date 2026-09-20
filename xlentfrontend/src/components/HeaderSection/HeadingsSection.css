@@ -1,6 +1,7 @@
 .headings-container {
   width: 100%;
   position: relative;
+  z-index: 1;
   isolation: isolate;
   overflow: hidden;
   background:
@@ -15,7 +16,7 @@
 .headings-container::after {
   content: "";
   position: absolute;
-  z-index: -1;
+  z-index: 0;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 50%;
   pointer-events: none;
@@ -70,6 +71,8 @@
 
 /* Main Header Styles */
 .main-header {
+  position: relative;
+  z-index: 1;
   margin-bottom: 0;
   text-align: center;
 }
