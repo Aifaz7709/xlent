@@ -4,42 +4,6 @@ import ContactUsCard from '../Popups/ContactUsCard';
 
 const HeadingsSection = () => {
   const [showForm, setShowForm] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-   const [formData, setFormData] = useState({
-      name: "",
-      phone: "",
-      phone_no: "",
-      email:'' 
-    });
-
-   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
-  };
-
-  
-
-    const showNotification = (message) => {
-    const notification = document.createElement('div');
-    notification.className = 'notification-toast show';
-    notification.innerHTML = `
-      <div class="notification-content">
-        <div class="notification-icon">✓</div>
-        <div class="notification-text">${message}</div>
-      </div>
-    `;
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-      notification.classList.remove('show');
-      setTimeout(() => {
-        document.body.removeChild(notification);
-      }, 300);
-    }, 3000);
-  };
 
   return (
     <section className="headings-container">

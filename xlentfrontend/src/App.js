@@ -43,12 +43,7 @@ const ProtectedRoute = ({ children, isAuthenticated }) => {
 // ---------- LAZY DASHBOARD WITH VIEWPORT LOADING ----------
 const Dashboard = () => {
   const [showGallery, setShowGallery] = useState(false);
-  const [showTestimonials, setShowTestimonials] = useState(false);
-  const [showFranchiseBanner, setShowFranchiseBanner] = useState(false);
-  const [showFooter, setShowFooter] = useState(false);
   const galleryTriggerRef = React.useRef(null);
-  const testimonialsTriggerRef = React.useRef(null);
-  const footerTriggerRef = React.useRef(null);
 
   useEffect(() => {
     // Create intersection observers for lazy sections
@@ -62,43 +57,13 @@ const Dashboard = () => {
       { threshold: 0.1 }
     );
 
-    const testimonialsObserver = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShowTestimonials(true);
-          testimonialsObserver.unobserve(entry.target);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    const footerObserver = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShowFooter(true);
-          footerObserver.unobserve(entry.target);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
     // Setup observers
     if (galleryTriggerRef.current) {
       galleryObserver.observe(galleryTriggerRef.current);
     }
-    
-    if (testimonialsTriggerRef.current) {
-      testimonialsObserver.observe(testimonialsTriggerRef.current);
-    }
-    
-    if (footerTriggerRef.current) {
-      footerObserver.observe(footerTriggerRef.current);
-    }
 
     return () => {
       if (galleryTriggerRef.current) galleryObserver.unobserve(galleryTriggerRef.current);
-      if (testimonialsTriggerRef.current) testimonialsObserver.unobserve(testimonialsTriggerRef.current);
-      if (footerTriggerRef.current) footerObserver.unobserve(footerTriggerRef.current);
     };
   }, []);
 
@@ -122,20 +87,10 @@ const Dashboard = () => {
         {showGallery && <Gallery />}
       </Suspense>
       
-      {/* Testimonials Trigger */}
-      <div ref={testimonialsTriggerRef} style={{ height: '100px', marginTop: '-50px', backgroundColor: 'white' }} />
-      
-      {/* Testimonials - Load on viewport */}
-       <Testimonials />
+      <Testimonials />
   
      <FranchiseBanner  />
-
-      
-      {/* Footer Trigger */}
-      <div ref={footerTriggerRef}  />
-      
-      {/* Footer - Load on viewport */}
-         <Footer />
+      <Footer />
     </main>
   );
 };

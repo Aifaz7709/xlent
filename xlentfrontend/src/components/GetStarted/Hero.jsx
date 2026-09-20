@@ -1,57 +1,9 @@
 import React, { useState } from "react";
 import ContactUsCard from "../Popups/ContactUsCard";
 import { useNavigate } from 'react-router-dom';
-const Hero = ( {onCloseContactUs} ) => {
+const Hero = () => {
   const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-      phone_no: "",
-      email:''
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setIsSubmitting(false);
-    setFormData({ name: "", phone: "" });
-    setShowForm(false);
-    
-    // Show success notification
-    showNotification("Thank you! We'll contact you within 24 hours.");
-  };
-
-  const showNotification = (message) => {
-    const notification = document.createElement('div');
-    notification.className = 'notification-toast show';
-    notification.innerHTML = `
-      <div class="notification-content">
-        <div class="notification-icon">✓</div>
-        <div class="notification-text">${message}</div>
-      </div>
-    `;
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-      notification.classList.remove('show');
-      setTimeout(() => {
-        document.body.removeChild(notification);
-      }, 300);
-    }, 3000);
-  };
 
   return (
     <>

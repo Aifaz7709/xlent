@@ -1,22 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./Navbar.css";
-import { LogOut, User, Settings } from "lucide-react";
+import { LogOut } from "lucide-react";
 import LocationModal from "../LocationModal/LocationModal";
 
 const Navbar = ({  isAuthenticated, onLogout , userData: propUserData, onLoginHover }) => {
-  const [showInvestingDropdown, setShowInvestingDropdown] = useState(false);
-  const [showBorrowDropdown, setShowBorrowDropdown] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [userData, setUserData] = useState(propUserData || null);
 
-  const investingRef = useRef(null);
-  const borrowRef = useRef(null);
   const userDropdownRef = useRef(null);
   const navbarCollapseRef = useRef(null);
-  const navigate = useNavigate();
 
   // Show tabs always (trial restriction removed)
   const showTabs = true;
@@ -60,12 +54,6 @@ const Navbar = ({  isAuthenticated, onLogout , userData: propUserData, onLoginHo
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (investingRef.current && !investingRef.current.contains(event.target)) {
-        setShowInvestingDropdown(false);
-      }
-      if (borrowRef.current && !borrowRef.current.contains(event.target)) {
-        setShowBorrowDropdown(false);
-      }
       if (userDropdownRef.current && !userDropdownRef.current.contains(event.target)) {
         setShowUserDropdown(false);
       }
@@ -79,9 +67,6 @@ const Navbar = ({  isAuthenticated, onLogout , userData: propUserData, onLoginHo
 
   // Close navbar menu on link click
   const closeMenu = () => {
-    setIsMenuOpen(false);
-    setShowInvestingDropdown(false);
-    setShowBorrowDropdown(false);
     setShowUserDropdown(false);
     
     // Also close Bootstrap's collapse
@@ -137,7 +122,7 @@ const Navbar = ({  isAuthenticated, onLogout , userData: propUserData, onLoginHo
               {showTabs && (
                 <>
                   
-                  <li className="nav-item dropdown" ref={borrowRef}>
+                  <li className="nav-item dropdown">
                     <a 
                       className="nav-link dropdown-toggle nav-link-custom" 
                       onClick={() => setShowLocationModal(true)}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Upload, Plus, Trash2, AlertCircle, CheckCircle, Pencil, MapPin } from 'lucide-react';
+import { Upload, Plus, Trash2, AlertCircle, CheckCircle, Pencil } from 'lucide-react';
 import { useDispatch } from 'react-redux';
-import { addCar, removeCar, setCars } from '../Redux/Slices/carSlice';
+import { removeCar, setCars } from '../Redux/Slices/carSlice';
 import './AddCar.css';
 import LocationSelect from '../LocationModal/LocationSelect.js';
 import { cities } from '../LocationModal/cities';
@@ -23,8 +23,6 @@ const AddCar = () => {
   const [loadingCars, setLoadingCars] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editCarId, setEditCarId] = useState(null);
-  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
-const [selectedCity, setSelectedCity] = useState(null); // for filtering
  // Function to get city name by ID
  const getCityNameById = (locationId) => {
   if (!locationId) return 'Not specified';
@@ -106,15 +104,6 @@ const getCityById = (locationId) => {
     setPhotoFiles(prev => prev.filter((_, i) => i !== index));
     setPhotoPreviews(prev => prev.filter((_, i) => i !== index));
   };
-  const handleLocationSelect = (city) => {
-    setFormData(prev => ({
-      ...prev,
-      location_id: city.id,  
-      car_location: `${city.name}, ${city.state}`
-    }));
-    setSelectedCity(city.name); // used for filtering
-  };
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
     
