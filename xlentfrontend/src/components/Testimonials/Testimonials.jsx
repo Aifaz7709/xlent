@@ -101,14 +101,6 @@ const Testimonials = () => {
                     </span>
                   ))}
                 </div>
-                {testimonial.featured && (
-                  <div className="featured-badge">Featured</div>
-                )}
-              </div>
-              
-              <div className="car-details">
-                <span className="car-model">{testimonial.carModel}</span>
-                <span className="rental-duration">{testimonial.rentalPeriod}</span>
               </div>
               
               <blockquote className="testimonial-text">
@@ -125,18 +117,8 @@ const Testimonials = () => {
                   <div className="author-name">{testimonial.name}</div>
                   <div className="author-role">{testimonial.tripPurpose}</div>
                   <div className="author-location">{testimonial.location}</div>
-                  {testimonial.source && (
-                    <div className="author-location">{testimonial.source}</div>
-                  )}
                 </div>
               </div>
-              
-              {testimonial.verifiedRenter && (
-                <div className="verification-badge">
-                  <span className="verified-icon">✓</span>
-                  Verified Renter
-                </div>
-              )}
             </div>
           ))}
           </div>
@@ -174,13 +156,9 @@ const googleReviewCards = [
     name: "Google User",
     tripPurpose: "Verified Google Review",
     location: "India",
-    carModel: "Google Reviews",
-    rentalPeriod: "Recent",
     text: "Super smooth booking and clean vehicle. The support team was very responsive throughout the trip.",
     rating: 5,
-    verifiedRenter: true,
-    featured: false,
-    source: "via Google"
+    featured: false
   }
 ];
 
@@ -189,35 +167,24 @@ const sampleCards = [
     name: "Priya Patel", 
     tripPurpose: "Family Wedding",
     location: "Chandrapur, Maharashtra",
-    carModel: "Hyundai Creta",
-    rentalPeriod: "4 days",
     text: "Perfect for our family wedding events! The Creta had ample space for 5 adults and all our traditional outfits. Will definitely use XLentagain!",
-    img: "/img/webp/person3.webp",
     rating: 5,
-    verifiedRenter: true,
     featured: true
   },
   { 
     name: "Arjun Mehta", 
     tripPurpose: "Business Trip",
     location: "Nagpur, Maharashtra",
-    carModel: "Honda City",
-    rentalPeriod: "3 days",
     text: "As a frequent business traveler, I appreciate the professionalism. The Honda City was perfect for client meetings.",
     rating: 5,
-    verifiedRenter: true,
     featured: false
   },
   { 
     name: "Ananya Reddy", 
     tripPurpose: "Weekend Getaway",
     location: "Gondia, Maharashtra",
-    carModel: "Maruti Swift",
-    rentalPeriod: "2 days",
     text: "Amazing experience for our weekend trip to Srisailam! The Swift was fuel-efficient and perfect for hill roads.",
-    img: "/img/webp/person18.webp",
     rating: 5,
-    verifiedRenter: true,
     featured: true
   }
 ];

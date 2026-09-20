@@ -74,7 +74,7 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="footer-bottom">
-          © 2025 XlentCar — Your Journey, Your Way.
+          © 2026 XlentCar — Your Journey, Your Way.
         </div>
       </div>
     </footer>

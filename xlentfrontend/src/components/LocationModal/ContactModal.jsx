@@ -108,7 +108,7 @@ const ContactModal = ({ isOpen, onClose }) => {
               <div className="row align-items-center">
                 <div className="col-12 col-md-6 mb-3 mb-md-0">
                   <p className="contact-modal-copyright">
-                    © 2025 XLentCar. All rights reserved.
+                    © 2026 XLentCar. All rights reserved.
                   </p>
                 </div>
                 <div className="col-12 col-md-6">

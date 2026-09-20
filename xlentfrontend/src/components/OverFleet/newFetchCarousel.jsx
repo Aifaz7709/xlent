@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useCallback, useMemo } from "react"
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { clearSelectedLocation } from "../Redux/Slices/LocationSlice";
-import { MapPin, X, ArrowLeft, ArrowRight } from "lucide-react";
+import { MapPin, X } from "lucide-react";
 import "./NewPropertyCard.css";
 import XlentcarLoader from "../Loader/XlentcarLoader";
 import { supabase } from "../../supabaseClient";
@@ -143,17 +143,11 @@ const NewPropertyCard = () => {
           <p className="subtitle">{filteredCars.length} vehicles available</p>
         </div>
         
-        <div className="controls">
-          {selectedLocation && (
-            <button className="reset-btn" onClick={() => dispatch(clearSelectedLocation())}>
-              <X size={14} /> Clear Filter
-            </button>
-          )}
-          <div className="nav-buttons">
-            <button onClick={prevSlide} className="nav-btn"><ArrowLeft size={20} /></button>
-            <button onClick={nextSlide} className="nav-btn"><ArrowRight size={20} /></button>
-          </div>
-        </div>
+        {selectedLocation && (
+          <button className="reset-btn" onClick={() => dispatch(clearSelectedLocation())}>
+            <X size={14} /> Clear Filter
+          </button>
+        )}
       </div>
 
       <div className="carousel-window" 

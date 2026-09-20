@@ -254,12 +254,12 @@
 
 .testimonial-card {
   background: white;
-  padding: 1rem;
+  padding: 1rem 1.1rem;
   border-radius: 16px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
-  width: 340px;
-  min-width: 340px;
+  width: 290px;
+  min-width: 290px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -267,8 +267,8 @@
 
 @media (min-width: 768px) {
   .testimonial-card {
-    width: 360px;
-    min-width: 360px;
+    width: 310px;
+    min-width: 310px;
   }
 }
 
@@ -278,10 +278,14 @@
 }
 
 .testimonial-text {
-  font-size: clamp(0.9rem, 2vw, 1rem);
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 0.92rem;
   color: #475569;
   margin-bottom: 1.5rem;
   line-height: 1.6;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
 }
 
 .testimonial-author {
@@ -359,14 +363,14 @@
 
 .testimonial-card {
   background: white;
-  padding: 1rem;
+  padding: 1rem 1.1rem;
   border-radius: 20px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
   position: relative;
   border: 1px solid #f1f5f9;
-  width: 340px;
-  min-width: 340px;
+  width: 290px;
+  min-width: 290px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -403,29 +407,24 @@
   color: #f59e0b;
 }
 
-.featured-badge {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 0.4rem 0.8rem;
-  border-radius: 12px;
-  font-size: 0.7rem;
-  font-weight: 600;
-}
-
 .testimonial-text {
-  font-size: 1.1rem;
-  line-height: 1.6;
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 0.92rem;
+  line-height: 1.5;
   color: #475569;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   font-style: italic;
-  min-height: 105px;
+  min-height: 5.5em;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
 }
 
 .author-section {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  gap: 0.7rem;
+  margin-bottom: 0;
 }
 
 .author-image {
@@ -454,31 +453,6 @@
 .author-company {
   font-size: 0.8rem;
   color: #94a3b8;
-}
-
-.verification-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: #f0fdf4;
-  color: #166534;
-  padding: 0.5rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  margin-top: auto;
-}
-
-.verified-icon {
-  background: #22c55e;
-  color: white;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.7rem;
 }
 
 /* CTA Section */
@@ -651,8 +625,8 @@
 
 @media (max-width: 768px) {
   .testimonial-card {
-    width: 290px;
-    min-width: 290px;
+    width: min(280px, calc(100vw - 42px));
+    min-width: min(280px, calc(100vw - 42px));
   }
 
   .testimonials-track {

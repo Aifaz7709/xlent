@@ -59,7 +59,7 @@ const AboutPage = () => {
   ];
 
   const milestones = [
-    { year: "2025", title: "Founded in Maharashtra", description: "Started with 10 cars" }
+    { year: "2026", title: "Founded in Maharashtra", description: "Started with 10 cars" }
   ];
 
   const values = [
@@ -112,7 +112,7 @@ const AboutPage = () => {
           <div className="row align-items-center">
             <div className="col-12 col-lg-7">
               <h1 className="display-4 fw-bold mb-4" style={{color:'white'}}>
-                Driving Excellence Since 2025
+                      Driving Excellence Since 2026
               </h1>
               <p className="lead mb-4" style={{ opacity: '0.9' , color:'white'}}>
                 Xlentcar is more than just a car rental service. We're your trusted partner 
@@ -136,7 +136,7 @@ const AboutPage = () => {
                     <Award size={32} className="me-3" />
                     <div>
                       <h3 className="h5 mb-0">Award Winning Service</h3>
-                      <p className="small mb-0 opacity-90">Best Car Rental 2025</p>
+                      <p className="small mb-0 opacity-90">Best Car Rental 2026</p>
                     </div>
                   </div>
                   <div className="d-flex align-items-center mb-3">
@@ -150,7 +150,7 @@ const AboutPage = () => {
                     <Users size={32} className="me-3" />
                     <div>
                       <h3 className="h5 mb-0">Trusted by Thousands</h3>
-                      <p className="small mb-0 opacity-90">Since 2025</p>
+                      <p className="small mb-0 opacity-90">Since 2026</p>
                     </div>
                   </div>
                 </div>
@@ -169,7 +169,7 @@ const AboutPage = () => {
               Our <span className="text-primary">Story</span>
             </h2>
             <p className="lead mb-4">
-              Founded in 2025 in the heart of Maharshtra, Xlentcar began with a simple vision: 
+              Founded in 2026 in the heart of Maharshtra, Xlentcar began with a simple vision:
               to make car rental accessible, reliable, and exceptional for everyone.
             </p>
             <p className="mb-4">

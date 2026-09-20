@@ -29,37 +29,6 @@
   margin: 0;
 }
 
-.carousel-header .controls {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-}
-
-.nav-buttons {
-  display: flex;
-  gap: 0.5rem;
-  color: #02287c;
-}
-
-.nav-btn {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  border: 1px solid #e2e8f0;
-  background: rgb(21, 55, 204);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: var(--transition-smooth);
-}
-
-.nav-btn:hover {
-  background: var(--primary-blue);
-  color: white;
-  border-color: var(--primary-blue);
-}
-
 /* The Window & Track */
 .carousel-window {
   overflow: hidden;
@@ -230,12 +199,6 @@
   }
 }
 
-@media (max-width: 359px) {
-  .carousel-header .controls {
-    align-self: stretch;
-    justify-content: space-between;
-  }
-}
 section.fleet-carousel{
   background-color: white;
 
