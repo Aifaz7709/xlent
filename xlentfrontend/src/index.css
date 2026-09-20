@@ -7,6 +7,33 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  background: #f6f9fd;
+  color: #10213b;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  color: #fff;
+  background: #1d4ed8;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (max-width: 576px) {
+  body {
+    font-size: 15px;
+  }
+
+  .container,
+  .container-fluid {
+    --bs-gutter-x: 1.15rem;
+  }
 }
 
 code {

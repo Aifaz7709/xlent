@@ -108,15 +108,13 @@ const Navbar = ({  isAuthenticated, onLogout , userData: propUserData, onLoginHo
       <nav 
         className="navbar navbar-expand-lg navbar-light fixed-top navbar-custom" 
         style={{
-          backgroundColor: 'rgba(2, 40, 124, 1)',
-          zIndex: 1111,
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+          zIndex: 1111
         }}
       >
         <div className="container-fluid px-3 px-md-5">
           {/* Brand on the left corner */}
           <Link className="navbar-brand d-flex align-items-center" to="/" style={{ color: 'white' }}>
-            <img src="/XlentCar-logo-without-bg.png" alt="xlentcar Icon" width="110" height="120" className="d-inline-block align-text-top" />
+            <img src="/XlentCar-logo-without-bg.png" alt="xlentcar Icon" className="d-inline-block align-text-top" />
             {/* <span className="ms-2 fw-bolder navbar-brand-text">Xlentcar</span> */}
           </Link>
 

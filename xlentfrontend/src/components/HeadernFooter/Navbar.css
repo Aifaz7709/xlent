@@ -1,16 +1,39 @@
 /* Navbar Responsive Styles */
 
 .navbar-custom {
+  background: linear-gradient(110deg, rgba(4, 32, 92, 0.97), rgba(10, 76, 143, 0.94)) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 10px 30px rgba(4, 24, 62, 0.2) !important;
+  backdrop-filter: blur(18px);
+}
+
+.navbar-custom {
   transition: all 0.3s ease;
 }
 
 .navbar-brand {
   padding: 5px 5px;
+  min-width: 132px;
+  transition: transform 0.25s ease;
+}
+
+.navbar-brand:hover {
+  transform: translateY(-1px);
+}
+
+.navbar-brand img {
+  width: auto;
+  height: 58px;
+  object-fit: contain;
 }
 
 @media (min-width: 576px) {
   .navbar-brand {
     padding: 12px 20px;
+  }
+
+  .navbar-brand img {
+    height: 64px;
   }
 }
 
@@ -28,6 +51,15 @@
 .navbar-toggler-custom {
   padding: 0.25rem 0.75rem;
   margin-right: 15px;
+  border-radius: 12px;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.navbar-toggler-custom:hover,
+.navbar-toggler-custom:focus-visible {
+  background: rgba(255, 255, 255, 0.12);
+  transform: scale(1.03);
+  outline: none;
 }
 
 @media (min-width: 576px) {
@@ -62,7 +94,7 @@
   font-weight: 500;
   font-size: clamp(0.9rem, 1.5vw, 1rem);
   transition: all 0.3s ease;
-  border-radius: 4px;
+  border-radius: 10px;
   margin-bottom: 5px;
 }
 
@@ -75,8 +107,9 @@
 }
 
 .nav-link-custom:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.13);
   color: #fff !important;
+  transform: translateY(-1px);
 }
 
 /* Dropdown Menu */
@@ -190,7 +223,9 @@
   .navbar-collapse {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     margin-top: 10px;
-    padding-top: 10px;
+    padding: 10px 0 4px;
+    background: rgba(1, 28, 78, 0.52);
+    border-radius: 0 0 16px 16px;
   }
 
   .navbar-nav {
@@ -219,6 +254,19 @@ body {
 @media (max-width: 576px) {
   .dropdown-menu {
     position: static !important;
+  }
+
+  .navbar-brand {
+    min-width: 104px;
+    padding-left: 0;
+  }
+
+  .navbar-brand img {
+    height: 48px;
+  }
+
+  body {
+    padding-top: 58px;
   }
 }
 
