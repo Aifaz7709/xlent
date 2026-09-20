@@ -6,6 +6,7 @@ import './AddCar.css';
 import LocationSelect from '../LocationModal/LocationSelect.js';
 import { cities } from '../LocationModal/cities';
 import Footer from '../Footer/Footer';
+import { supabase } from '../../supabaseClient';
 const AddCar = () => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
@@ -41,25 +42,13 @@ const getCityById = (locationId) => {
   const fetchCars = async () => {
     try {
       setLoadingCars(true);
-      const token = localStorage.getItem('xlent_token');
-      const apiUrl = process.env.REACT_APP_API_BASE_URL 
-        ? `${process.env.REACT_APP_API_BASE_URL}/api/cars`
-        : 'https://xlent-production.up.railway.app/api/cars';
-      
-      const res = await fetch(apiUrl, {
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(`Failed to fetch cars: ${res.status} - ${errorText}`);
-      }
-      
-      const data = await res.json();
-      const fetchedCars = data.cars || data || [];
+      const { data: fetchedCars, error } = await supabase
+        .from('cars')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
    const enhancedCars = fetchedCars.map(car => ({
     ...car,
     display_location: car.location_id ? getCityNameById(car.location_id) : 'Not specified',
@@ -140,35 +129,45 @@ const getCityById = (locationId) => {
     setMessage({ type: '', text: '' });
   
     try {
-      let token = localStorage.getItem('xlent_token');
-      const baseUrl = process.env.REACT_APP_API_BASE_URL || 'https://xlent-production.up.railway.app';
-      const apiUrl = isEditing ? `${baseUrl}/api/cars/${editCarId}` : `${baseUrl}/api/cars`;
-      
-      const formDataToSend = new FormData();
-      formDataToSend.append('car_model', trimmedModel);
-      formDataToSend.append('car_number', trimmedNumber);
-      formDataToSend.append('location_id', formData.location_id);
-  
-      // ONLY append files if they are new File objects
-      photoFiles.forEach((file) => {
-        if (file instanceof File) {
-          formDataToSend.append('photos', file);
-        }
-      });
-  
-      const response = await fetch(apiUrl, {
-        method: isEditing ? 'PUT' : 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        
-        },
-        body: formDataToSend
-      });
-  
-      const data = await response.json();
-  
-      if (!response.ok) {
-        throw new Error(data.error || 'Operation failed');
+      const uploadedPhotoUrls = [];
+      for (const file of photoFiles) {
+        if (!(file instanceof File)) continue;
+
+        const extension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+        const filePath = `cars/${crypto.randomUUID()}.${extension}`;
+        const { error: uploadError } = await supabase.storage
+          .from('car-photos')
+          .upload(filePath, file, { contentType: file.type, upsert: false });
+
+        if (uploadError) throw uploadError;
+
+        const { data: publicUrlData } = supabase.storage
+          .from('car-photos')
+          .getPublicUrl(filePath);
+        uploadedPhotoUrls.push(publicUrlData.publicUrl);
+      }
+
+      const existingPhotoUrls = isEditing
+        ? photoPreviews.filter((photo) => typeof photo === 'string')
+        : [];
+      const carPayload = {
+        car_model: trimmedModel,
+        car_number: trimmedNumber,
+        location_id: formData.location_id,
+        photos: [...existingPhotoUrls, ...uploadedPhotoUrls]
+      };
+
+      if (isEditing) {
+        const { error } = await supabase
+          .from('cars')
+          .update(carPayload)
+          .eq('id', editCarId);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from('cars')
+          .insert(carPayload);
+        if (error) throw error;
       }
   
       setMessage({ type: 'success', text: isEditing ? 'Car updated!' : 'Car added!' });
@@ -211,29 +210,21 @@ const getCityById = (locationId) => {
     if (!window.confirm('Are you sure you want to delete this car?')) return;
 
     try {
-      const token = localStorage.getItem('xlent_token');
-      const apiUrl = process.env.REACT_APP_API_BASE_URL 
-        ? `${process.env.REACT_APP_API_BASE_URL}/api/cars/${carId}`
-        : `https://xlent-production.up.railway.app/api/cars/${carId}`;
+      const car = cars.find((item) => item.id === carId);
+      const { error } = await supabase.from('cars').delete().eq('id', carId);
+      if (error) throw error;
 
-      const response = await fetch(apiUrl, {
-        method: 'DELETE',
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to delete car');
+      const storagePaths = (car?.photos || [])
+        .map((photo) => photo.split('/car-photos/')[1])
+        .filter(Boolean);
+      if (storagePaths.length) {
+        await supabase.storage.from('car-photos').remove(storagePaths);
       }
 
       // Update local state
       setLocalCars(prev => prev.filter(car => car.id !== carId));
       dispatch(removeCar(carId));
-      setMessage({ type: 'success', text: data.message || 'Car deleted successfully' });
+      setMessage({ type: 'success', text: 'Car deleted successfully' });
       
     } catch (err) {
       console.error('Error deleting car:', err);

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, lazy, Suspense, useCallback } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./components/Redux/Store";
 // ⚡ IMMEDIATELY NEEDED COMPONENTS (Above the fold)
@@ -11,6 +11,8 @@ import FranchiseBanner from "./components/FranchiseBanner/FranchiseBanner";
 import { SnackbarProvider } from "./components/Snackbar/Snackbar";
 import BookingDashboard from "./components/BookingDashboard/BookingDashboard";
 import { Analytics } from "@vercel/analytics/react";
+import ServiceChoiceModal from "./components/ServiceChoice/ServiceChoiceModal";
+import { getStoredServiceType } from "./components/ServiceChoice/ServiceChoiceModal";
 
 // ⚡ LAZY LOAD EVERYTHING ELSE
 const Login = lazy(() => import("./components/Login&Reg/Login"));
@@ -141,6 +143,8 @@ const Dashboard = () => {
 // ---------- ROUTER WRAPPER ----------
 function AppRoutes({ theme, toggleTheme }) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [showServiceChoice, setShowServiceChoice] = useState(() => !getStoredServiceType());
 
   // SINGLE SOURCE OF TRUTH FOR AUTH
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -191,6 +195,15 @@ function AppRoutes({ theme, toggleTheme }) {
     setUserData(null);
     navigate("/login", { replace: true });
   };
+
+  useEffect(() => {
+    const handleServiceSelection = () => {
+      setShowServiceChoice(false);
+    };
+
+    window.addEventListener("xlent-service-selected", handleServiceSelection);
+    return () => window.removeEventListener("xlent-service-selected", handleServiceSelection);
+  }, []);
 
   return (
     <>
@@ -323,6 +336,15 @@ function AppRoutes({ theme, toggleTheme }) {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
+
+      {showServiceChoice && location.pathname === "/" && (
+        <ServiceChoiceModal
+          onSelect={() => {
+            setShowServiceChoice(false);
+          }}
+          onClose={() => setShowServiceChoice(false)}
+        />
+      )}
     </>
   );
 }

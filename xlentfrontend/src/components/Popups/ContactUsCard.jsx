@@ -64,7 +64,8 @@ const ContactUsCard = ({onClose, title, booking1 }) => {
           email: formData.email,
           Location: formData.Location,
           startDate: formData.startDate,
-          endDate: formData.endDate
+           endDate: formData.endDate,
+           service_type: sessionStorage.getItem('xlent_service_type') || 'not_selected'
         })
       });
    

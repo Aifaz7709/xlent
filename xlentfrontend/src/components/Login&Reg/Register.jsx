@@ -17,6 +17,7 @@ import {
   Headphones
 } from 'lucide-react';
 import './RegisterPage.css';
+import { supabase } from '../../supabaseClient';
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
     customerName: '',
@@ -116,24 +117,36 @@ const RegisterPage = () => {
   
       (async () => {
         try {
-          const apiBase = process.env.REACT_APP_API_BASE_URL || 'https://xlent-production.up.railway.app';
-          const res = await fetch(`${apiBase}/api/auth/register`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              customer_name: formData.customerName,      // snake_case for Supabase
-              email: formData.email,
-              phone_number: formData.phoneNumber.replace(/\s/g, ''),
-              vehicle_reg_number: formData.vehicleRegNumber,
-              password: formData.password               // backend will hash it
-            })
+          const email = formData.email.trim().toLowerCase();
+          const phoneNumber = formData.phoneNumber.replace(/\s/g, '');
+          const { data, error } = await supabase.auth.signUp({
+            email,
+            password: formData.password,
+            options: {
+              data: {
+                customer_name: formData.customerName.trim(),
+                phone_number: phoneNumber,
+                vehicle_reg_number: formData.vehicleRegNumber
+              }
+            }
           });
-  
-          const data = await res.json();
-  
-          if (!res.ok) {
-            // If backend returns Supabase error, show it
-            throw new Error(data.error || 'Registration failed');
+
+          if (error) {
+            throw new Error(error.message || 'Registration failed');
+          }
+
+          if (data.user && data.session) {
+            const { error: profileError } = await supabase.from('profiles').upsert({
+              id: data.user.id,
+              customer_name: formData.customerName.trim(),
+              email,
+              phone_number: phoneNumber,
+              vehicle_reg_number: formData.vehicleRegNumber
+            });
+
+            if (profileError) {
+              throw new Error(profileError.message);
+            }
           }
   
           alert('Registration successful! You can now log in.');

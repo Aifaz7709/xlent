@@ -43,7 +43,6 @@ const allowedOrigins = [
   'https://xlentcar.com',
   'https://www.xlentcar.com',
   'https://xlentcar.vercel.app',
-  'https://xlent-production.up.railway.app',
   'http://localhost:3000',
 ];
 

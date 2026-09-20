@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import XlentcarLoader from '../Loader/XlentcarLoader'
-const UserData = ({ onClose }) => {
+import { supabase } from '../../supabaseClient'
+import { getStoredServiceType } from '../ServiceChoice/ServiceChoiceModal'
+const UserData = ({ onClose, serviceType }) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
@@ -24,25 +26,15 @@ const UserData = ({ onClose }) => {
     setIsLoading(true)
   
     try {
-      const baseUrl = process.env.REACT_APP_API_BASE_URL || 'https://xlent-production.up.railway.app';
-      
-      // CHANGE: Send as JSON instead of FormData
-      const response = await fetch(`${baseUrl}/api/customer_inquiries`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          customer_name: formData.name,
-          phone_number: formData.phone_number,
-          email: formData.email
-        })
+      const { error } = await supabase.from('customer_inquiries').insert({
+        customer_name: formData.name.trim(),
+        phone_number: formData.phone_number.trim(),
+        email: formData.email.trim().toLowerCase(),
+        service_type: serviceType || getStoredServiceType() || 'not_selected'
       })
-  
-      const data = await response.json()
-  
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to save customer')
+
+      if (error) {
+        throw new Error(error.message || 'Failed to save customer')
       }
   
       // Show success message

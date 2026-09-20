@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
+import { supabase } from '../../supabaseClient'
 
 const CustomerDashboard = () => {
   const [customers, setCustomers] = useState([])
@@ -14,49 +15,18 @@ const CustomerDashboard = () => {
     try {
       setLoading(true)
       console.log('🔄 Starting fetch...')
-      
-      const baseUrl = process.env.REACT_APP_API_BASE_URL || 'https://xlent-production.up.railway.app'
-      
-      // ✅ Keep the timestamp to prevent caching
-      const timestamp = new Date().getTime()
-      const url = `${baseUrl}/api/customer_inquiries?_=${timestamp}`
-      
-      console.log('📡 Fetching from:', url)
-      
-      const response = await fetch(url, {
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        cache: 'no-store' // Prevent caching
-      })
-  
-      console.log('✅ Response status:', response.status, response.statusText)
-      
-      // Log response headers
-      const headers = {}
-      response.headers.forEach((value, key) => {
-        headers[key] = value
-      })
-      console.log('📋 Response headers:', headers)
-  
-      const data = await response.json()
-      console.log('📦 Response data:', data)
-      
-      if (!response.ok) {
-        throw new Error(data.error || `HTTP ${response.status}: Failed to fetch customers`)
-      }
-  
-      console.log('👥 Customers count from API:', data.count)
-      console.log('👥 Customers array:', data.customers)
-      
-      if (data.customers && data.customers.length > 0) {
-        console.log('🎯 First customer:', data.customers[0])
-      }
-  
-      setCustomers(data.customers || [])
+
+      const { data, error } = await supabase
+        .from('customer_inquiries')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (error) throw error
+
+      setCustomers(data || [])
       setCurrentPage(1) // Reset to first page when data changes
       
-      if (data.customers && data.customers.length === 0) {
+      if (!data || data.length === 0) {
         setMessage({ 
           type: 'warning', 
           text: 'Database is connected but no customer records found.' 

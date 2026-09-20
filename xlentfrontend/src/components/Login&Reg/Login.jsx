@@ -3,10 +3,7 @@
   import { User, Lock, Eye, EyeOff, LogIn, AlertCircle, Shield } from "lucide-react";
   import "./Login.css";
   import { useSnackbar } from "../Snackbar/Snackbar";
-
-  const API_BASE =
-    process.env.REACT_APP_API_BASE_URL ||
-    "https://xlent-production.up.railway.app";
+  import { supabase } from "../../supabaseClient";
 
   const Login = ({ setIsAuthenticated, onLogin }) => {
     const [showPassword, setShowPassword] = useState(false);
@@ -59,43 +56,34 @@
       setIsLoading(true);
 
       try {
-        const res = await fetch(`${API_BASE}/api/auth/login`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: formData.username,
-            password: formData.password,
-          }),
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: formData.username.trim().toLowerCase(),
+          password: formData.password,
         });
 
-        let data;
-        try {
-          data = await res.json();
-        } catch {
-          throw new Error("Invalid server response");
+        if (error || !data.session) {
+          throw new Error(error?.message || "Login failed. Please check your credentials.");
         }
 
-        if (!res.ok) {
-          throw new Error(
-            data.message || "Login failed. Please check your credentials."
-          );
-        }
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("customer_name, phone_number, vehicle_reg_number")
+          .eq("id", data.user.id)
+          .maybeSingle();
 
-        if (data.token) {
+        if (data.session.access_token) {
           const userData = {
-            id: data.user?.id || "1",
+            id: data.user.id,
             username: formData.username,
-            name:
-              data.user?.name ||
-              formData.username.split("@")[0],
-            email: data.user?.email || formData.username,
-            ...data.user,
+            name: profile?.customer_name || data.user.user_metadata?.customer_name || formData.username.split("@")[0],
+            email: data.user.email || formData.username,
+            ...profile,
           };
 
           if (onLogin) {
-            onLogin(data.token, userData);
+            onLogin(data.session.access_token, userData);
           } else {
-            localStorage.setItem("xlent_token", data.token);
+            localStorage.setItem("xlent_token", data.session.access_token);
             localStorage.setItem(
               "xlent_user",
               JSON.stringify(userData)

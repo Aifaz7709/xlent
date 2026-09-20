@@ -22,6 +22,7 @@ import {
 import Footer from "../Footer/Footer";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../../supabaseClient";
 
 const   SpecialDeals = () => {
   const [selectedFilter, setSelectedFilter] = useState("all");
@@ -51,26 +52,13 @@ const [carsError, setCarsError] = useState("");
     try {
       setLoadingCars(true);
       setCarsError("");
-  
-      const token = localStorage.getItem("xlent_token");
-      const apiUrl = process.env.REACT_APP_API_BASE_URL
-        ? `${process.env.REACT_APP_API_BASE_URL}/api/cars`
-        : "https://xlent-production.up.railway.app/api/cars";
-  
-      const res = await fetch(apiUrl, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-  
-      if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(`Failed to fetch cars: ${res.status} - ${errorText}`);
-      }
-  
-      const data = await res.json();
-      const fetchedCars = data.cars || data || [];
+
+      const { data: fetchedCars, error } = await supabase
+        .from("cars")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
   
       const enhancedCars = fetchedCars.map(car => ({
         ...car,
@@ -144,17 +132,12 @@ const [carsError, setCarsError] = useState("");
     try {
       setIsSubscribing(true);
       setSubscribeMessage("");
-      const res = await fetch("https://xlent-production.up.railway.app/api/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: subscriberEmail }),
-      });
-      
-      const data = await res.json();
-      
-      if (!res.ok) {
-        throw new Error(data.error || "Failed to subscribe");
-      }
+
+      const { error } = await supabase
+        .from("subscribers")
+        .insert({ email: subscriberEmail.trim().toLowerCase() });
+
+      if (error) throw error;
       
       setSubscribeMessage("Thank you! We'll send you our best deals.");
       setSubscriberEmail("");

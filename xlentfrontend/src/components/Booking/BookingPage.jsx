@@ -93,6 +93,7 @@ const BookingPage = ( formData) => {
         body: JSON.stringify({
           startDate: booking.startDate,
           endDate: booking.endDate,
+           service_type: sessionStorage.getItem('xlent_service_type') || 'not_selected',
        
         })
       });

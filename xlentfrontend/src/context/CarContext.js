@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { supabase } from "../supabaseClient";
 
 const CarContext = createContext(null);
 
@@ -17,15 +18,13 @@ export const CarProvider = ({ children }) => {
   const fetchCars = async () => {
     try {
       setLoading(true);
-      const apiUrl = process.env.REACT_APP_API_BASE_URL
-        ? `${process.env.REACT_APP_API_BASE_URL}/api/cars`
-        : "https://xlent-production.up.railway.app/api/cars";
+      const { data, error } = await supabase
+        .from("cars")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-      const res = await fetch(apiUrl);
-      if (!res.ok) throw new Error("Failed to fetch cars");
-
-      const data = await res.json();
-      setCars(data.cars || []);
+      if (error) throw error;
+      setCars(data || []);
     } catch (err) {
       console.error("Car fetch failed:", err);
       setCars([]);
