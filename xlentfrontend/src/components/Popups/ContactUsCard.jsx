@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import XlentcarLoader from '../Loader/XlentcarLoader'; // Adjust the path as needed
 import { useSnackbar } from '../Snackbar/Snackbar';
 import './ContactCard.css'
@@ -20,6 +20,15 @@ const ContactUsCard = ({onClose, title, booking1 }) => {
   
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, []);
  
     
   // Use the snackbar hook
