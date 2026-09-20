@@ -19,25 +19,39 @@ router.post('/register', async (req, res) => {
       vehicle_reg_number
     } = req.body;
 
-    if (!email || !password || !customer_name) {
+    const normalizedEmail = String(email || '').trim().toLowerCase();
+    const trimmedName = String(customer_name || '').trim();
+
+    if (!normalizedEmail || !password || !trimmedName) {
       return res.status(400).json({
         error: 'Email, password, and customer name are required'
       });
     }
 
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+      return res.status(400).json({ error: 'Please provide a valid email address.' });
+    }
+
+    if (String(password).length < 8) {
+      return res.status(400).json({ error: 'Password must be at least 8 characters long.' });
+    }
+
     const { data: authData, error: authError } =
       await supabase.auth.admin.createUser({
-        email: email.trim().toLowerCase(),
+        email: normalizedEmail,
         password,
         email_confirm: true,
         user_metadata: {
-          customer_name,
+          customer_name: trimmedName,
           phone_number,
           vehicle_reg_number
         }
       });
 
     if (authError) {
+      if (authError.message?.toLowerCase().includes('already registered') || authError.message?.toLowerCase().includes('already exists')) {
+        return res.status(409).json({ error: 'An account with this email already exists.' });
+      }
       return res.status(400).json({ error: authError.message });
     }
 
@@ -69,14 +83,19 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
+    const normalizedEmail = String(email || '').trim().toLowerCase();
 
-    if (!email || !password) {
+    if (!normalizedEmail || !password) {
       return res.status(400).json({ message: 'Email and password required' });
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+      return res.status(400).json({ message: 'Please provide a valid email address.' });
     }
 
     const { data: authData, error: authError } =
       await supabase.auth.signInWithPassword({
-        email: email.trim().toLowerCase(),
+        email: normalizedEmail,
         password
       });
 

@@ -58,7 +58,7 @@ router.get('/', async (req, res) => {
     
     // ✅ Use customer_inquiries instead of profiles
     const { data, error } = await supabase
-      .from('customer_inquiries') // CHANGED!
+      .from('customer_inquiries')
       .select('*')
       .order('created_at', { ascending: false });
 

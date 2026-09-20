@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 
 const CustomerDashboard = () => {
   const [customers, setCustomers] = useState([])
@@ -10,7 +10,7 @@ const CustomerDashboard = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(10)
 
-  const fetchCustomers = async () => {
+  const fetchCustomers = useCallback(async () => {
     try {
       setLoading(true)
       console.log('🔄 Starting fetch...')
@@ -75,14 +75,41 @@ const CustomerDashboard = () => {
     } finally {
       setLoading(false)
     }
-  }
-
-  useEffect(() => {
-    fetchCustomers()
   }, [])
 
+  useEffect(() => {
+    const handleRefresh = () => {
+      fetchCustomers()
+    }
+
+    fetchCustomers()
+
+    const handleFocus = () => {
+      fetchCustomers()
+    }
+
+    const intervalId = setInterval(() => {
+      fetchCustomers()
+    }, 15000)
+
+    window.addEventListener('focus', handleFocus)
+    window.addEventListener('customer-data-updated', handleRefresh)
+
+    return () => {
+      window.removeEventListener('focus', handleFocus)
+      window.removeEventListener('customer-data-updated', handleRefresh)
+      clearInterval(intervalId)
+    }
+  }, [fetchCustomers])
+
+  const sortedCustomers = [...customers].sort((a, b) => {
+    const dateA = new Date(a.created_at || 0).getTime()
+    const dateB = new Date(b.created_at || 0).getTime()
+    return dateB - dateA
+  })
+
   // Filter customers based on search
-  const filteredCustomers = customers.filter(customer =>
+  const filteredCustomers = sortedCustomers.filter(customer =>
     customer.customer_name?.toLowerCase().includes(search.toLowerCase()) ||
     customer.email?.toLowerCase().includes(search.toLowerCase()) ||
     customer.phone_number?.toLowerCase().includes(search.toLowerCase())

@@ -1,8 +1,39 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const { requireAuth } = require('./authMiddleware');
 
 const app = express();
+app.disable('x-powered-by');
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+    contentSecurityPolicy: false,
+  })
+);
+
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 200,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests. Please wait a few minutes and try again.' }
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: true,
+  message: { error: 'Too many auth attempts. Please wait a few minutes and try again.' }
+});
+
+app.use(generalLimiter);
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/register', authLimiter);
 
 /* ================================
    CORS CONFIG (PRODUCTION SAFE)
@@ -54,7 +85,14 @@ app.use(express.json({ limit: '25mb' }));
 app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 
 app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} ${req.method} ${req.url}`);
+  const authHeader = req.headers.authorization || '';
+  const logUrl = req.url.includes('/api/auth/login') ? '[AUTH_LOGIN]' : req.url;
+  console.log(`${new Date().toISOString()} ${req.method} ${logUrl}`);
+
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    req.headers.authorization = `Bearer ${authHeader.slice(7).trim()}`;
+  }
+
   next();
 });
 
@@ -69,7 +107,9 @@ const subscribeRouter = require('./routes/subscribe');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/cars', carsRoutes);
+app.use('/api/customer', customersRoutes);
 app.use('/api/customer_inquiries', customersRoutes);
+app.use('/api/customers', customersRoutes);
 app.use('/api', subscribeRouter);
 
 

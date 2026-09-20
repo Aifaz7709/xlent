@@ -3,6 +3,7 @@ const router = express.Router();
 const supabase = require('../../supabaseClient');
 const multer = require('multer');
 const path = require('path');
+const { requireAuth } = require('../authMiddleware');
 
 // ========== MULTER SETUP ==========
 const storage = multer.memoryStorage();
@@ -40,7 +41,7 @@ const upload = multer({
 // Replace upload.any() with this:
 const uploadMiddleware = upload.array('photos', 5);
 // ========== CREATE CAR (NO AUTH REQUIRED) ==========
-router.post('/', uploadMiddleware, async (req, res) => {
+router.post('/', requireAuth, uploadMiddleware, async (req, res) => {
   try {
     // Get form data
     const car_model = req.body.car_model?.trim() || '';
@@ -183,7 +184,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // ========== DELETE CAR (NO AUTH REQUIRED) ==========
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
     console.log(`DELETE /api/cars/${id} - Deleting car`);
@@ -225,7 +226,7 @@ router.delete('/:id', async (req, res) => {
   }
 });
 // ========== UPDATE CAR ==========
-router.put('/:id', uploadMiddleware, async (req, res) => {
+router.put('/:id', requireAuth, uploadMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     const car_model = req.body.car_model?.trim();

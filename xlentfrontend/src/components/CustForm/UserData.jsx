@@ -27,13 +27,13 @@ const UserData = ({ onClose }) => {
       const baseUrl = process.env.REACT_APP_API_BASE_URL || 'https://xlent-production.up.railway.app';
       
       // CHANGE: Send as JSON instead of FormData
-      const response = await fetch(`${baseUrl}/api/customer`, {
+      const response = await fetch(`${baseUrl}/api/customer_inquiries`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json' // Add this header
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          customer_name: formData.name,      // Must match backend field name
+          customer_name: formData.name,
           phone_number: formData.phone_number,
           email: formData.email
         })
@@ -47,6 +47,9 @@ const UserData = ({ onClose }) => {
   
       // Show success message
       showNotification("Thank you! Your information has been saved.")
+
+      // Trigger an immediate refresh in the admin dashboard
+      window.dispatchEvent(new CustomEvent('customer-data-updated'))
   
       // Reset form
       setFormData({ name: "", phone_number: "", email: "" })
