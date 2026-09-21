@@ -55,16 +55,18 @@ const Dashboard = () => {
           galleryObserver.unobserve(entry.target);
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1, rootMargin: "240px 0px" }
     );
 
     // Setup observers
-    if (galleryTriggerRef.current) {
-      galleryObserver.observe(galleryTriggerRef.current);
+    const galleryTrigger = galleryTriggerRef.current;
+    if (galleryTrigger) {
+      galleryObserver.observe(galleryTrigger);
     }
 
     return () => {
-      if (galleryTriggerRef.current) galleryObserver.unobserve(galleryTriggerRef.current);
+      if (galleryTrigger) galleryObserver.unobserve(galleryTrigger);
+      galleryObserver.disconnect();
     };
   }, []);
 

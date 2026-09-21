@@ -8,7 +8,7 @@ const HeadingsSection = () => {
   return (
     <section className="headings-container">
       
-      <header className="main-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "50px", flexWrap: "wrap" }}>
+      <header className="main-header" data-aos="fade-up" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "50px", flexWrap: "wrap" }}>
 
   {/* LEFT SIDE TEXT */}
  <div style={{ flex: "1", padding: "0 10px", display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
@@ -99,7 +99,7 @@ const HeadingsSection = () => {
 </div>
 
   {/* RIGHT SIDE IMAGE */}
-  <div className="hero-visual" style={{ flex: "1", display: "flex", justifyContent: "center" }}>
+  <div className="hero-visual" data-aos="zoom-in" data-aos-delay="140" style={{ flex: "1", display: "flex", justifyContent: "center" }}>
     <img
       src="/XlentHeader.webp"
       alt="Stock Visual"
@@ -120,7 +120,7 @@ const HeadingsSection = () => {
 
       {/* Stats Section */}
       {/* Add this to your component */}
-<div className="stats" style={{ 
+<div className="stats" data-aos="fade-up" data-aos-delay="220" style={{ 
   display: 'grid', 
   gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
   gap: '20px', 

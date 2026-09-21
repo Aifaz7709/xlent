@@ -1,7 +1,27 @@
 .brochure-page {
+  position: relative;
   width: 100%;
   min-height: 100vh;
   background: #9e9e9e;
+}
+
+.brochure-download {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1;
+  padding: 0.7rem 1rem;
+  color: #fff;
+  background: #1f2937;
+  border-radius: 0.35rem;
+  text-decoration: none;
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.2);
+}
+
+.brochure-download:hover,
+.brochure-download:focus-visible {
+  color: #fff;
+  background: #111827;
 }
 
 .brochure-frame {

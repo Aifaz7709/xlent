@@ -105,6 +105,33 @@ p { font-size: clamp(0.875rem, 2vw, 1.1rem); line-height: 1.6; }
   white-space: nowrap;
 }
 
+.hero-download-wrap {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.hero-download-link {
+  background: #fff !important;
+  color: #002699 !important;
+  border: 2px solid #002699 !important;
+  font-weight: 700;
+  box-shadow: 0 10px 24px rgba(0, 38, 153, 0.18);
+  transition: transform 220ms ease, box-shadow 220ms ease, background-color 220ms ease;
+}
+
+.hero-download-link:hover,
+.hero-download-link:focus-visible {
+  color: #fff !important;
+  background: #002699 !important;
+  border-color: #002699 !important;
+  transform: translateY(-4px);
+  box-shadow: 0 16px 30px rgba(0, 38, 153, 0.28);
+}
+
+.hero-download-link:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
 @media (min-width: 768px) {
   .btn {
     padding: 12px 28px;
