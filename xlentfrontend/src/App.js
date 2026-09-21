@@ -69,27 +69,27 @@ const Dashboard = () => {
   }, []);
 
   return (
-    
+
     <main className="main-content">
       {/* Above the fold - Load immediately */}
       <HeadingsSection />
       <Hero />
-      
+
       {/* Lazy load carousel */}
       <Suspense fallback={<div className="skeleton-loader" style={{ height: '300px' }} />}>
         <NewPropertyCard />
       </Suspense>
-      
+
       {/* Gallery Trigger - Hidden element to trigger loading */}
       <div ref={galleryTriggerRef}  />
-      
+
       {/* Gallery - Load on viewport */}
       <Suspense fallback={<div className="skeleton-loader" style={{ height: '300px' }} />}>
         {showGallery && <Gallery />}
       </Suspense>
-      
+
       <Testimonials />
-  
+
      <FranchiseBanner  />
       <Footer />
     </main>
@@ -161,9 +161,11 @@ function AppRoutes({ theme, toggleTheme }) {
     return () => window.removeEventListener("xlent-service-selected", handleServiceSelection);
   }, []);
 
+  const isBrochureRoute = location.pathname.replace(/\/+$/, "") === "/brochure";
+
   return (
     <>
-      {location.pathname !== "/brochure" && (
+      {!isBrochureRoute && (
         <>
           <Navbar
             theme={theme}
@@ -189,7 +191,7 @@ function AppRoutes({ theme, toggleTheme }) {
           <Route path="/" element={<Dashboard />} />
 
           <Route path="/brochure" element={<BrochurePage />} />
-          
+
           {/* Authenticated Routes */}
           <Route
             path="/add-car"
@@ -201,7 +203,7 @@ function AppRoutes({ theme, toggleTheme }) {
               </ProtectedRoute>
             }
           />
-          
+
           <Route
             path="/customer-dashboard"
             element={
@@ -230,68 +232,68 @@ function AppRoutes({ theme, toggleTheme }) {
           />
 
           {/* Public Routes with Individual Suspense */}
-          <Route 
-            path="/register" 
+          <Route
+            path="/register"
             element={
                 <RegisterPage />
-            } 
+            }
           />
-          
-          <Route 
-            path="/HelpCenter" 
+
+          <Route
+            path="/HelpCenter"
             element={
                 <HelpCenter />
-            } 
+            }
           />
-          
-          <Route 
-            path="/about" 
+
+          <Route
+            path="/about"
             element={
                 <AboutPage />
-            } 
+            }
           />
-          
-          <Route 
-            path="/deals" 
+
+          <Route
+            path="/deals"
             element={
                 <SpecialDeals />
-            } 
+            }
           />
-          
-          <Route 
-            path="/terms" 
+
+          <Route
+            path="/terms"
             element={
                 <TermsConditionsPage />
-            } 
+            }
           />
-          
-          <Route 
-            path="/book/:carId" 
+
+          <Route
+            path="/book/:carId"
             element={
                 <BookingPage />
-            } 
+            }
           />
-          
-          <Route 
-            path="/Payment" 
+
+          <Route
+            path="/Payment"
             element={
                 <Qrcode />
-            } 
+            }
           />
-          
-          <Route 
-            path="/PrivacyPolicy" 
+
+          <Route
+            path="/PrivacyPolicy"
             element={
                 <PrivacyPolicyPage />
-            } 
+            }
           />
-          
-          <Route 
-            path="/RefundPolicy" 
+
+          <Route
+            path="/RefundPolicy"
             element={
                 <RefundPolicyPage />
-            
-            } 
+
+            }
           />
 
           {/* Fallback Route */}
