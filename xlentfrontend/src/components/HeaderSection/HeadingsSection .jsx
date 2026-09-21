@@ -72,30 +72,21 @@ const HeadingsSection = () => {
     <strong>No hidden fees, no complicated contracts</strong> - just the perfect journey.
   </p>
   </div>
-  <button
-    onClick={() => setShowForm(true)} 
-    style={{
-      backgroundColor: "#1949b1ff",
-      color: "#ffffffff",
-      border: "1px solid #023AAF",
-      padding: "clamp(12px, 4vw, 14px) clamp(20px, 6vw, 32px)",
-      borderRadius: "8px",
-      fontWeight: "600",
-      fontSize: "clamp(16px, 4vw, 18px)",
-      cursor: "pointer",
-      transition: "0.3s",
-      marginTop: "20px",
-      display: "inline-block",
-      width: "auto",
-      maxWidth: "350px",
-      textAlign: "left",
-      alignSelf: "flex-start",
-    }}
-    onMouseOver={(e) => (e.target.style.boxShadow = "0 4px 12px rgba(255,255,255,0.4)")}
-    onMouseOut={(e) => (e.target.style.boxShadow = "none")}
-  >
-    Book Your Ride 
-  </button>
+  <div className="hero-actions" data-aos="fade-up" data-aos-delay="180">
+    <button
+      onClick={() => setShowForm(true)}
+      className="hero-action hero-action-primary"
+    >
+      Book Your Ride
+    </button>
+    <a
+      href="/xlentcar_brochure.html"
+      download="xlentcar-brochure.html"
+      className="hero-action hero-action-secondary"
+    >
+      Download brochure
+    </a>
+  </div>
 </div>
 
   {/* RIGHT SIDE IMAGE */}

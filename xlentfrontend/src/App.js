@@ -5,7 +5,6 @@ import store from "./components/Redux/Store";
 // ⚡ IMMEDIATELY NEEDED COMPONENTS (Above the fold)
 import Navbar from "./components/HeadernFooter/Navbar";
 import BackButton from "./components/BackButton/BackButton";
-import Hero from "./components/GetStarted/Hero";
 import HeadingsSection from "./components/HeaderSection/HeadingsSection ";
 import FranchiseBanner from "./components/FranchiseBanner/FranchiseBanner";
 import { SnackbarProvider } from "./components/Snackbar/Snackbar";
@@ -75,7 +74,6 @@ const Dashboard = () => {
     <main className="main-content">
       {/* Above the fold - Load immediately */}
       <HeadingsSection />
-      <Hero />
 
       {/* Lazy load carousel */}
       <Suspense fallback={<div className="skeleton-loader" style={{ height: '300px' }} />}>
