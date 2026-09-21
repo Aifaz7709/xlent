@@ -31,6 +31,7 @@ const NewPropertyCard = lazy(() => import("./components/OverFleet/newFetchCarous
 const Gallery = lazy(() => import("./components/CustomerGallery/Gallery"));
 const Testimonials = lazy(() => import("./components/Testimonials/Testimonials"));
 const Footer = lazy(() => import("./components/Footer/Footer"));
+const BrochurePage = lazy(() => import("./components/Brochure/BrochurePage"));
 
 // ---------- PURE PROTECTED ROUTE ----------
 const ProtectedRoute = ({ children, isAuthenticated }) => {
@@ -162,16 +163,20 @@ function AppRoutes({ theme, toggleTheme }) {
 
   return (
     <>
-      <Navbar
-        theme={theme}
-        toggleTheme={toggleTheme}
-        isAuthenticated={isAuthenticated}
-        userData={userData}
-        onLogout={handleLogout}
-        onLoginHover={preloadLogin} // Pass preload function to Navbar
-      />
+      {location.pathname !== "/brochure" && (
+        <>
+          <Navbar
+            theme={theme}
+            toggleTheme={toggleTheme}
+            isAuthenticated={isAuthenticated}
+            userData={userData}
+            onLogout={handleLogout}
+            onLoginHover={preloadLogin}
+          />
 
-      <BackButton />
+          <BackButton />
+        </>
+      )}
 
       {/* Minimal suspense fallback */}
       <Suspense fallback={
@@ -182,6 +187,8 @@ function AppRoutes({ theme, toggleTheme }) {
         <Routes>
           {/* Home Route */}
           <Route path="/" element={<Dashboard />} />
+
+          <Route path="/brochure" element={<BrochurePage />} />
           
           {/* Authenticated Routes */}
           <Route
