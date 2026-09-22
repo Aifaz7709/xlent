@@ -92,8 +92,8 @@ const HeadingsSection = () => {
   {/* RIGHT SIDE IMAGE */}
   <div className="hero-visual" data-aos="zoom-in" data-aos-delay="140" style={{ flex: "1", display: "flex", justifyContent: "center" }}>
     <img
-      src="/XlentHeader.webp"
-      alt="Stock Visual"
+      src="/gallery/3.webp"
+      alt="Family road trip in an everyday car"
       className='image-container '
       onMouseOver={(e) => {
         e.target.style.transform = "translateY(-8px)";

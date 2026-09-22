@@ -1,4 +1,6 @@
 {
+  "name": "xlentcar",
+  "private": true,
   "dependencies": {
     "@vercel/analytics": "^1.6.1"
   }

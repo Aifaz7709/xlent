@@ -20,13 +20,13 @@ const HelpCenter = lazy(() => import("./components/HelpCenter/HelpCenter"));
 const SpecialDeals = lazy(() => import("./components/SpecialDeals/SpecialDeals"));
 const AboutPage = lazy(() => import("./components/AboutPage/AboutPage"));
 const TermsConditionsPage = lazy(() => import("./components/TermsandConditions/TermsConditionsPage"));
-const AddCar = lazy(() => import("./components/AddCar/AddCar"));
+const CarManagement = lazy(() => import("./components/CarManagement/CarManagement"));
 const BookingPage = lazy(() => import("./components/Booking/BookingPage"));
 const Qrcode = lazy(() => import("./components/Booking/Qrcode"));
 const PrivacyPolicyPage = lazy(() => import("./components/TermsandConditions/PrivacyPolicyPage"));
 const RefundPolicyPage = lazy(() => import("./components/TermsandConditions/RefundPolicyPage"));
 const CustomerDashboard = lazy(() => import("./components/CustForm/CustomerDashboard"));
-const NewPropertyCard = lazy(() => import("./components/OverFleet/newFetchCarousel"));
+const CarFleetCarousel = lazy(() => import("./components/CarFleet/CarFleetCarousel"));
 const Gallery = lazy(() => import("./components/CustomerGallery/Gallery"));
 const Testimonials = lazy(() => import("./components/Testimonials/Testimonials"));
 const Footer = lazy(() => import("./components/Footer/Footer"));
@@ -77,7 +77,7 @@ const Dashboard = () => {
 
       {/* Lazy load carousel */}
       <Suspense fallback={<div className="skeleton-loader" style={{ height: '300px' }} />}>
-        <NewPropertyCard />
+        <CarFleetCarousel />
       </Suspense>
 
       {/* Gallery Trigger - Hidden element to trigger loading */}
@@ -121,7 +121,7 @@ function AppRoutes({ theme, toggleTheme }) {
     if (isAuthenticated) {
       // Preload authenticated components silently
       Promise.all([
-        import("./components/AddCar/AddCar"),
+        import("./components/CarManagement/CarManagement"),
         import("./components/CustForm/CustomerDashboard"),
         import("./components/Booking/BookingPage")
       ]).then(() => {
@@ -198,7 +198,7 @@ function AppRoutes({ theme, toggleTheme }) {
             element={
               <ProtectedRoute isAuthenticated={isAuthenticated}>
                 <Suspense fallback={<div className="skeleton-loader" style={{ minHeight: '400px' }} />}>
-                  <AddCar />
+                  <CarManagement />
                 </Suspense>
               </ProtectedRoute>
             }

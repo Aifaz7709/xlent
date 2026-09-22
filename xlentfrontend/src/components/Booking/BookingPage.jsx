@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import "./BookingPage.css";
-import XlentcarLoader from "../Loader/XlentcarLoader";
+import AppLoader from "../Loader/AppLoader";
 import ContactUsCard from "../Popups/ContactUsCard";
 import { useSelector } from "react-redux";
 
@@ -323,7 +323,7 @@ const BookingPage = () => {
                 alignItems: 'center'
               }}
             >
-              <XlentcarLoader />
+              <AppLoader />
               <div className="processing-text">Processing your booking...</div>
             </motion.div>
           )}

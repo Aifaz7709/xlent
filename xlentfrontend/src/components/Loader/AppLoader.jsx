@@ -1,8 +1,7 @@
-// XlentcarLoader.jsx
 import React from 'react';
-import './XlentcarLoader.css';
+import './AppLoader.css';
 
-const XlentcarLoader = () => {
+const AppLoader = () => {
   return (
     <div className="xlentcar-loader">
       <div className="logo-container">
@@ -24,4 +23,4 @@ const XlentcarLoader = () => {
   );
 };
 
-export default XlentcarLoader;
+export default AppLoader;

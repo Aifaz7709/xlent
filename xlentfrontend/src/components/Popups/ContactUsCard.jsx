@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import XlentcarLoader from '../Loader/XlentcarLoader'; // Adjust the path as needed
+import AppLoader from '../Loader/AppLoader';
 import { useSnackbar } from '../Snackbar/Snackbar';
 import './ContactCard.css'
 import { useDispatch } from 'react-redux';
@@ -123,7 +123,7 @@ const ContactUsCard = ({onClose, title, booking1 }) => {
       {isLoading && (
         <div className="loader-overlay">
           <div className="loader-content">
-            <XlentcarLoader />
+            <AppLoader />
           </div>
         </div>
       )}

@@ -2,11 +2,12 @@ import React, { useEffect, useState, useRef, useCallback, useMemo } from "react"
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { clearSelectedLocation } from "../Redux/Slices/LocationSlice";
-import { MapPin, X } from "lucide-react";
-import "./NewPropertyCard.css";
-import XlentcarLoader from "../Loader/XlentcarLoader";
+import { motion } from "framer-motion";
+import { ChevronLeft, ChevronRight, Heart, MapPin, X } from "lucide-react";
+import "./CarFleetCarousel.css";
+import AppLoader from "../Loader/AppLoader";
 import { supabase } from "../../supabaseClient";
-const NewPropertyCard = () => {
+const CarFleetCarousel = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -56,6 +57,7 @@ const NewPropertyCard = () => {
       id: car.id,
       name: car.car_model || "Car",
       location: car.car_location || "Location not specified",
+      displayLocation: (car.car_location || "Location not specified").split(",")[0].trim(),
       photos: car.photos || [],
       original: car
     }));
@@ -69,8 +71,7 @@ const NewPropertyCard = () => {
   // 3. Responsive Logic
   const handleResize = useCallback(() => {
     const width = window.innerWidth;
-    if (width < 360) setItemsPerSlide(1);
-    else if (width < 768) setItemsPerSlide(2);
+    if (width < 768) setItemsPerSlide(1);
     else if (width < 1024) setItemsPerSlide(3);
     else setItemsPerSlide(4);
   }, []);
@@ -128,18 +129,14 @@ const NewPropertyCard = () => {
     localStorage.setItem("favorites", JSON.stringify(updated));
   };
 
-  if (loading && !filteredCars.length) return <div className="loader"><XlentcarLoader /></div>;
+  if (loading && !filteredCars.length) return <div className="loader"><AppLoader /></div>;
 
   return (
     <section className="fleet-carousel">
       <div className="carousel-header">
         <div>
-          <h2  style={{ 
-          cursor: 'pointer',
-       color: 'rgb(2, 40, 124)',
-          marginRight: '1.5rem',
-          fontWeight: '600'
-        }}>{selectedLocation ? `Cars in ${selectedLocation.name}` : 'Our Cars'}</h2>
+          <span className="carousel-eyebrow">READY WHEN YOU ARE</span>
+          <h2>{selectedLocation ? `Cars in ${selectedLocation.name}` : 'Pick your perfect ride'}</h2>
           <p className="subtitle">{filteredCars.length} vehicles available</p>
         </div>
         
@@ -150,35 +147,78 @@ const NewPropertyCard = () => {
         )}
       </div>
 
-      <div className="carousel-window" 
-           onMouseEnter={() => setIsAutoPlaying(false)} 
-         onMouseLeave={() => setIsAutoPlaying(true)}
-         onTouchStart={handleTouchStart}
-         onTouchEnd={handleTouchEnd}>
-        <div className="carousel-track" 
-             style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
-          {filteredCars.map((car) => (
-            <div key={car.id} className="car-card-wrapper" style={{ width: `${100 / itemsPerSlide}%` }}>
-              <div className="car-card" onClick={() => navigate(`/book/${car.id}`, { state: { car: car.original } })}>
+      <div className="carousel-stage">
+        <button
+          className="carousel-control carousel-control-prev"
+          type="button"
+          onClick={prevSlide}
+          aria-label="Show previous cars"
+          disabled={totalSlides <= 1}
+        >
+          <ChevronLeft size={20} />
+        </button>
+        <div className="carousel-window"
+             onMouseEnter={() => setIsAutoPlaying(false)}
+             onMouseLeave={() => setIsAutoPlaying(true)}
+             onTouchStart={handleTouchStart}
+             onTouchEnd={handleTouchEnd}>
+          <motion.div
+            className="carousel-track"
+            animate={{ x: `${-currentSlide * 100}%` }}
+            transition={{ type: "spring", stiffness: 260, damping: 28, mass: 0.8 }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.12}
+            onDragEnd={(_, info) => {
+              if (Math.abs(info.offset.x) > 50) {
+                info.offset.x < 0 ? nextSlide() : prevSlide();
+              }
+            }}
+          >
+          {filteredCars.map((car, index) => (
+            <motion.div
+              key={car.id}
+              className="car-card-wrapper"
+              style={{ width: `${100 / itemsPerSlide}%` }}
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, delay: Math.min(index * 0.06, 0.3) }}
+            >
+              <motion.div
+                className="car-card"
+                onClick={() => navigate(`/book/${car.id}`, { state: { car: car.original } })}
+                whileHover={{ y: -8 }}
+                whileTap={{ scale: 0.985 }}
+              >
                 <div className="image-box">
                   <img src={car.photos[0] || 'placeholder.jpg'} alt={car.name} loading="lazy" />
-                  {/* <button className={`fav-btn ${favorites.includes(car.id) ? 'active' : ''}`} 
+                  <button className={`fav-btn ${favorites.includes(car.id) ? 'active' : ''}`}
                           onClick={(e) => toggleFavorite(car.id, e)}>
-                    ❤️
-                  </button> */}
+                    <Heart size={17} fill={favorites.includes(car.id) ? "currentColor" : "none"} />
+                  </button>
                 </div>
                 <div className="info">
                   <h3>{car.name}</h3>
-                  <p><MapPin size={14} /> {car.location}</p>
+                  <p><MapPin size={14} /> {car.displayLocation}</p>
                   <button className="book-now">Book Now</button>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           ))}
+          </motion.div>
         </div>
+        <button
+          className="carousel-control carousel-control-next"
+          type="button"
+          onClick={nextSlide}
+          aria-label="Show next cars"
+          disabled={totalSlides <= 1}
+        >
+          <ChevronRight size={20} />
+        </button>
       </div>
     </section>
   );
 };
 
-export default NewPropertyCard;
+export default CarFleetCarousel;

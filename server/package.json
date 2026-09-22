@@ -1,5 +1,5 @@
 {
-  "name": "xlent-backend",
+  "name": "xlentcar-backend",
   "version": "1.0.0",
   "description": "Backend for XlentCar - Node.js + Express + Supabase",
   "main": "src/index.js",

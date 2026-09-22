@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import XlentcarLoader from '../Loader/XlentcarLoader'
+import AppLoader from '../Loader/AppLoader'
 import { supabase } from '../../supabaseClient'
 import { getStoredServiceType } from '../ServiceChoice/ServiceChoiceModal'
 const UserData = ({ onClose, serviceType }) => {
@@ -154,7 +154,7 @@ const UserData = ({ onClose, serviceType }) => {
               >
                 {isLoading ? (
                   <>
-                    <XlentcarLoader />
+                    <AppLoader />
                   </>
                 ) : (
                   <>

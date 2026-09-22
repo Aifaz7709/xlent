@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Upload, Plus, Trash2, AlertCircle, CheckCircle, Pencil } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { removeCar, setCars } from '../Redux/Slices/carSlice';
-import './AddCar.css';
+import './CarManagement.css';
 import LocationSelect from '../LocationModal/LocationSelect.js';
 import { cities } from '../LocationModal/cities';
 import Footer from '../Footer/Footer';
 import { supabase } from '../../supabaseClient';
-const AddCar = () => {
+const CarManagement = () => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     car_model: '',
@@ -490,4 +490,4 @@ const getCityById = (locationId) => {
   );
 };
 
-export default AddCar;
+export default CarManagement;
