@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import './HeadingsSection.css';
 import ContactUsCard from '../Popups/ContactUsCard';
+import ContactModal from '../LocationModal/ContactModal';
 
 const HeadingsSection = () => {
   const [showForm, setShowForm] = useState(false);
+  const [showContactModal, setShowContactModal] = useState(false);
 
   return (
     <section className="headings-container">
@@ -86,6 +88,12 @@ const HeadingsSection = () => {
     >
       Download brochure
     </a>
+    <button
+      onClick={() => setShowContactModal(true)}
+      className="hero-action hero-action-contact"
+    >
+      Contact Us
+    </button>
   </div>
 </div>
 
@@ -175,6 +183,10 @@ const HeadingsSection = () => {
        {showForm && (
        <ContactUsCard onClose={()=> setShowForm(false)}/>
       )}
+      <ContactModal
+        isOpen={showContactModal}
+        onClose={() => setShowContactModal(false)}
+      />
       {/* Action Buttons */}
     </section>
   );

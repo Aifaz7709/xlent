@@ -113,19 +113,21 @@ p { font-size: clamp(0.875rem, 2vw, 1.1rem); line-height: 1.6; }
 .hero-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: flex-start;
+  gap: 10px;
   flex-wrap: wrap;
   margin-top: 20px;
+  width: 100%;
 }
 
 .hero-action {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 46px;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-size: clamp(16px, 4vw, 18px);
+  min-height: 36px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: clamp(13px, 3.2vw, 15px);
   font-weight: 600;
   line-height: 1.2;
   text-align: center;
@@ -146,6 +148,12 @@ p { font-size: clamp(0.875rem, 2vw, 1.1rem); line-height: 1.6; }
   border: 1px solid #fff;
 }
 
+.hero-action-contact {
+  color: #fff;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+}
+
 .hero-action:hover,
 .hero-action:focus-visible {
   color: #fff;
@@ -157,6 +165,19 @@ p { font-size: clamp(0.875rem, 2vw, 1.1rem); line-height: 1.6; }
 
 .hero-action:active {
   transform: translateY(-1px);
+}
+
+@media (max-width: 767px) {
+  .hero-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    width: min(100%, 230px);
+  }
+
+  .hero-action {
+    width: 100%;
+  }
 }
 
 .hero-download-link {
