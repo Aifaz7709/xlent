@@ -401,6 +401,7 @@
       width: min(100%, 560px);
       max-width: 560px;
       max-height: min(92vh, 760px);
+      top: 3vh;
       overflow-y: auto;
       border: 1px solid rgba(255, 255, 255, 0.75);
       border-radius: 28px;

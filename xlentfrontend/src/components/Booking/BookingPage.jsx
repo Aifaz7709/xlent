@@ -26,7 +26,7 @@ const BookingPage = () => {
   // Snackbar state for BookingPage (since we can't use the hook directly)
   const [snackbar, setSnackbar] = useState(null);
   
-  const [countdown, setCountdown] = useState(8);
+  const [countdown, setCountdown] = useState(5);
 
   useEffect(() => {
     let timer;
@@ -330,41 +330,46 @@ const BookingPage = () => {
 
         {/* Confirmation Modal */}
         {isConfirmed && (
-          <div className="success-modal-wrapper"> 
-            <motion.div 
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="success-modal"
+          <div className="success-modal-wrapper">
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="success-modal contact-style-modal"
             >
-              <div className="check-icon">✓</div>
-              <h2 className="orbitron">RESERVATION SECURED</h2>
-              
-              <div className="receipt-details">
-                <p>VEHICLE <span>{car.name} {car.model}</span></p>
-                <p>CUSTOMER <span>{customerData.customer_name}</span></p>
-<p>CONTACT <span>{customerData.phone_number}</span></p>
-<p>EMAIL <span>{customerData.email}</span></p>
-
-                <p>PICKUP <span>{booking.startDate || 'TBD'} at {booking.startTime}</span></p>
-                <p>RETURN <span>{booking.endDate || 'TBD'} at {booking.endTime}</span></p>
-                <p className="total-row">TOTAL <span>₹{total || car.dailyRate}</span></p>
-              </div>
-
-              <p className="redirect-text">
-                Auto-navigating in <strong>{countdown}s</strong>...
-              </p>
-
-              <button className="back-home-btn" onClick={() => navigate('/')}>
-                CONFIRM & EXIT
+              <button
+                className="success-modal-close"
+                onClick={() => navigate('/')}
+                aria-label="Close reservation confirmation"
+              >
+                ×
               </button>
 
+              <div className="success-modal-header">
+                <div className="check-icon">✓</div>
+                <h2 className="orbitron">RESERVATION SECURED</h2>
+              </div>
+
+              <div className="success-modal-content">
+                <p className="success-message">
+                  We've shared your details with XlentCar. Our team will reach
+                  out shortly to assist you. We truly value your trust in us.
+                </p>
+                <p className="redirect-text">
+                  Closing in <strong>{countdown}s</strong>...
+                </p>
+                <button className="back-home-btn" onClick={() => navigate('/')}>
+                  CONFIRM & EXIT
+                </button>
+              </div>
+
               <div className="modal-progress-container">
-                <motion.div 
+                <motion.div
                   className="modal-progress-bar"
                   initial={{ width: "100%" }}
                   animate={{ width: "0%" }}
-                  transition={{ duration: 6, ease: "linear" }}
+                  transition={{ duration: 5, ease: "linear" }}
                 />
               </div>
             </motion.div>
