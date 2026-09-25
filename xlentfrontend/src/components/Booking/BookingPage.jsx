@@ -346,11 +346,6 @@ const BookingPage = () => {
                 ×
               </button>
 
-              <div className="success-modal-header">
-                <div className="check-icon">✓</div>
-                <h2 className="orbitron">RESERVATION SECURED</h2>
-              </div>
-
               <div className="success-modal-content">
                 <p className="success-message">
                   We've shared your details with XlentCar. Our team will reach
